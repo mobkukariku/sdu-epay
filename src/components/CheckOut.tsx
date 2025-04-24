@@ -10,7 +10,7 @@ export const CheckOut: FC = () => {
                        <p>$120.0</p>
                    </div>
                    <div className={"flex justify-between"}>
-                       <p>Promocode</p>
+                       <p>Promo code</p>
                        <p>-$20.0</p>
                    </div>
                </div>

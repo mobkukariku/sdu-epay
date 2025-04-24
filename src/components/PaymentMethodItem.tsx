@@ -5,16 +5,17 @@ export interface PaymentMethodItemProps {
     name: string;
     selected?: boolean;
     onClick?: () => void;
+    error?: string;
 }
 
-export const PaymentMethodItem: FC<PaymentMethodItemProps> = ({ icon, name, selected, onClick }) => {
+export const PaymentMethodItem: FC<PaymentMethodItemProps> = ({ icon, name, selected, onClick, error }) => {
     return (
         <div
             onClick={onClick}
             className={`cursor-pointer flex flex-col transition-colors gap-[10px] rounded-[5px] w-[202px] py-[15px] px-[21px]
-            ${selected ? 'border-2 border-[#6B9AB0] bg-[#EAF6FB]' : 'border border-[#D5D5D5] bg-[#F5F5F5]'}`}
+            ${selected ? 'border-2 border-[#6B9AB0] bg-[#EAF6FB]' : 'border border-[#D5D5D5] bg-[#F5F5F5]'} ${error ? ' border-red-500' : ''}`}
         >
-            <div className={`border rounded-full  transition-colors p-1 w-fit ${selected ? 'border-[#6B9AB0]' : 'border-[#D5D5D5]'}`}>
+            <div className={`border rounded-full  transition-colors p-1 w-fit ${selected ? 'border-[#6B9AB0]' : 'border-[#D5D5D5]'} ${error ? ' border-red-500' : ''}`}>
                 <img src={icon} alt={name} className="w-[20px] h-[20px]" />
             </div>
             <p className="text-[16px]">{name}</p>
