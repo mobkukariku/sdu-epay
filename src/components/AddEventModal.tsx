@@ -1,31 +1,36 @@
 import {FC, useState} from "react";
-import {CustomModal} from "@/ui/CustomModal.tsx";
 import {CustomButton} from "@/ui/CustomButton.tsx";
+import {
+    CurrencyDollarIcon,
+    EnvelopeIcon,
+    InformationCircleIcon,
+    PlusIcon,
+    UserCircleIcon
+} from "@heroicons/react/24/outline";
+import {CustomModal} from "@/ui/CustomModal.tsx";
 import {CustomInput} from "@/ui/CustomInput.tsx";
-import {EnvelopeIcon, InformationCircleIcon} from "@heroicons/react/24/outline";
-import {CustomSelect} from "@/ui/CustomSelect.tsx";
+import {CustomDatePicker} from "@/ui/CustomDatePicker.tsx";
 
-export const AddModal:FC = () => {
+export const AddEventModal:FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedRole, setSelectedRole] = useState<string>("");
-
-    const options = [
-        { label: "Super Admin", value: "super_admin" },
-        { label: "Admin", value: "admin" },
-        { label: "Member", value: "member" },
-    ];
 
 
     return (
         <>
             <CustomButton variant="submit" className="h-[38px] font-bold gap-[5px] px-[20px] flex rounded-[4px]" onClick={() => setIsModalOpen(true)}>
+                <PlusIcon />
                 ADD
             </CustomButton>
-            <CustomModal title={"Add Admin"} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <CustomModal title={"Add Event"} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <div className={"flex flex-col gap-[21px]"}>
                     <CustomInput
+                        icon={<UserCircleIcon className={`text-[#6B9AB0]`} />}
+                        placeholder={"Enter event name"}
+                    />
+
+                    <CustomInput
                         icon={<EnvelopeIcon className={`text-[#6B9AB0]`} />}
-                        placeholder={"Enter your email"}
+                        placeholder={"Enter manager's email"}
                     />
 
                     <CustomInput
@@ -33,16 +38,12 @@ export const AddModal:FC = () => {
                         placeholder={"Enter department"}
                     />
 
-                    <CustomSelect
-                        options={options}
-                        value={selectedRole}
-                        onChange={(newValue) => setSelectedRole(newValue)}
-                        placeholder="Select Role"
-                        triggerClassName="bg-white   h-[50px] text-black"
-                        dropdownClassName="bg-gray-100 "
-                        optionClassName="text-sm"
-                        activeOptionClassName="bg-blue-200"
+                    <CustomInput
+                        icon={<CurrencyDollarIcon className={`text-[#6B9AB0]`} />}
+                        placeholder={"Enter price"}
                     />
+
+                    <CustomDatePicker />
 
                     <CustomButton
                         onClick={() => setIsModalOpen(false)}

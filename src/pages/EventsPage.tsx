@@ -1,8 +1,8 @@
 import {FC} from "react";
 import {AdminLayout} from "@/layouts/AdminLayout.tsx";
-import {FiltrationInputs} from "@/components/FiltrationInputs.tsx";
 import {PencilIcon, TrashIcon} from "lucide-react";
 import {CustomTable} from "@/ui/CustomTable.tsx";
+import {EventFilters} from "@/components/EventsFilters.tsx";
 
 export const EventsPage:FC = () => {
 
@@ -70,7 +70,7 @@ export const EventsPage:FC = () => {
         <AdminLayout>
             <div className="flex-1 p-8">
                 <h1 className="text-[32px] font-bold mb-6">Events Information</h1>
-                <FiltrationInputs />
+                <EventFilters />
                 <CustomTable
                     columns={columns}
                     data={data}

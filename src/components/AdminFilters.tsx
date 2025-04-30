@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import { CustomSelect } from "@/ui/CustomSelect.tsx";
-import {AddModal} from "@/components/AddModal.tsx";
+import {AddAdminModal} from "@/components/AddAdminModal.tsx";
 
 const roleOptions = [
     { label: "All", value: "" },
@@ -9,7 +9,7 @@ const roleOptions = [
     { label: "Manager", value: "manager" },
 ];
 
-export const FiltrationInputs: FC = () => {
+export const AdminFilters: FC = () => {
     const [selectedRole, setSelectedRole] = useState("");
 
     return (
@@ -46,7 +46,7 @@ export const FiltrationInputs: FC = () => {
 
                 </div>
             </div>
-            <AddModal />
+            <AddAdminModal />
         </div>
     );
 };

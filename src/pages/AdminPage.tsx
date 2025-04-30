@@ -2,7 +2,7 @@ import { FC } from "react";
 import { CustomTable } from "@/ui/CustomTable.tsx";
 import { PencilIcon, TrashIcon } from "lucide-react";
 import {AdminLayout} from "@/layouts/AdminLayout.tsx";
-import {FiltrationInputs} from "@/components/FiltrationInputs.tsx";
+import {AdminFilters} from "@/components/AdminFilters.tsx";
 
 export const AdminPage: FC = () => {
     const columns = [
@@ -29,7 +29,7 @@ export const AdminPage: FC = () => {
         <AdminLayout>
             <div className="flex-1 p-8">
                 <h1 className="text-[32px] font-bold mb-6">Admin Information</h1>
-                <FiltrationInputs />
+                <AdminFilters />
                 <CustomTable
                     columns={columns}
                     data={data}
