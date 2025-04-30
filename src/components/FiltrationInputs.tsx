@@ -1,7 +1,6 @@
 import { FC, useState } from "react";
-import { CustomButton } from "@/ui/CustomButton.tsx";
-import { PlusIcon } from "@heroicons/react/24/outline";
 import { CustomSelect } from "@/ui/CustomSelect.tsx";
+import {AddModal} from "@/components/AddModal.tsx";
 
 const roleOptions = [
     { label: "All", value: "" },
@@ -47,10 +46,7 @@ export const FiltrationInputs: FC = () => {
 
                 </div>
             </div>
-            <CustomButton variant="submit" className="h-[38px] font-bold gap-[5px] px-[20px] flex rounded-[4px]">
-                <PlusIcon width={20} />
-                Add
-            </CustomButton>
+            <AddModal />
         </div>
     );
 };
