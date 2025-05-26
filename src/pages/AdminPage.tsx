@@ -10,8 +10,7 @@ export const AdminPage: FC = () => {
 
     useEffect(() => {
         fetchUsers();
-
-    }, [])
+    }, [fetchUsers]);
 
     const columns = [
         { header: "Email", accessor: "username" },
