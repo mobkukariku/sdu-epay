@@ -1,28 +1,22 @@
-import { FC } from "react";
+import {FC, useEffect} from "react";
 import { CustomTable } from "@/ui/CustomTable.tsx";
 import { PencilIcon, TrashIcon } from "lucide-react";
 import {AdminLayout} from "@/layouts/AdminLayout.tsx";
 import {AdminFilters} from "@/components/AdminFilters.tsx";
+import {useUsersStore} from "@/store/useUsersStore.ts";
 
 export const AdminPage: FC = () => {
+    const {fetchUsers, users} = useUsersStore();
+
+    useEffect(() => {
+        fetchUsers();
+
+    }, [])
+
     const columns = [
-        { header: "ID", accessor: "id" },
-        { header: "Email", accessor: "email" },
+        { header: "Email", accessor: "username" },
         { header: "Department", accessor: "department" },
         { header: "Role", accessor: "role" },
-    ];
-
-    const data = [
-        { id: 1, name: "John Doe", email: "john@example.com", department: "IT", role: "Admin" },
-        { id: 2, name: "Jane Smith", email: "jane.smith@example.com", department: "Marketing", role: "User" },
-        { id: 3, name: "Alice Johnson", email: "alice.j@example.com", department: "Finance", role: "Manager" },
-        { id: 4, name: "Bob Brown", email: "bob.brown@example.com", department: "HR", role: "User" },
-        { id: 5, name: "Charlie Lee", email: "charlie.lee@example.com", department: "Design", role: "Designer" },
-        { id: 6, name: "David Kim", email: "david.k@example.com", department: "Engineering", role: "Admin" },
-        { id: 7, name: "Ella Martinez", email: "ella.m@example.com", department: "Support", role: "User" },
-        { id: 8, name: "Frank Zhao", email: "frank.z@example.com", department: "Legal", role: "Lawyer" },
-        { id: 9, name: "Grace Chen", email: "grace.chen@example.com", department: "Sales", role: "Sales Rep" },
-        { id: 10, name: "Henry Nguyen", email: "henry.n@example.com", department: "IT", role: "Developer" },
     ];
 
     return (
@@ -32,7 +26,7 @@ export const AdminPage: FC = () => {
                 <AdminFilters />
                 <CustomTable
                     columns={columns}
-                    data={data}
+                    data={users}
                     actions={() => (
                         <div className="flex gap-2">
                             <button className="text-blue-600 hover:text-blue-800">

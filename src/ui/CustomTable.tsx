@@ -67,9 +67,12 @@ export const CustomTable: FC<CustomTableProps> = ({ columns, data, actions }) =>
                         </td>
                         {columns.map(col => (
                             <td key={col.accessor} className="px-6 py-4 text-gray-800">
-                                {row[col.accessor]}
+                                {typeof row[col.accessor] === "object"
+                                    ? row[col.accessor]?.name ?? "-"
+                                    : row[col.accessor]}
                             </td>
                         ))}
+
                         {actions && (
                             <td className="px-6 py-4">
                                 {actions(row)}
