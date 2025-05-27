@@ -1,8 +1,19 @@
 import {api} from "@/api/api";
-import {CreateUserPayload, IUser} from "@/types/users.ts";
+import {CreateUserPayload, IUser, UserQuery} from "@/types/users.ts";
 
-export const getUsers = async () => {
-    const { data } = await api.get('/users');
+export const getUsers = async (query?: UserQuery) => {
+    const queryString = query
+        ? '?' + new URLSearchParams(
+        Object.entries(query).reduce((acc, [key, value]) => {
+            if (value !== undefined && value !== null) {
+                acc[key] = String(value);
+            }
+            return acc;
+        }, {} as Record<string, string>)
+    ).toString()
+        : '';
+
+    const { data } = await api.get(`/users${queryString}`);
     return data;
 };
 
