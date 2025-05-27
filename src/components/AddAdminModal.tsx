@@ -5,7 +5,8 @@ import { CustomInput } from "@/ui/CustomInput";
 import { EnvelopeIcon, LockClosedIcon, PlusIcon, UserIcon } from "@heroicons/react/24/outline";
 import { CustomSelect } from "@/ui/CustomSelect";
 import { getDepartments } from "@/api/endpoints/departments";
-import { addUser } from "@/api/endpoints/users.ts"; // 👈 Добавь эту функцию
+import {useUsersStore} from "@/store/useUsersStore.ts";
+import {Department} from "@/types/departments.ts"; // 👈 Добавь эту функцию
 
 export const AddAdminModal: FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,6 +16,9 @@ export const AddAdminModal: FC = () => {
     const [selectedRole, setSelectedRole] = useState("");
     const [selectedDepartment, setSelectedDepartment] = useState("");
     const [departments, setDepartments] = useState<{ label: string; value: string }[]>([]);
+
+    const {addUser} = useUsersStore();
+
 
     const roleOptions = [
         { label: "Super Admin", value: "SUPER_ADMIN" },
@@ -26,7 +30,7 @@ export const AddAdminModal: FC = () => {
         const fetchDepartments = async () => {
             try {
                 const response = await getDepartments();
-                const formatted = response.data.map((dept: any) => ({
+                const formatted = response.data.map((dept: Department) => ({
                     label: dept.name,
                     value: dept.id,
                 }));

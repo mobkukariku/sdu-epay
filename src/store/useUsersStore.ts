@@ -1,20 +1,6 @@
-import {create} from "zustand/react";
-import {getUsers} from "@/api/endpoints/users.ts";
-
-interface department {
-    id: string;
-    name: string;
-}
-
-interface IUser {
-    id: string;
-    username: string;
-    name: string;
-    role: string;
-    active: boolean;
-    department: department | null;
-
-}
+import { create } from "zustand/react";
+import { getUsers, addUser } from "@/api/endpoints/users";
+import { IUser, CreateUserPayload } from "@/types/users.ts";
 
 interface UsersState {
     users: IUser[];
@@ -24,22 +10,39 @@ interface UsersState {
     loading: boolean;
     error: string | null;
     fetchUsers: () => Promise<void>;
+    addUser: (user: CreateUserPayload) => Promise<void>;
 }
 
 export const useUsersStore = create<UsersState>((set) => ({
     users: [],
-    loading: false,
-    error: null,
     total: 0,
     page: 1,
     size: 10,
+    loading: false,
+    error: null,
+
     fetchUsers: async () => {
         set({ loading: true, error: null });
         try {
-            const response = await getUsers();
-            set({ users: response.data, loading: false });
-        } catch (error) {
-            set({ error: error instanceof Error ? error.message : String(error), loading: false });
+            const users = await getUsers();
+            set({ users: users.data, loading: false });
+        } catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
+            set({ error: message, loading: false });
         }
     },
-}))
+
+    addUser: async (user) => {
+        set({ loading: true, error: null });
+        try {
+            const newUser = await addUser(user);
+            set((state) => ({
+                users: [...state.users, newUser],
+                loading: false
+            }));
+        } catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
+            set({ error: message, loading: false });
+        }
+    },
+}));

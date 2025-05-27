@@ -1,9 +1,9 @@
 import { getDepartments } from "@/api/endpoints/departments";
 import {create} from "zustand/react";
-import {addUser} from "@/api/endpoints/users.ts";
+import {Department} from "@/types/departments.ts";
 
 interface DepartmentsState {
-    departments: { id: string; name: string }[];
+    departments: Department[];
     total: number;
     page: number;
     size: number;
@@ -29,10 +29,5 @@ export const useDepartmentsStore = create<DepartmentsState>((set) => ({
             set({ error: error instanceof Error ? error.message : String(error), loading: false });
         }
     },
-    addDepartment: async () => {
-        set({ loading: true, error: null });
-        try{
-            const response = await addUser()
-        }
-    }
+    addDepartment: async () => {}
 }));

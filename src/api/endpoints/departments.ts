@@ -1,7 +1,7 @@
-import axiosInstance from "@/api/api.ts";
+import {api} from "@/api/api";
 
 export const getDepartments = async () => {
-    const response = await axiosInstance.get('/departments');
+    const response = await api.get('/departments');
 
     return response.data;
 }

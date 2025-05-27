@@ -1,12 +1,12 @@
-import axiosInstance from "@/api/api.ts";
+import {api} from "@/api/api";
+import {CreateUserPayload, IUser} from "@/types/users.ts";
 
 export const getUsers = async () => {
-    const response = await axiosInstance.get('/users');
+    const { data } = await api.get('/users');
+    return data;
+};
 
-    return response.data;
-}
-
-export const addUser = async (user: { username: string; password: string; name: string; role: string; department_id?: string }) => {
-    const response = await axiosInstance.post('/users', user);
-    return response.data;
-}
+export const addUser = async (user: CreateUserPayload): Promise<IUser> => {
+    const { data } = await api.post('/users', user);
+    return data;
+};

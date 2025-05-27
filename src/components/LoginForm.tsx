@@ -7,7 +7,7 @@ import { CustomInput } from "../ui/CustomInput.tsx";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { CustomButton } from "../ui/CustomButton.tsx";
 import {useNavigate} from "react-router-dom";
-import {useAuthStore} from "@/store/useAuthStore.ts";
+import {login} from "@/api/endpoints/auth.ts";
 
 const schema = yup.object().shape({
     email: yup.string().email("Invalid email").required("Email is required"),
@@ -20,7 +20,6 @@ export const LoginForm: FC = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const {login} = useAuthStore();
     const {
         control,
         handleSubmit,
@@ -31,9 +30,8 @@ export const LoginForm: FC = () => {
 
     const onSubmit = async (data: FormData) => {
         setLoading(true);
-
         try{
-            await login(data.email, data.password);
+            await login(data.email, data.password)
             navigate("/admin");
         }catch (err){
             console.error("Login failed:", err);
