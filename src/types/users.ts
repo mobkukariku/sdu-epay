@@ -16,3 +16,12 @@ export interface CreateUserPayload {
     role: string;
     department_id?: string;
 }
+
+
+export interface UserQuery {
+    username?: string;
+    department_id?: string;
+    role?: "SUPER_ADMIN" | "ADMIN" | "MANAGER" | null | undefined;
+    page?: number;
+    size?: number;
+}
