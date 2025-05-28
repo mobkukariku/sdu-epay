@@ -2,8 +2,8 @@ export interface IEvent {
     title: string;
     manager_email: string;
     price: number;
-    period_from: Date,
-    period_till: Date,
+    period_from: string,
+    period_till: string,
     department_id: string;
 }
 

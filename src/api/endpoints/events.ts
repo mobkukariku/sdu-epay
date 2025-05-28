@@ -1,4 +1,5 @@
 import {api} from "@/api/api.ts";
+import {EventQuery, IEvent} from "@/types/events.ts";
 
 export const getEvents = async (query?: EventQuery) => {
     const queryString = query

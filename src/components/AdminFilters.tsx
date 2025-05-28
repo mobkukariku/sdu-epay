@@ -16,11 +16,10 @@ export const AdminFilters: FC = () => {
     const [id, setId] = useState("");
     const [selectedRole, setSelectedRole] = useState<"SUPER_ADMIN" | "ADMIN" | "MANAGER" | "">("");
 
+    const {fetchUsers} = useUsersStore();
 
-    const fetchUsers = useUsersStore((state) => state.fetchUsers);
-
-    const handleSearch = () => {
-        fetchUsers({
+    const handleSearch = async () => {
+        await fetchUsers({
             username: email || undefined,
             department_id: id || undefined,
             role: selectedRole as "SUPER_ADMIN" | "ADMIN" | "MANAGER" | undefined, // кастуем
@@ -57,7 +56,7 @@ export const AdminFilters: FC = () => {
                     <CustomSelect
                         options={roleOptions}
                         value={selectedRole}
-                        onChange={setSelectedRole}
+                        onChange={(value: string) => setSelectedRole(value as "SUPER_ADMIN" | "ADMIN" | "MANAGER" | "")}
                         placeholder="Choose role"
                         triggerClassName="bg-white w-[150px]  h-[37px] text-black"
                         dropdownClassName="bg-gray-100"

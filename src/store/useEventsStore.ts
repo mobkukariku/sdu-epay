@@ -1,6 +1,6 @@
 import {create} from "zustand/react";
 import {CreateEventPayload, EventQuery, IEvent} from "@/types/events.ts";
-import {getEvents} from "@/api/endpoints/events.ts";
+import {addEvent, getEvents} from "@/api/endpoints/events.ts";
 
 interface EventsState {
     events: IEvent[];
