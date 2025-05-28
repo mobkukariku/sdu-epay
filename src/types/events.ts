@@ -1,5 +1,6 @@
 export interface IEvent {
     title: string;
+    id?: string
     manager_email: string;
     price: number;
     period_from: string,
