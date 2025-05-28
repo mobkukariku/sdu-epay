@@ -1,76 +1,32 @@
-import {FC} from "react";
+import {FC, useEffect} from "react";
 import {AdminLayout} from "@/layouts/AdminLayout.tsx";
 import {CustomTable} from "@/ui/CustomTable.tsx";
 import {PencilIcon, TrashIcon} from "lucide-react";
 import {PromoCodeFilters} from "@/components/PromoCodeFilters.tsx";
+import {usePromoCodesStore} from "@/store/usePromoCodesStore.ts";
 
 export const PromoCodesPage:FC = () => {
+    const {promoCodes, fetchPromoCodes} = usePromoCodesStore();
+
     const columns = [
-        { header: "ID", accessor: "id" },
-        { header: "Event Name", accessor: "event-name" },
-        { header: "Promo code", accessor: "promo-code" },
-        { header: "Period", accessor: "period" },
-        { header: "Alredy used", accessor: "alredy-used" },
+        { header: "Event Name", accessor: "event" },
+        { header: "Promo code", accessor: "code" },
+        { header: "Period from", accessor: "period_from" },
+        {header: "Period till", accessor: "period_till"},
+        { header: "Already used", accessor: "already_used" },
         { header: "Usage limit", accessor: "limit" },
-        { header: "Discount percentage", accessor: "percentage" },
     ];
 
-    const data = [
-        {
-            id: 1,
-            "event-name": "Tech Fest 2025",
-            "promo-code": "TECH25",
-            period: "Jan - Mar 2025",
-            "alredy-used": 12,
-            limit: 50,
-            percentage: "25%",
-        },
-        {
-            id: 2,
-            "event-name": "Design Week",
-            "promo-code": "DESIGN10",
-            period: "Feb - Apr 2025",
-            "alredy-used": 8,
-            limit: 20,
-            percentage: "10%",
-        },
-        {
-            id: 3,
-            "event-name": "Marketing Mania",
-            "promo-code": "MARKET30",
-            period: "Mar - May 2025",
-            "alredy-used": 18,
-            limit: 30,
-            percentage: "30%",
-        },
-        {
-            id: 4,
-            "event-name": "Startup Hackathon",
-            "promo-code": "START15",
-            period: "Apr - Jun 2025",
-            "alredy-used": 22,
-            limit: 40,
-            percentage: "15%",
-        },
-        {
-            id: 5,
-            "event-name": "AI Conference",
-            "promo-code": "AI50",
-            period: "May - Jul 2025",
-            "alredy-used": 5,
-            limit: 10,
-            percentage: "50%",
-        },
-        {
-            id: 6,
-            "event-name": "Cybersecurity Bootcamp",
-            "promo-code": "SECURE20",
-            period: "Jun - Aug 2025",
-            "alredy-used": 10,
-            limit: 25,
-            percentage: "20%",
-        },
-    ];
+
+    useEffect(() => {
+        fetchPromoCodes();
+    }, []);
+
+
+    const formattedData = promoCodes.map((promo) => ({
+        ...promo,
+        event: promo.event?.title || "—",
+    }));
 
 
     return (
@@ -80,7 +36,7 @@ export const PromoCodesPage:FC = () => {
                 <PromoCodeFilters/>
                 <CustomTable
                     columns={columns}
-                    data={data}
+                    data={formattedData}
                     actions={() => (
                         <div className="flex gap-2">
                             <button className="text-blue-600 hover:text-blue-800">
