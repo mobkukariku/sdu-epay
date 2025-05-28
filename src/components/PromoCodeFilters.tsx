@@ -1,7 +1,7 @@
 import {FC, useState} from "react";
-import {AddAdminModal} from "@/components/AddAdminModal.tsx";
 import {usePromoCodesStore} from "@/store/usePromoCodesStore.ts";
 import {CustomButton} from "@/ui/CustomButton.tsx";
+import {AddPromoCodeModal} from "@/components/AddPromoCodeModal.tsx";
 
 export const PromoCodeFilters:FC = () => {
     const [promo, setPromo] = useState("");
@@ -44,7 +44,7 @@ export const PromoCodeFilters:FC = () => {
                     Search
                 </CustomButton>
             </div>
-            <AddAdminModal />
+            <AddPromoCodeModal />
         </div>
     )
 }
