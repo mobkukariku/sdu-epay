@@ -20,8 +20,8 @@ export const PromocodeInput: FC = () => {
             });
 
             toast.success("Promo code successfully applied!");
-        } catch (err) {
-            toast.error("Invalid promo code", err);
+        } catch {
+            toast.error("Invalid promo code");
         }
     };
 
