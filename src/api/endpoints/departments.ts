@@ -5,3 +5,9 @@ export const getDepartments = async () => {
 
     return response.data;
 }
+
+export const getPublicDepartments = async () => {
+    const {data} = await api.get('/departments/public');
+
+    return data;
+}

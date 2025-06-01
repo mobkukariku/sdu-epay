@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import {FC, useEffect, useState} from "react";
 import { CustomInput } from "../ui/CustomInput.tsx";
 import { EnvelopeIcon, PhoneIcon, UserIcon } from "@heroicons/react/24/outline";
 import { CustomSelect } from "../ui/CustomSelect.tsx";
@@ -10,27 +10,66 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { PulseLoader } from "react-spinners";
+import {getPublicDepartments} from "@/api/endpoints/departments.ts";
+import {getEventById} from "@/api/endpoints/events.ts";
+import {IEvent} from "@/types/events.ts";
+import {Department} from "@/types/departments.ts";
+import {usePaymentStore} from "@/store/usePaymentStore.ts";
 
 const schema = yup.object().shape({
     fullName: yup.string().required("Full name is required"),
     email: yup.string().email("Invalid email").required("Email is required"),
     phone: yup.string().required("Phone number is required"),
     paymentType: yup.string().required("Payment destination is required"),
+    eventType: yup.string().required("Event type is required"),
     paymentMethod: yup.string().required("Payment method is required"),
 });
 
 type FormData = yup.InferType<typeof schema>;
 
 export const PaymentForm: FC = () => {
-    const [selected, setSelected] = useState("");
-    const [loading, setLoading] = useState(false);
+    const {setPrice, setOrderField} = usePaymentStore();
 
-    const options = [
-        { label: "Registration free", value: "registration_free" },
-        { label: "SDU Extension", value: "sdu_extension" },
-        { label: "Payment for Olympiad", value: "payment_for_olympiad" },
-        { label: "Dormitory Fee", value: "dormitory_fee" },
-    ];
+    const [selectedDepartmentId, setSelectedDepartmentId] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [departments, setDepartments] = useState<Department[]>([]);
+    const [events, setEvents] = useState<IEvent[]>([]);
+
+    useEffect(() => {
+        const fetchDepartments = async () => {
+            try {
+                const data = await getPublicDepartments();
+                const mapped = data.map((dept: { name: string; id: string }) => ({
+                    label: dept.name,
+                    value: dept.id,
+                }));
+                setDepartments(mapped);
+            } catch (error) {
+                console.error("Failed to fetch departments:", error);
+            }
+        };
+        fetchDepartments();
+    }, []);
+
+    useEffect(() => {
+        const fetchEvents = async () => {
+            if (!selectedDepartmentId) return;
+            try {
+                const data = await getEventById(selectedDepartmentId);
+                const mapped = data.map((event: IEvent) => ({
+                    label: event.title,
+                    value: event.id,
+                    price: Number(event.price),
+                }));
+                setEvents(mapped);
+            } catch (error) {
+                console.error("Failed to fetch events:", error);
+            }
+        };
+
+        fetchEvents();
+    }, [selectedDepartmentId]);
+
 
     const {
         control,
@@ -65,6 +104,10 @@ export const PaymentForm: FC = () => {
                                 {...field}
                                 icon={<UserIcon className={`text-[#6B9AB0] ${errors.fullName ? "text-red-500" : ""}`} />}
                                 type="text"
+                                onChange={(e) => {
+                                    field.onChange(e);
+                                    setOrderField("fullname", e.target.value);
+                                }}
                                 placeholder="Enter your full name"
                                 error={errors.fullName?.message}
                             />
@@ -83,6 +126,10 @@ export const PaymentForm: FC = () => {
                                 {...field}
                                 icon={<EnvelopeIcon className={`text-[#6B9AB0] ${errors.email ? "text-red-500" : ""}`} />}
                                 type="email"
+                                onChange={(e) => {
+                                    field.onChange(e);
+                                    setOrderField("email", e.target.value);
+                                }}
                                 placeholder="Enter your email"
                                 error={errors.email?.message}
                             />
@@ -101,6 +148,10 @@ export const PaymentForm: FC = () => {
                                 {...field}
                                 icon={<PhoneIcon className={`text-[#6B9AB0] ${errors.phone ? "text-red-500" : ""}`} />}
                                 type="text"
+                                onChange={(e) => {
+                                    field.onChange(e);
+                                    setOrderField("cellphone", e.target.value);
+                                }}
                                 placeholder="Enter your phone number"
                                 error={errors.phone?.message}
                             />
@@ -117,11 +168,11 @@ export const PaymentForm: FC = () => {
                         <>
                             <CustomSelect
                                 {...field}
-                                options={options}
+                                options={departments}
                                 value={field.value}
                                 onChange={(val) => {
                                     field.onChange(val);
-                                    setSelected(val);
+                                    setSelectedDepartmentId(val);
                                 }}
                                 triggerClassName={"text-white"}
                                 placeholder="Select payment destination"
@@ -134,22 +185,45 @@ export const PaymentForm: FC = () => {
                     )}
                 />
 
-                {selected && (
+                {selectedDepartmentId && (
                     <>
-                        <CustomInput
-                            icon={<UserIcon className="text-[#6B9AB0]" />}
-                            type="text"
-                            placeholder="Additional field 1"
+                        <Controller
+                            name="eventType"
+                            control={control}
+                            render={({ field }) => (
+                                <>
+                                    <CustomSelect
+                                        {...field}
+                                        options={events}
+                                        value={field.value}
+                                        onChange={(val) => {
+                                            field.onChange(val);
+                                            setOrderField("event_id", val);
+
+                                            const selectedEvent = events.find(e => e.value === val);
+                                            if (selectedEvent && "price" in selectedEvent) {
+                                                setPrice(Number((selectedEvent as IEvent).price));
+                                            }
+                                        }}
+                                        triggerClassName={"text-white"}
+                                        placeholder="Select Event"
+                                        error={errors.eventType?.message}
+                                    />
+                                    {errors.eventType && (
+                                        <p className="text-red-500 text-sm -mt-2 ml-2">{errors.eventType.message}</p>
+                                    )}
+                                </>
+                            )}
                         />
+
                         <CustomInput
                             icon={<UserIcon className="text-[#6B9AB0]" />}
                             type="text"
-                            placeholder="Additional field 2"
-                        />
-                        <CustomInput
-                            icon={<UserIcon className="text-[#6B9AB0]" />}
-                            type="text"
-                            placeholder="Additional field 3"
+                            onChange={(e) => {
+                                field.onChange(e);
+                                setOrderField("additional", e.target.value);
+                            }}
+                            placeholder="Additional field"
                         />
                         <Controller
                             name="paymentMethod"
