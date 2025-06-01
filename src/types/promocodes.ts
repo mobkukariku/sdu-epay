@@ -27,3 +27,13 @@ export interface PromocodeQuery {
     size?: number;
 }
 
+export interface VerifyPromocodePayload {
+    code: string;
+    event_id: string;
+}
+
+export interface VerifyPromocodeResponse {
+    code: string;
+    id: string;
+    discount: number;
+}

@@ -1,11 +1,11 @@
 export interface IEvent {
-    title: string;
+    title?: string;
     id?: string
-    manager_email: string;
-    price: number;
-    period_from: string,
-    period_till: string,
-    department_id: string;
+    manager_email?: string;
+    price?: number;
+    period_from?: string,
+    period_till?: string,
+    department_id?: string;
 }
 
 export type EventQuery = {
@@ -16,4 +16,4 @@ export type EventQuery = {
 };
 
 
-export interface CreateEventPayload extends IEvent {}
+export type CreateEventPayload = IEvent

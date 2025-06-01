@@ -1,7 +1,7 @@
 import {FC, useEffect, useState} from "react";
 import { CustomInput } from "../ui/CustomInput.tsx";
 import { EnvelopeIcon, PhoneIcon, UserIcon } from "@heroicons/react/24/outline";
-import { CustomSelect } from "../ui/CustomSelect.tsx";
+import {CustomSelect, Option} from "../ui/CustomSelect.tsx";
 import { PaymentMethod } from "./PaymentMethod.tsx";
 import { PromocodeInput } from "./PromocodeInput.tsx";
 import { CustomButton } from "../ui/CustomButton.tsx";
@@ -13,7 +13,6 @@ import { PulseLoader } from "react-spinners";
 import {getPublicDepartments} from "@/api/endpoints/departments.ts";
 import {getEventById} from "@/api/endpoints/events.ts";
 import {IEvent} from "@/types/events.ts";
-import {Department} from "@/types/departments.ts";
 import {usePaymentStore} from "@/store/usePaymentStore.ts";
 
 const schema = yup.object().shape({
@@ -22,6 +21,7 @@ const schema = yup.object().shape({
     phone: yup.string().required("Phone number is required"),
     paymentType: yup.string().required("Payment destination is required"),
     eventType: yup.string().required("Event type is required"),
+    additional: yup.string().required("Additional field is required"),
     paymentMethod: yup.string().required("Payment method is required"),
 });
 
@@ -32,8 +32,8 @@ export const PaymentForm: FC = () => {
 
     const [selectedDepartmentId, setSelectedDepartmentId] = useState("");
     const [loading, setLoading] = useState(false);
-    const [departments, setDepartments] = useState<Department[]>([]);
-    const [events, setEvents] = useState<IEvent[]>([]);
+    const [departmentOptions, setDepartmentOptions] = useState<Option[]>([]);
+    const [eventOptions, setEventOptions] = useState<Option[]>([]);
 
     useEffect(() => {
         const fetchDepartments = async () => {
@@ -43,7 +43,7 @@ export const PaymentForm: FC = () => {
                     label: dept.name,
                     value: dept.id,
                 }));
-                setDepartments(mapped);
+                setDepartmentOptions(mapped);
             } catch (error) {
                 console.error("Failed to fetch departments:", error);
             }
@@ -57,11 +57,11 @@ export const PaymentForm: FC = () => {
             try {
                 const data = await getEventById(selectedDepartmentId);
                 const mapped = data.map((event: IEvent) => ({
-                    label: event.title,
-                    value: event.id,
-                    price: Number(event.price),
-                }));
-                setEvents(mapped);
+                    label: event.title || '',
+                    value: event.id || '',
+                    price: Number(event.price || 0),
+                })).filter(event => event.label && event.value);
+                setEventOptions(mapped);
             } catch (error) {
                 console.error("Failed to fetch events:", error);
             }
@@ -168,7 +168,7 @@ export const PaymentForm: FC = () => {
                         <>
                             <CustomSelect
                                 {...field}
-                                options={departments}
+                                options={departmentOptions}
                                 value={field.value}
                                 onChange={(val) => {
                                     field.onChange(val);
@@ -194,13 +194,13 @@ export const PaymentForm: FC = () => {
                                 <>
                                     <CustomSelect
                                         {...field}
-                                        options={events}
+                                        options={eventOptions}
                                         value={field.value}
                                         onChange={(val) => {
                                             field.onChange(val);
                                             setOrderField("event_id", val);
 
-                                            const selectedEvent = events.find(e => e.value === val);
+                                            const selectedEvent = eventOptions.find(e => e.value === val);
                                             if (selectedEvent && "price" in selectedEvent) {
                                                 setPrice(Number((selectedEvent as IEvent).price));
                                             }
@@ -216,14 +216,21 @@ export const PaymentForm: FC = () => {
                             )}
                         />
 
-                        <CustomInput
-                            icon={<UserIcon className="text-[#6B9AB0]" />}
-                            type="text"
-                            onChange={(e) => {
-                                field.onChange(e);
-                                setOrderField("additional", e.target.value);
-                            }}
-                            placeholder="Additional field"
+                        <Controller
+                            name="additional"
+                            control={control}
+                            render={({ field }) => (
+                                <CustomInput
+                                    {...field}
+                                    icon={<UserIcon className="text-[#6B9AB0]" />}
+                                    type="text"
+                                    onChange={(e) => {
+                                        field.onChange(e);
+                                        setOrderField("additional", e.target.value);
+                                    }}
+                                    placeholder="Additional field"
+                                />
+                            )}
                         />
                         <Controller
                             name="paymentMethod"
