@@ -22,7 +22,7 @@ export const addEvent = async (event: IEvent): Promise<IEvent> => {
     return data;
 }
 
-export const getEventById = async (id: string): Promise<IEvent> => {
+export const getEventById = async (id: string): Promise<void> => {
     const {data} = await api.get(`/events/public?department_id=${id}`);
 
     return data;
