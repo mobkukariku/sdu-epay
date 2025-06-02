@@ -1,21 +1,30 @@
-import {FC, useState} from "react";
-import {CustomInput} from "../ui/CustomInput.tsx";
-import {ReceiptPercentIcon} from "@heroicons/react/24/outline";
-import {CustomButton} from "../ui/CustomButton.tsx";
-import {toast, Toaster} from "react-hot-toast";
-import {usePaymentStore} from "@/store/usePaymentStore.ts";
+import { FC } from "react";
+import { CustomInput } from "../ui/CustomInput.tsx";
+import { ReceiptPercentIcon } from "@heroicons/react/24/outline";
+import { CustomButton } from "../ui/CustomButton.tsx";
+import { toast, Toaster } from "react-hot-toast";
+import { usePaymentStore } from "@/store/usePaymentStore.ts";
 
-export const PromocodeInput: FC = () => {
-    const [promoCode, setPromoCode] = useState("");
+import { ChangeEvent } from "react";
 
-    const {verifyPromo, order} = usePaymentStore();
+interface Props {
+    promoCodeField: {
+        value?: string;
+        onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    };
+}
+
+export const PromocodeInput: FC<Props> = ({ promoCodeField }) => {
+    const { verifyPromo, order } = usePaymentStore();
 
     const onClick = async () => {
-        if (!promoCode) return toast.error("Please enter a promo code");
+        if (!promoCodeField.value) {
+            return toast.error("Please enter a promo code");
+        }
 
         try {
             await verifyPromo({
-                code: promoCode,
+                code: promoCodeField.value,
                 event_id: order.event_id,
             });
 
@@ -26,15 +35,15 @@ export const PromocodeInput: FC = () => {
     };
 
     return (
-        <div className={"flex gap-[20px] mt-[20px] mb-[20px]"}>
+        <div className="flex gap-[20px] mt-[20px] mb-[20px]">
             <CustomInput
-                icon={<ReceiptPercentIcon className={"text-[#6B9AB0]"} />}
-                type={"text"}
-                placeholder={"Promo code"}
-                value={promoCode}
-                onChange={(e) => setPromoCode(e.target.value)}
+                icon={<ReceiptPercentIcon className="text-[#6B9AB0]" />}
+                type="text"
+                placeholder="Promo code"
+                value={promoCodeField.value || ""}
+                onChange={(e) => promoCodeField.onChange(e)}
             />
-            <CustomButton onClick={onClick} variant={"default"} className={"text-[16px]"}>
+            <CustomButton onClick={onClick} variant="default" className="text-[16px]">
                 Add
             </CustomButton>
 

@@ -6,7 +6,7 @@ import { PaymentMethod } from "./PaymentMethod.tsx";
 import { PromocodeInput } from "./PromocodeInput.tsx";
 import { CustomButton } from "../ui/CustomButton.tsx";
 import { CheckOut } from "./CheckOut.tsx";
-import { useForm, Controller } from "react-hook-form";
+import {useForm, Controller, SubmitHandler} from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { PulseLoader } from "react-spinners";
@@ -14,18 +14,33 @@ import {getPublicDepartments} from "@/api/endpoints/departments.ts";
 import {getEventById} from "@/api/endpoints/events.ts";
 import {IEvent} from "@/types/events.ts";
 import {usePaymentStore} from "@/store/usePaymentStore.ts";
+import {orderKaspi} from "@/api/endpoints/order.ts";
+
+
+interface FormValues {
+    fullname: string;
+    email: string;
+    cellphone: string;
+    promo_code?: string;
+    department_id: string;
+    event_id: string;
+    additional: string;
+    paymentMethod: string;
+}
 
 const schema = yup.object().shape({
-    fullName: yup.string().required("Full name is required"),
+    fullname: yup.string().required("Full name is required"),
     email: yup.string().email("Invalid email").required("Email is required"),
-    phone: yup.string().required("Phone number is required"),
-    paymentType: yup.string().required("Payment destination is required"),
-    eventType: yup.string().required("Event type is required"),
+    cellphone: yup.string().required("Phone number is required"),
+    promo_code: yup.string().nullable(),
+    department_id: yup.string().required("Department type is required"),
+    event_id: yup.string().required("Event type is required"),
     additional: yup.string().required("Additional field is required"),
     paymentMethod: yup.string().required("Payment method is required"),
 });
 
-type FormData = yup.InferType<typeof schema>;
+
+
 
 export const PaymentForm: FC = () => {
     const {setPrice, setOrderField} = usePaymentStore();
@@ -76,17 +91,38 @@ export const PaymentForm: FC = () => {
         handleSubmit,
         setValue,
         formState: { errors }
-    } = useForm<FormData>({
-        resolver: yupResolver(schema),
+    } = useForm<FormValues>({
+        resolver: yupResolver(schema) as any,
+        defaultValues: {
+            fullname: '',
+            email: '',
+            cellphone: '',
+            department_id: '',
+            event_id: '',
+            additional: '',
+            promo_code: '',
+            paymentMethod: '',
+        }
     });
 
-    const onSubmit = (data: FormData) => {
+
+    const onSubmit: SubmitHandler<FormValues> = async (data) => {
         setLoading(true);
-        setTimeout(() => {
-            console.log("Form data:", data);
+        try {
+            if (data.paymentMethod === "KaspiBank") {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                const { paymentMethod, department_id, ...dataWithoutPaymentMethodAndDepartment } = data;
+                await orderKaspi(dataWithoutPaymentMethodAndDepartment);
+            } else {
+                console.warn("Unknown payment method");
+            }
+        } catch (err) {
+            console.error("Payment API error:", err);
+        } finally {
             setLoading(false);
-        }, 2000);
+        }
     };
+
 
     return (
         <form
@@ -96,23 +132,23 @@ export const PaymentForm: FC = () => {
             <p className="mb-[31px] text-[24px]">Personal information</p>
             <div className="flex flex-col gap-[20px]">
                 <Controller
-                    name="fullName"
+                    name="fullname"
                     control={control}
                     render={({ field }) => (
                         <>
                             <CustomInput
                                 {...field}
-                                icon={<UserIcon className={`text-[#6B9AB0] ${errors.fullName ? "text-red-500" : ""}`} />}
+                                icon={<UserIcon className={`text-[#6B9AB0] ${errors.fullname ? "text-red-500" : ""}`} />}
                                 type="text"
                                 onChange={(e) => {
                                     field.onChange(e);
                                     setOrderField("fullname", e.target.value);
                                 }}
                                 placeholder="Enter your full name"
-                                error={errors.fullName?.message}
+                                error={errors.fullname?.message}
                             />
-                            {errors.fullName && (
-                                <p className="text-red-500 text-sm -mt-4 ml-2">{errors.fullName.message}</p>
+                            {errors.fullname && (
+                                <p className="text-red-500 text-sm -mt-4 ml-2">{errors.fullname.message}</p>
                             )}
                         </>
                     )}
@@ -140,29 +176,29 @@ export const PaymentForm: FC = () => {
                     )}
                 />
                 <Controller
-                    name="phone"
+                    name="cellphone"
                     control={control}
                     render={({ field }) => (
                         <>
                             <CustomInput
                                 {...field}
-                                icon={<PhoneIcon className={`text-[#6B9AB0] ${errors.phone ? "text-red-500" : ""}`} />}
+                                icon={<PhoneIcon className={`text-[#6B9AB0] ${errors.cellphone ? "text-red-500" : ""}`} />}
                                 type="text"
                                 onChange={(e) => {
                                     field.onChange(e);
                                     setOrderField("cellphone", e.target.value);
                                 }}
                                 placeholder="Enter your phone number"
-                                error={errors.phone?.message}
+                                error={errors.cellphone?.message}
                             />
-                            {errors.phone && (
-                                <p className="text-red-500 text-sm -mt-4 ml-2">{errors.phone.message}</p>
+                            {errors.cellphone && (
+                                <p className="text-red-500 text-sm -mt-4 ml-2">{errors.cellphone.message}</p>
                             )}
                         </>
                     )}
                 />
                 <Controller
-                    name="paymentType"
+                    name="department_id"
                     control={control}
                     render={({ field }) => (
                         <>
@@ -176,10 +212,10 @@ export const PaymentForm: FC = () => {
                                 }}
                                 triggerClassName={"text-white"}
                                 placeholder="Select payment destination"
-                                error={errors.paymentType?.message}
+                                error={errors.department_id?.message}
                             />
-                            {errors.paymentType && (
-                                <p className="text-red-500 text-sm -mt-2 ml-2">{errors.paymentType.message}</p>
+                            {errors.department_id && (
+                                <p className="text-red-500 text-sm -mt-2 ml-2">{errors.department_id.message}</p>
                             )}
                         </>
                     )}
@@ -188,7 +224,7 @@ export const PaymentForm: FC = () => {
                 {selectedDepartmentId && (
                     <>
                         <Controller
-                            name="eventType"
+                            name="event_id"
                             control={control}
                             render={({ field }) => (
                                 <>
@@ -207,10 +243,10 @@ export const PaymentForm: FC = () => {
                                         }}
                                         triggerClassName={"text-white"}
                                         placeholder="Select Event"
-                                        error={errors.eventType?.message}
+                                        error={errors.event_id?.message}
                                     />
-                                    {errors.eventType && (
-                                        <p className="text-red-500 text-sm -mt-2 ml-2">{errors.eventType.message}</p>
+                                    {errors.event_id && (
+                                        <p className="text-red-500 text-sm -mt-2 ml-2">{errors.event_id.message}</p>
                                     )}
                                 </>
                             )}
@@ -248,7 +284,18 @@ export const PaymentForm: FC = () => {
                                 </>
                             )}
                         />
-                        <PromocodeInput />
+                        <Controller
+                            name="promo_code"
+                            control={control}
+                            render={({ field }) => (
+                                <PromocodeInput promoCodeField={{
+                                    ...field,
+                                    value: field.value ?? undefined
+                                }} />
+
+                            )}
+                        />
+
                         <CheckOut />
                         {!loading ? (
                             <CustomButton type="submit" variant="submit">PAY</CustomButton>

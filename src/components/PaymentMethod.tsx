@@ -20,16 +20,16 @@ export const PaymentMethod: FC<PaymentMethodProps> = ({ error, onChange }) => {
             <div className="flex justify-between gap-[16px]">
                 <PaymentMethodItem
                     icon="/icons/HalykBank.svg"
-                    name="Halyk Bank"
-                    selected={selectedMethod === "Halyk Bank"}
-                    onClick={() => handleSelectMethod("Halyk Bank")}
+                    name="HalykBank"
+                    selected={selectedMethod === "HalykBank"}
+                    onClick={() => handleSelectMethod("HalykBank")}
                     error={error}
                 />
                 <PaymentMethodItem
                     icon="/icons/KaspiBank.svg"
-                    name="Kaspi Bank"
-                    selected={selectedMethod === "Kaspi Bank"}
-                    onClick={() => handleSelectMethod("Kaspi Bank")}
+                    name="KaspiBank"
+                    selected={selectedMethod === "KaspiBank"}
+                    onClick={() => handleSelectMethod("KaspiBank")}
                     error={error}
                 />
             </div>
