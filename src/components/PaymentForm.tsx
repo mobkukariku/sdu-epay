@@ -92,7 +92,7 @@ export const PaymentForm: FC = () => {
         setValue,
         formState: { errors }
     } = useForm<FormValues>({
-        resolver: yupResolver(schema) as any,
+        resolver: yupResolver(schema) as never,
         defaultValues: {
             fullname: '',
             email: '',
