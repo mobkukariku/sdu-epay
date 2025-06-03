@@ -7,6 +7,8 @@ import {EventsPage} from "@/pages/EventsPage.tsx";
 import {PromoCodesPage} from "@/pages/PromoCodesPage.tsx";
 import { PrimeReactProvider } from 'primereact/api';
 import "primereact/resources/themes/lara-light-cyan/theme.css";
+import {ReauireAuth} from "@/layouts/RequireAuth.tsx";
+import {DepartmentsPage} from "@/pages/DepartmentsPage.tsx";
 
 
 function App() {
@@ -15,9 +17,26 @@ function App() {
           <Routes>
               <Route path="/" element={<PaymentPage />} />
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/admin" element={<AdminPage />} />
-              <Route path="/events" element={<EventsPage />} />
-              <Route path="/promo-codes" element={<PromoCodesPage />} />
+              <Route path="/admin" element={
+                  <ReauireAuth>
+                    <AdminPage />
+                  </ReauireAuth>
+              } />
+              <Route path="/events" element={
+                  <ReauireAuth>
+                    <EventsPage />
+                  </ReauireAuth>
+                  } />
+              <Route path="/promo-codes" element={
+                  <ReauireAuth>
+                    <PromoCodesPage />
+                  </ReauireAuth>
+              } />
+              <Route path="/departments" element={
+                  <ReauireAuth>
+                      <DepartmentsPage />
+                  </ReauireAuth>
+              } />
           </Routes>
       </PrimeReactProvider>
   )

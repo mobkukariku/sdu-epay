@@ -1,6 +1,6 @@
-import { getDepartments } from "@/api/endpoints/departments";
+import {addDepartment, getDepartments} from "@/api/endpoints/departments";
 import {create} from "zustand/react";
-import {Department} from "@/types/departments.ts";
+import {Department, DepartmentQuery} from "@/types/departments.ts";
 
 interface DepartmentsState {
     departments: Department[];
@@ -9,8 +9,8 @@ interface DepartmentsState {
     size: number;
     loading: boolean;
     error: string | null;
-    fetchDepartments: () => Promise<void>;
-    addDepartment: () => Promise<void>;
+    fetchDepartments: (query?:DepartmentQuery) => Promise<void>;
+    addDepartment: (department: {name:string}) => Promise<void>;
 }
 
 export const useDepartmentsStore = create<DepartmentsState>((set) => ({
@@ -20,14 +20,31 @@ export const useDepartmentsStore = create<DepartmentsState>((set) => ({
     size: 10,
     loading: false,
     error: null,
-    fetchDepartments: async () => {
+    fetchDepartments: async (query?:DepartmentQuery) => {
         set({ loading: true, error: null });
         try {
-            const response: DepartmentsState = await getDepartments();
-            set({ departments: response.departments, total: response.total, loading: false });
+            const response = await getDepartments(query);
+            set({
+                departments: response.data,
+                total: response.total,
+                page: query?.page ?? 0,
+                size: query?.size ?? 10,
+                loading: false
+            });
         } catch (error) {
             set({ error: error instanceof Error ? error.message : String(error), loading: false });
         }
     },
-    addDepartment: async () => {}
+    addDepartment: async (department) => {
+        set({ loading: true, error: null });
+        try {
+            const response: Department = await addDepartment(department);
+            set((state) => ({
+                departments: [...state.departments, response],
+                loading: false
+            }));
+        } catch (error) {
+            set({ error: error instanceof Error ? error.message : String(error), loading: false });
+        }
+    }
 }));
