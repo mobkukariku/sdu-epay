@@ -1,16 +1,24 @@
-import {FC, useEffect} from "react";
+import { FC, useEffect, useState } from "react";
 import { CustomTable } from "@/ui/CustomTable.tsx";
 import { PencilIcon, TrashIcon } from "lucide-react";
-import {AdminLayout} from "@/layouts/AdminLayout.tsx";
-import {AdminFilters} from "@/components/AdminFilters.tsx";
-import {useUsersStore} from "@/store/useUsersStore.ts";
+import { AdminLayout } from "@/layouts/AdminLayout.tsx";
+import { AdminFilters } from "@/components/AdminFilters.tsx";
+import { useUsersStore } from "@/store/useUsersStore.ts";
+import { EditAdminModal } from "@/components/EditAdminModal.tsx"; // подключи модал
 
 export const AdminPage: FC = () => {
-    const {fetchUsers, users} = useUsersStore();
+    const { fetchUsers, users } = useUsersStore();
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedAdmin, setSelectedAdmin] = useState<any | null>(null);
 
     useEffect(() => {
         fetchUsers();
     }, [fetchUsers]);
+
+    const handleEditClick = (admin: any) => {
+        setSelectedAdmin(admin);
+        setIsEditModalOpen(true);
+    };
 
     const columns = [
         { header: "Email", accessor: "username" },
@@ -26,18 +34,29 @@ export const AdminPage: FC = () => {
                 <CustomTable
                     columns={columns}
                     data={users}
-                    actions={() => (
+                    actions={(row: any) => (
                         <div className="flex gap-2">
-                            <button className="text-blue-600 hover:text-blue-800">
-                                <PencilIcon className="w-4 cursor-pointer h-4" />
+                            <button
+                                className="text-blue-600 hover:text-blue-800"
+                                onClick={() => handleEditClick(row)}
+                            >
+                                <PencilIcon className="w-4 h-4 cursor-pointer" />
                             </button>
                             <button className="text-red-600 hover:text-red-800">
-                                <TrashIcon className="w-4 cursor-pointer h-4" />
+                                <TrashIcon className="w-4 h-4 cursor-pointer" />
                             </button>
                         </div>
                     )}
                 />
             </div>
+
+            {selectedAdmin && (
+                <EditAdminModal
+                    isOpen={isEditModalOpen}
+                    onClose={() => setIsEditModalOpen(false)}
+                    adminData={selectedAdmin}
+                />
+            )}
         </AdminLayout>
     );
 };

@@ -25,3 +25,11 @@ export interface UserQuery {
     page?: number;
     size?: number;
 }
+
+export interface UpdateUserPayload {
+    username: string;
+    password: string;
+    name: string;
+    role: string;
+    department_id?: string;
+}

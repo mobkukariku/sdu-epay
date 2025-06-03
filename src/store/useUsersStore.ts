@@ -1,6 +1,6 @@
 import { create } from "zustand/react";
-import { getUsers, addUser } from "@/api/endpoints/users";
-import {IUser, CreateUserPayload, UserQuery} from "@/types/users.ts";
+import {getUsers, addUser, updateUser} from "@/api/endpoints/users";
+import {IUser, CreateUserPayload, UserQuery, UpdateUserPayload} from "@/types/users.ts";
 
 interface UsersState {
     users: IUser[];
@@ -11,6 +11,13 @@ interface UsersState {
     error: string | null;
     fetchUsers: (query?: UserQuery) => Promise<void>;
     addUser: (user: CreateUserPayload) => Promise<void>;
+    updateUser: (id: string, payload: {
+        username: string;
+        name: string;
+        password: string | undefined;
+        role: string;
+        department_id: string
+    }) => Promise<void>;
 }
 
 export const useUsersStore = create<UsersState>((set) => ({
@@ -51,4 +58,20 @@ export const useUsersStore = create<UsersState>((set) => ({
             set({ error: message, loading: false });
         }
     },
+
+    updateUser: async (id, payload) => {
+        set({ loading: true, error: null });
+        try {
+            const updatedUser = await updateUser(id, payload);
+            set((state) => ({
+                users: state.users.map(user =>
+                    user.id === id ? { ...user, ...updatedUser } : user
+                ),
+                loading: false
+            }));
+        } catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
+            set({ error: message, loading: false });
+        }
+    }
 }));
