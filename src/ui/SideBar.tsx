@@ -1,6 +1,13 @@
 import { FC } from "react";
 import {NavItem} from "@/ui/NavItem.tsx";
-import {ArrowLeftStartOnRectangleIcon, CalendarIcon, ReceiptPercentIcon, UserIcon} from "@heroicons/react/24/outline";
+import {
+    ArrowLeftStartOnRectangleIcon,
+    BriefcaseIcon,
+    CalendarIcon,
+    ReceiptPercentIcon,
+    UserIcon
+} from "@heroicons/react/24/outline";
+import {clearTokens} from "@/api/utils/tokenUtils.ts";
 
 export const SideBar: FC = () => {
     return (
@@ -13,9 +20,10 @@ export const SideBar: FC = () => {
                     <NavItem icon={<UserIcon width={20} />} label="Admin" to="/admin" />
                     <NavItem icon={<CalendarIcon width={20} />} label="Events" to="/events" />
                     <NavItem icon={<ReceiptPercentIcon width={20} />} label="Promo codes" to="/promo-codes" />
+                    <NavItem icon={<BriefcaseIcon width={20} />} label="Departments" to="/departments" />
                 </div>
                 <div className="pt-4 border-t border-gray-700">
-                    <NavItem icon={<ArrowLeftStartOnRectangleIcon width={20} />} label="Log Out" to="/login" />
+                    <NavItem icon={<ArrowLeftStartOnRectangleIcon width={20} />}  label="Log Out" to="/login" onClick={() => {clearTokens()}} />
                 </div>
             </nav>
 
