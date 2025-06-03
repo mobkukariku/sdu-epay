@@ -9,6 +9,8 @@ import { PrimeReactProvider } from 'primereact/api';
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import {ReauireAuth} from "@/layouts/RequireAuth.tsx";
 import {DepartmentsPage} from "@/pages/DepartmentsPage.tsx";
+import {SuccessPaymentPage} from "@/components/SuccessPaymentPage.tsx";
+import {FailPaymentPage} from "@/components/FailPaymentPage.tsx";
 
 
 function App() {
@@ -37,6 +39,9 @@ function App() {
                       <DepartmentsPage />
                   </ReauireAuth>
               } />
+
+              <Route path={"/success"} element={<SuccessPaymentPage />} />
+              <Route path={"/fail"} element={<FailPaymentPage />} />
           </Routes>
       </PrimeReactProvider>
   )

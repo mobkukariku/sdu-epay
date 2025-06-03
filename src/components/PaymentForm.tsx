@@ -14,7 +14,8 @@ import {getPublicDepartments} from "@/api/endpoints/departments.ts";
 import {getEventById} from "@/api/endpoints/events.ts";
 import {IEvent} from "@/types/events.ts";
 import {usePaymentStore} from "@/store/usePaymentStore.ts";
-import {orderKaspi} from "@/api/endpoints/order.ts";
+import {orderHalyk, orderKaspi} from "@/api/endpoints/order.ts";
+import {PaymentHalyk} from "@/components/PaymentHalyk.tsx";
 
 
 interface FormValues {
@@ -47,8 +48,12 @@ export const PaymentForm: FC = () => {
 
     const [selectedDepartmentId, setSelectedDepartmentId] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showWidget, setShowWidget] = useState(false);
+    const [paymentData, setPaymentData] = useState<any>(null);
     const [departmentOptions, setDepartmentOptions] = useState<Option[]>([]);
     const [eventOptions, setEventOptions] = useState<Option[]>([]);
+
+
 
     useEffect(() => {
         const fetchDepartments = async () => {
@@ -67,6 +72,7 @@ export const PaymentForm: FC = () => {
     }, []);
 
     useEffect(() => {
+
         const fetchEvents = async () => {
             if (!selectedDepartmentId) return;
             try {
@@ -112,8 +118,15 @@ export const PaymentForm: FC = () => {
             if (data.paymentMethod === "KaspiBank") {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const { paymentMethod, department_id, ...dataWithoutPaymentMethodAndDepartment } = data;
+
                 await orderKaspi(dataWithoutPaymentMethodAndDepartment);
-            } else {
+            }else if (data.paymentMethod === "HalykBank") {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                const { paymentMethod, department_id, ...dataWithoutPaymentMethodAndDepartment } = data;
+                setPaymentData(await orderHalyk(dataWithoutPaymentMethodAndDepartment));
+                setShowWidget(true);
+            }
+            else {
                 console.warn("Unknown payment method");
             }
         } catch (err) {
@@ -305,6 +318,21 @@ export const PaymentForm: FC = () => {
                             </CustomButton>
                         )}
                     </>
+                )}
+
+                {paymentData && (
+                    <PaymentHalyk
+                        showWidget={showWidget}
+                        amount={paymentData.order.final_amount}
+                        terminalId={paymentData.terminal_id}
+                        orderId={paymentData.order.id.toString()}
+                        email={paymentData.order.email}
+                        oauthData={paymentData.auth}
+                        successUrl="https://yourdomain.kz/payment-success"
+                        failUrl="https://yourdomain.kz/payment-fail"
+                        description={`Оплата за ${paymentData.order.event.title}`}
+                        onClose={() => setShowWidget(false)}
+                    />
                 )}
             </div>
         </form>
