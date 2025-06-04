@@ -30,7 +30,7 @@ export const EventFilters:FC = () => {
                     label: dept.name,
                     value: dept.id,
                 }));
-                setDepartments(formatted);
+                setDepartments([{ label: "All", value: "" }, ...formatted]);
             } catch (error) {
                 console.error("Failed to fetch departments:", error);
             }

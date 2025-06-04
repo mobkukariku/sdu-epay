@@ -11,13 +11,7 @@ interface UsersState {
     error: string | null;
     fetchUsers: (query?: UserQuery) => Promise<void>;
     addUser: (user: CreateUserPayload) => Promise<void>;
-    updateUser: (id: string, payload: {
-        username: string;
-        name: string;
-        password: string | undefined;
-        role: string;
-        department_id: string
-    }) => Promise<void>;
+    updateUser: (id: string, payload: UpdateUserPayload) => Promise<void>;
 }
 
 export const useUsersStore = create<UsersState>((set) => ({

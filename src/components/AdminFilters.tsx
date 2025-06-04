@@ -13,7 +13,6 @@ const roleOptions = [
 
 export const AdminFilters: FC = () => {
     const [email, setEmail] = useState("");
-    const [id, setId] = useState("");
     const [selectedRole, setSelectedRole] = useState<"SUPER_ADMIN" | "ADMIN" | "MANAGER" | "">("");
 
     const {fetchUsers} = useUsersStore();
@@ -21,12 +20,12 @@ export const AdminFilters: FC = () => {
     const handleSearch = async () => {
         await fetchUsers({
             username: email || undefined,
-            department_id: id || undefined,
-            role: selectedRole as "SUPER_ADMIN" | "ADMIN" | "MANAGER" | undefined, // кастуем
+            role: selectedRole !== "" ? selectedRole as "SUPER_ADMIN" | "ADMIN" | "MANAGER" : undefined,
             page: 0,
             size: 10,
         });
     };
+
 
     return (
         <div className="flex justify-between items-end mb-[31px]">
@@ -39,16 +38,6 @@ export const AdminFilters: FC = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         className="bg-[#FFFFFF]  h-[37px] p-2 border-1 rounded-[4px] border-[#6B9AB0]"
                         placeholder="Enter Customer Email"
-                    />
-                </div>
-                <div className="flex flex-col gap-[10px]">
-                    <label>ID</label>
-                    <input
-                        type="text"
-                        value={id}
-                        onChange={(e) => setId(e.target.value)}
-                        className="bg-[#FFFFFF] h-[37px] p-2 border-1 rounded-[4px] border-[#6B9AB0]"
-                        placeholder="Enter Invoice ID"
                     />
                 </div>
                 <div className="flex flex-col gap-[10px]">

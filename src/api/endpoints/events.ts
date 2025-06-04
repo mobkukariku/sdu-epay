@@ -1,5 +1,5 @@
 import {api} from "@/api/api.ts";
-import {EventQuery, IEvent} from "@/types/events.ts";
+import {EventQuery, IEvent, UpdateEventPayload} from "@/types/events.ts";
 
 export const getEvents = async (query?: EventQuery) => {
     const queryString = query
@@ -25,5 +25,10 @@ export const addEvent = async (event: IEvent): Promise<IEvent> => {
 
 export const getEventById = async (id: string): Promise<IEvent[]> => {
     const { data } = await api.get(`/events/public?department_id=${id}`);
+    return data;
+}
+
+export const updateEvent = async (id: string, payload: UpdateEventPayload): Promise<IEvent> => {
+    const {data} = await api.patch(`/events/${id}`, payload);
     return data;
 }

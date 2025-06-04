@@ -16,7 +16,10 @@ interface EditAdminModalProps {
         username: string;
         name: string;
         role: string;
-        department_id: string;
+        department: {
+            id: string;
+            name: string;
+        };
     };
 }
 
@@ -25,7 +28,7 @@ export const EditAdminModal: FC<EditAdminModalProps> = ({ isOpen, onClose, admin
     const [name, setName] = useState(adminData.name);
     const [password, setPassword] = useState("");
     const [selectedRole, setSelectedRole] = useState(adminData.role);
-    const [selectedDepartment, setSelectedDepartment] = useState(adminData.department_id);
+    const [selectedDepartment, setSelectedDepartment] = useState(adminData.department.id);
     const [departments, setDepartments] = useState<{ label: string; value: string }[]>([]);
 
     const { updateUser } = useUsersStore();
@@ -34,9 +37,10 @@ export const EditAdminModal: FC<EditAdminModalProps> = ({ isOpen, onClose, admin
         if (isOpen) {
             setUsername(adminData.username);
             setName(adminData.name);
-            setPassword(""); // Не подставляем старый пароль
+            setPassword("");
             setSelectedRole(adminData.role);
-            setSelectedDepartment(adminData.department_id);
+            setSelectedDepartment(adminData.department.id);
+
         }
     }, [isOpen, adminData]);
 
