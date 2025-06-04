@@ -1,5 +1,5 @@
 import {api} from "@/api/api";
-import {CreateUserPayload, IUser, UserQuery} from "@/types/users.ts";
+import {CreateUserPayload, IUser, UpdateUserPayload, UserQuery} from "@/types/users.ts";
 
 export const getUsers = async (query?: UserQuery) => {
     const queryString = query
@@ -21,3 +21,10 @@ export const addUser = async (user: CreateUserPayload): Promise<IUser> => {
     const { data } = await api.post('/users', user);
     return data;
 };
+
+
+export const updateUser = async (id: string, payload: UpdateUserPayload): Promise<IUser> => {
+    const {data} = await api.patch(`/users/${id}`, payload);
+
+    return data;
+}

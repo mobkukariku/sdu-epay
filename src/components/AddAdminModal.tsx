@@ -6,7 +6,7 @@ import { EnvelopeIcon, LockClosedIcon, PlusIcon, UserIcon } from "@heroicons/rea
 import { CustomSelect } from "@/ui/CustomSelect";
 import { getDepartments } from "@/api/endpoints/departments";
 import {useUsersStore} from "@/store/useUsersStore.ts";
-import {Department} from "@/types/departments.ts"; // 👈 Добавь эту функцию
+import {Department} from "@/types/departments.ts";
 
 export const AddAdminModal: FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);

@@ -9,7 +9,6 @@ export const DepartmentsPage:FC = () => {
     const {departments, fetchDepartments} = useDepartmentsStore();
 
     const columns = [
-        { header: "ID", accessor: "id" },
         {header: "Department", accessor: "name"}
     ]
 
