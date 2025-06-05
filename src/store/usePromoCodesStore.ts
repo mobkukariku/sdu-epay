@@ -58,7 +58,7 @@ export const usePromoCodesStore = create<PromoCodesState>((set) => ({
             const updatedPromo = await updatePromocode(id, promo);
             set((state) => ({
                 promoCodes: state.promoCodes.map((promo) =>
-                    promo.id !== id ? {...promo, ...updatedPromo} : promo,
+                    promo.id === id ? {...promo, ...updatedPromo} : promo,
                 ),
                 loading: false,
             }))

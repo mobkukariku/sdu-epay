@@ -58,8 +58,8 @@ export const EditPromoCodeModal: FC<EditPromoCodeModalProps> = ({
                     value: event.id,
                 }));
                 setEvents(formatted);
-                console.log("promoData.event:", promoData.event);
-                console.log("promoData.event.id:", promoData.event?.id);
+                console.log("promoData.department:", promoData.event);
+                console.log("promoData.department.id:", promoData.event?.id);
 
 
                 if (isOpen) {

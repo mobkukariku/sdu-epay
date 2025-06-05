@@ -70,8 +70,8 @@ export const AddEventModal:FC = () => {
             });
             setIsModalOpen(false);
         }catch (err){
-            console.error("Failed to add event:", err);
-            alert("Error while adding event.");
+            console.error("Failed to add department:", err);
+            alert("Error while adding department.");
         }
 
     }
@@ -87,7 +87,7 @@ export const AddEventModal:FC = () => {
                     <CustomInput
                         onChange={(e) => setName(e.target.value)}
                         icon={<UserCircleIcon className={`text-[#6B9AB0]`} />}
-                        placeholder={"Enter event name"}
+                        placeholder={"Enter department name"}
                     />
 
                     <CustomInput

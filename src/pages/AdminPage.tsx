@@ -2,9 +2,9 @@ import { FC, useEffect, useState } from "react";
 import { CustomTable } from "@/ui/CustomTable.tsx";
 import { PencilIcon, TrashIcon } from "lucide-react";
 import { AdminLayout } from "@/layouts/AdminLayout.tsx";
-import { AdminFilters } from "@/components/AdminFilters.tsx";
+import { AdminFilters } from "@/components/admin/AdminFilters.tsx";
 import { useUsersStore } from "@/store/useUsersStore.ts";
-import { EditAdminModal } from "@/components/EditAdminModal.tsx"; // подключи модал
+import { EditAdminModal } from "@/components/admin/EditAdminModal.tsx"; // подключи модал
 
 export const AdminPage: FC = () => {
     const { fetchUsers, users } = useUsersStore();

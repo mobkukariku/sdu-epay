@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { CustomSelect } from "@/ui/CustomSelect.tsx";
-import { AddAdminModal } from "@/components/AddAdminModal.tsx";
-import { useUsersStore } from "@/store/useUsersStore";
+import { AddAdminModal } from "@/components/admin/AddAdminModal.tsx";
+import { useUsersStore } from "@/store/useUsersStore.ts";
 import {CustomButton} from "@/ui/CustomButton.tsx"; // путь к твоему Zustand store
 
 const roleOptions = [

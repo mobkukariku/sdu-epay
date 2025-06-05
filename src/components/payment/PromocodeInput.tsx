@@ -1,7 +1,7 @@
 import { FC } from "react";
-import { CustomInput } from "../ui/CustomInput.tsx";
+import { CustomInput } from "../../ui/CustomInput.tsx";
 import { ReceiptPercentIcon } from "@heroicons/react/24/outline";
-import { CustomButton } from "../ui/CustomButton.tsx";
+import { CustomButton } from "../../ui/CustomButton.tsx";
 import { toast, Toaster } from "react-hot-toast";
 import { usePaymentStore } from "@/store/usePaymentStore.ts";
 

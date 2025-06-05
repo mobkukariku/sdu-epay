@@ -3,8 +3,8 @@ import {useDepartmentsStore} from "@/store/useDepartmentsStore.ts";
 import {AdminLayout} from "@/layouts/AdminLayout.tsx";
 import {CustomTable} from "@/ui/CustomTable.tsx";
 import {PencilIcon, TrashIcon} from "lucide-react";
-import {DepartmentsFilters} from "@/components/DepartmentsFilters.tsx";
-import {EditDepartmentModal} from "@/components/EditDepartmentModal.tsx";
+import {DepartmentsFilters} from "@/components/department/DepartmentsFilters.tsx";
+import {EditDepartmentModal} from "@/components/department/EditDepartmentModal.tsx";
 
 export const DepartmentsPage:FC = () => {
     const {departments, fetchDepartments} = useDepartmentsStore();

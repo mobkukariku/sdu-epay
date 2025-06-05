@@ -3,9 +3,9 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { PulseLoader } from "react-spinners";
-import { CustomInput } from "../ui/CustomInput.tsx";
+import { CustomInput } from "../../ui/CustomInput.tsx";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
-import { CustomButton } from "../ui/CustomButton.tsx";
+import { CustomButton } from "../../ui/CustomButton.tsx";
 import {useNavigate} from "react-router-dom";
 import {login} from "@/api/endpoints/auth.ts";
 
@@ -32,7 +32,7 @@ export const LoginForm: FC = () => {
         setLoading(true);
         try{
             await login(data.email, data.password)
-            navigate("/admin");
+            navigate("/dashboard");
         }catch (err){
             console.error("Login failed:", err);
         }finally {

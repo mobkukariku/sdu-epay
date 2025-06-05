@@ -1,6 +1,6 @@
 import {FC} from "react";
-import {Container} from "../components/Container.tsx";
-import {PaymentForm} from "../components/PaymentForm.tsx";
+import {Container} from "../ui/Container.tsx";
+import {PaymentForm} from "../components/payment/PaymentForm.tsx";
 
 const PaymentPage: FC = () => {
     return (

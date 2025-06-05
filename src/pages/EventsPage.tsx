@@ -2,9 +2,9 @@ import {FC, useEffect, useState} from "react";
 import {AdminLayout} from "@/layouts/AdminLayout.tsx";
 import {PencilIcon, TrashIcon} from "lucide-react";
 import {CustomTable} from "@/ui/CustomTable.tsx";
-import {EventFilters} from "@/components/EventsFilters.tsx";
+import {EventFilters} from "@/components/event/EventsFilters.tsx";
 import {useEventsStore} from "@/store/useEventsStore.ts";
-import {EditEventsModal} from "@/components/EditEventsModal.tsx";
+import {EditEventsModal} from "@/components/event/EditEventsModal.tsx";
 
 export const EventsPage:FC = () => {
     const {events, fetchEvents} = useEventsStore();

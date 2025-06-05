@@ -99,7 +99,7 @@ export const EditEventsModal: FC<EditEventsModalProps> = ({isOpen, onClose, even
             })
             onClose()
         }catch (err){
-            console.error("Failed to update event", err);
+            console.error("Failed to update department", err);
         };
     }
 

@@ -4,6 +4,7 @@ import {
     ArrowLeftStartOnRectangleIcon,
     BriefcaseIcon,
     CalendarIcon,
+    ChartBarIcon,
     ReceiptPercentIcon,
     UserIcon
 } from "@heroicons/react/24/outline";
@@ -17,6 +18,7 @@ export const SideBar: FC = () => {
             </div>
             <nav className="flex flex-col justify-between h-full p-4">
                 <div className="space-y-2">
+                    <NavItem icon={<ChartBarIcon width={20} />} label="Dashboard" to="/dashboard" />
                     <NavItem icon={<UserIcon width={20} />} label="Admin" to="/admin" />
                     <NavItem icon={<CalendarIcon width={20} />} label="Events" to="/events" />
                     <NavItem icon={<ReceiptPercentIcon width={20} />} label="Promo codes" to="/promo-codes" />
