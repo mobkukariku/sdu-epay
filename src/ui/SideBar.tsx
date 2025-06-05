@@ -12,7 +12,7 @@ import {clearTokens} from "@/api/utils/tokenUtils.ts";
 
 export const SideBar: FC = () => {
     return (
-        <aside className=" w-fit h-screen bg-[#006799] text-white flex flex-col">
+        <aside className=" w-fit min-h-screen bg-[#006799] text-white flex flex-col">
             <div className="p-6 text-2xl font-bold border-b border-[#00547C]">
                 <img src="logo-2.png" alt="logo"/>
             </div>
