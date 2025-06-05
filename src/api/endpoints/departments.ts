@@ -27,3 +27,4 @@ export const addDepartment = async (department: Department) => {
     const {data} = await api.post('/departments', department);
     return data;
 }
+

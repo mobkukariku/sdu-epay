@@ -3,10 +3,15 @@ import {getDepartments} from "@/api/endpoints/departments.ts";
 import {Department} from "@/types/departments.ts";
 import {useEventsStore} from "@/store/useEventsStore.ts";
 import {CustomInput} from "@/ui/CustomInput.tsx";
-import {EnvelopeIcon, LockClosedIcon, UserIcon} from "@heroicons/react/24/outline";
+import {
+    CurrencyDollarIcon,
+    EnvelopeIcon,
+    InformationCircleIcon,
+} from "@heroicons/react/24/outline";
 import {CustomButton} from "@/ui/CustomButton.tsx";
 import {CustomModal} from "@/ui/CustomModal.tsx";
 import {Calendar} from "primereact/calendar";
+import {CustomSelect} from "@/ui/CustomSelect.tsx";
 
 interface EditEventsModalProps {
     isOpen: boolean;
@@ -102,20 +107,30 @@ export const EditEventsModal: FC<EditEventsModalProps> = ({isOpen, onClose, even
         <CustomModal title="Edit Event" isOpen={isOpen} onClose={onClose}>
             <div className="flex flex-col gap-[21px]">
                 <CustomInput
-                    icon={<EnvelopeIcon className="text-[#6B9AB0]" />}
+                    icon={<InformationCircleIcon className="text-[#6B9AB0]" />}
                     placeholder="Enter title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                 />
                 <CustomInput
-                    icon={<UserIcon className="text-[#6B9AB0]" />}
+                    icon={<EnvelopeIcon className="text-[#6B9AB0]" />}
                     placeholder="Enter email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
+                <CustomSelect
+                    placeholder="Select department"
+                    options={departments}
+                    value={selectedDepartment}
+                    onChange={setSelectedDepartment}
+                    triggerClassName="bg-white h-[50px] text-black"
+                    dropdownClassName="bg-gray-100"
+                    optionClassName="text-sm"
+                    activeOptionClassName="bg-blue-200"
+                />
                 <CustomInput
-                    icon={<LockClosedIcon className="text-[#6B9AB0]" />}
+                    icon={<CurrencyDollarIcon className="text-[#6B9AB0]" />}
                     placeholder="Enter price"
                     type="number"
                     value={String(price)}

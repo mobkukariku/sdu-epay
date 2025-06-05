@@ -37,3 +37,12 @@ export interface VerifyPromocodeResponse {
     id: string;
     discount: number;
 }
+
+export interface UpdatePromocodePayload {
+    code: string;
+    limit: number;
+    discount: number;
+    period_from: string;
+    period_till: string;
+    event_id: string;
+}
