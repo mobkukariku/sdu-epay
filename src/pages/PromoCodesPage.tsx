@@ -1,15 +1,18 @@
-import {FC, useEffect} from "react";
+import {FC, useEffect, useState} from "react";
 import {AdminLayout} from "@/layouts/AdminLayout.tsx";
 import {CustomTable} from "@/ui/CustomTable.tsx";
 import {PencilIcon, TrashIcon} from "lucide-react";
 import {PromoCodeFilters} from "@/components/PromoCodeFilters.tsx";
 import {usePromoCodesStore} from "@/store/usePromoCodesStore.ts";
+import {EditPromoCodeModal} from "@/components/EditPromoCodeModal.tsx";
 
 export const PromoCodesPage:FC = () => {
     const {promoCodes, fetchPromoCodes} = usePromoCodesStore();
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedPromo, setSelectedPromo] = useState<any | null>(null);
 
     const columns = [
-        { header: "Event Name", accessor: "event" },
+        { header: "Event Name", accessor: "eventName" },
         { header: "Promo code", accessor: "code" },
         { header: "Period from", accessor: "period_from" },
         {header: "Period till", accessor: "period_till"},
@@ -22,11 +25,16 @@ export const PromoCodesPage:FC = () => {
         fetchPromoCodes();
     }, []);
 
+    const handleEditClick = (promo: any) => {
+        setSelectedPromo(promo);
+        setIsEditModalOpen(true);
+    };
 
     const formattedData = promoCodes.map((promo) => ({
         ...promo,
-        event: promo.event?.title || "—",
+        eventName: promo.event?.title || "—",
     }));
+
 
 
     return (
@@ -37,9 +45,9 @@ export const PromoCodesPage:FC = () => {
                 <CustomTable
                     columns={columns}
                     data={formattedData}
-                    actions={() => (
+                    actions={(row) => (
                         <div className="flex gap-2">
-                            <button className="text-blue-600 hover:text-blue-800">
+                            <button onClick={() => handleEditClick(row)} className="text-blue-600 hover:text-blue-800">
                                 <PencilIcon className="w-4 cursor-pointer h-4" />
                             </button>
                             <button className="text-red-600 hover:text-red-800">
@@ -49,6 +57,14 @@ export const PromoCodesPage:FC = () => {
                     )}
                 />
             </div>
+
+            {selectedPromo && (
+                <EditPromoCodeModal
+                    isOpen={isEditModalOpen}
+                    onClose={() => setIsEditModalOpen(false)}
+                    promoData={selectedPromo}
+                />
+            )}
         </AdminLayout>
     )
 }

@@ -1,13 +1,15 @@
-import {FC, useEffect} from "react";
+import {FC, useEffect, useState} from "react";
 import {AdminLayout} from "@/layouts/AdminLayout.tsx";
 import {PencilIcon, TrashIcon} from "lucide-react";
 import {CustomTable} from "@/ui/CustomTable.tsx";
 import {EventFilters} from "@/components/EventsFilters.tsx";
 import {useEventsStore} from "@/store/useEventsStore.ts";
+import {EditEventsModal} from "@/components/EditEventsModal.tsx";
 
 export const EventsPage:FC = () => {
-
     const {events, fetchEvents} = useEventsStore();
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
 
     const columns = [
         { header: "Event Name", accessor: "title" },
@@ -22,6 +24,11 @@ export const EventsPage:FC = () => {
         fetchEvents();
     }, []);
 
+    const handleEditClick = (admin: any) => {
+        setSelectedEvent(admin);
+        setIsEditModalOpen(true);
+    };
+
 
     return (
         <AdminLayout>
@@ -31,9 +38,9 @@ export const EventsPage:FC = () => {
                 <CustomTable
                     columns={columns}
                     data={events}
-                    actions={() => (
+                    actions={(row) => (
                         <div className="flex gap-2">
-                            <button className="text-blue-600 hover:text-blue-800">
+                            <button onClick={() => handleEditClick(row)} className="text-blue-600 hover:text-blue-800">
                                 <PencilIcon className="w-4 cursor-pointer h-4" />
                             </button>
                             <button className="text-red-600 hover:text-red-800">
@@ -43,6 +50,13 @@ export const EventsPage:FC = () => {
                     )}
                 />
             </div>
+
+            {selectedEvent && (
+                <EditEventsModal
+                    isOpen={isEditModalOpen}
+                    onClose={() => setIsEditModalOpen(false)}
+                    eventData={selectedEvent} />
+            )}
         </AdminLayout>
     )
 }

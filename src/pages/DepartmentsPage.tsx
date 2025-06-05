@@ -1,12 +1,15 @@
-import {FC, useEffect} from "react";
+import {FC, useEffect, useState} from "react";
 import {useDepartmentsStore} from "@/store/useDepartmentsStore.ts";
 import {AdminLayout} from "@/layouts/AdminLayout.tsx";
 import {CustomTable} from "@/ui/CustomTable.tsx";
 import {PencilIcon, TrashIcon} from "lucide-react";
 import {DepartmentsFilters} from "@/components/DepartmentsFilters.tsx";
+import {EditDepartmentModal} from "@/components/EditDepartmentModal.tsx";
 
 export const DepartmentsPage:FC = () => {
     const {departments, fetchDepartments} = useDepartmentsStore();
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedDepartment, setSelectedDepartment] = useState<any | null>(null);
 
     const columns = [
         {header: "Department", accessor: "name"}
@@ -16,6 +19,10 @@ export const DepartmentsPage:FC = () => {
         fetchDepartments()
     }, []);
 
+    const handleEditClick = (dep: any) => {
+        setSelectedDepartment(dep);
+        setIsEditModalOpen(true);
+    };
 
     return(
         <AdminLayout>
@@ -25,9 +32,9 @@ export const DepartmentsPage:FC = () => {
                 <CustomTable
                     columns={columns}
                     data={departments}
-                    actions={() => (
+                    actions={(row) => (
                         <div className="flex gap-2">
-                            <button className="text-blue-600 hover:text-blue-800">
+                            <button onClick={() => handleEditClick(row)} className="text-blue-600 hover:text-blue-800">
                                 <PencilIcon className="w-4 cursor-pointer h-4" />
                             </button>
                             <button className="text-red-600 hover:text-red-800">
@@ -37,6 +44,13 @@ export const DepartmentsPage:FC = () => {
                     )}
                 />
             </div>
+            {selectedDepartment && (
+                <EditDepartmentModal
+                    isOpen={isEditModalOpen}
+                    onClose={() => setIsEditModalOpen(false)}
+                    departmentData={selectedDepartment}
+                />
+            )}
         </AdminLayout>
     )
 }

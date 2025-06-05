@@ -27,3 +27,9 @@ export const addDepartment = async (department: Department) => {
     const {data} = await api.post('/departments', department);
     return data;
 }
+
+export const updateDepartment = async (id: string, department: Department) => {
+    const {data} = await api.put(`/departments/${id}`, department);
+
+    return data;
+}

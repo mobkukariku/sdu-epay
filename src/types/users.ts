@@ -28,8 +28,8 @@ export interface UserQuery {
 
 export interface UpdateUserPayload {
     username: string;
-    password: string;
     name: string;
+    password: string | undefined;
     role: string;
-    department_id?: string;
+    department_id: string;
 }

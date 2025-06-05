@@ -17,3 +17,12 @@ export type EventQuery = {
 
 
 export type CreateEventPayload = IEvent
+
+export interface UpdateEventPayload {
+    title: string;
+    manager_email: string;
+    price: number;
+    period_from: string | null;
+    period_till: string | null;
+    department_id: string;
+}

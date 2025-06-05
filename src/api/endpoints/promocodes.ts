@@ -1,6 +1,6 @@
 import {
     CreatePromocodePayload,
-    PromocodeQuery, VerifyPromocodePayload,
+    PromocodeQuery, UpdatePromocodePayload, VerifyPromocodePayload,
     VerifyPromocodeResponse
 } from "@/types/promocodes.ts";
 import {api} from "@/api/api.ts";
@@ -28,6 +28,12 @@ export const addPromocode = async (promocode: CreatePromocodePayload) => {
 
 export const verifyPromocode = async (payload: VerifyPromocodePayload): Promise<VerifyPromocodeResponse> => {
     const {data} = await api.post('/promo-codes/public/verify', payload);
+
+    return data;
+}
+
+export const updatePromocode = async (id: string, payload: UpdatePromocodePayload) => {
+    const {data} = await api.patch(`/promo-codes/${id}`, payload);
 
     return data;
 }

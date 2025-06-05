@@ -1,6 +1,6 @@
 import {create} from "zustand/react";
-import {CreateEventPayload, EventQuery, IEvent} from "@/types/events.ts";
-import {addEvent, getEvents} from "@/api/endpoints/events.ts";
+import {CreateEventPayload, EventQuery, IEvent, UpdateEventPayload} from "@/types/events.ts";
+import {addEvent, getEvents, updateEvent} from "@/api/endpoints/events.ts";
 
 interface EventsState {
     events: IEvent[];
@@ -11,6 +11,7 @@ interface EventsState {
     error: string | null;
     fetchEvents: (query?:EventQuery) => Promise<void>;
     addEvent: (event: CreateEventPayload) => Promise<void>;
+    updateEvent: (id: string, payload: UpdateEventPayload) => Promise<void>;
 }
 
 
@@ -49,6 +50,21 @@ export const useEventsStore = create<EventsState>((set) => ({
                 events: [...state.events, newEvent],
                 loading: false
             }));
+        }catch (err){
+            const message = err instanceof Error ? err.message : String(err);
+            set({ error: message, loading: false });
+        }
+    },
+    updateEvent: async (id, payload) => {
+        set({loading:true, error: null});
+        try{
+            const updatedEvent = await updateEvent(id, payload);
+            set((state) => ({
+                events: state.events.map(event =>
+                    event.id === id ? {...event, ...updatedEvent} : event
+                ),
+                loading: false
+            }))
         }catch (err){
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });
