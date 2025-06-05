@@ -34,7 +34,7 @@ export const AdminPage: FC = () => {
                 <CustomTable
                     columns={columns}
                     data={users}
-                    actions={(row: any) => (
+                    actions={(row) => (
                         <div className="flex gap-2">
                             <button
                                 className="text-blue-600 hover:text-blue-800"

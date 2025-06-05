@@ -38,7 +38,7 @@ export const EventsPage:FC = () => {
                 <CustomTable
                     columns={columns}
                     data={events}
-                    actions={(row: any) => (
+                    actions={(row) => (
                         <div className="flex gap-2">
                             <button onClick={() => handleEditClick(row)} className="text-blue-600 hover:text-blue-800">
                                 <PencilIcon className="w-4 cursor-pointer h-4" />

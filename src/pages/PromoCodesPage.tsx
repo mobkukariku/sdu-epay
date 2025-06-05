@@ -32,7 +32,7 @@ export const PromoCodesPage:FC = () => {
 
     const formattedData = promoCodes.map((promo) => ({
         ...promo,
-        eventName: promo.event?.title || "—", // используешь только для таблицы
+        eventName: promo.event?.title || "—",
     }));
 
 
