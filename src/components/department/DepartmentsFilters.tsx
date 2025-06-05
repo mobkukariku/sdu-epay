@@ -1,7 +1,7 @@
 import {FC, useState} from "react";
 import {useDepartmentsStore} from "@/store/useDepartmentsStore.ts";
 import {CustomButton} from "@/ui/CustomButton.tsx";
-import {AddDepartmentModal} from "@/components/AddDepartmentModal.tsx";
+import {AddDepartmentModal} from "@/components/department/AddDepartmentModal.tsx";
 
 export const DepartmentsFilters:FC = () => {
     const [name, setName] = useState("");

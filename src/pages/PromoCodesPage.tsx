@@ -2,9 +2,9 @@ import {FC, useEffect, useState} from "react";
 import {AdminLayout} from "@/layouts/AdminLayout.tsx";
 import {CustomTable} from "@/ui/CustomTable.tsx";
 import {PencilIcon, TrashIcon} from "lucide-react";
-import {PromoCodeFilters} from "@/components/PromoCodeFilters.tsx";
+import {PromoCodeFilters} from "@/components/promocode/PromoCodeFilters.tsx";
 import {usePromoCodesStore} from "@/store/usePromoCodesStore.ts";
-import {EditPromoCodeModal} from "@/components/EditPromoCodeModal.tsx";
+import {EditPromoCodeModal} from "@/components/promocode/EditPromoCodeModal.tsx";
 
 export const PromoCodesPage:FC = () => {
     const {promoCodes, fetchPromoCodes} = usePromoCodesStore();

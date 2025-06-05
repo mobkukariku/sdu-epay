@@ -69,8 +69,8 @@ export const AddPromoCodeModal:FC = () => {
             })
             setIsModalOpen(false);
         }catch (err){
-            console.error("Failed to add event:", err);
-            alert("Error while adding event.");
+            console.error("Failed to add department:", err);
+            alert("Error while adding department.");
         }
 
     }

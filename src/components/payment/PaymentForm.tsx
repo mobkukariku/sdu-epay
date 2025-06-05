@@ -1,10 +1,10 @@
 import {FC, useEffect, useState} from "react";
-import { CustomInput } from "../ui/CustomInput.tsx";
+import { CustomInput } from "../../ui/CustomInput.tsx";
 import { EnvelopeIcon, PhoneIcon, UserIcon } from "@heroicons/react/24/outline";
-import {CustomSelect, Option} from "../ui/CustomSelect.tsx";
+import {CustomSelect, Option} from "../../ui/CustomSelect.tsx";
 import { PaymentMethod } from "./PaymentMethod.tsx";
 import { PromocodeInput } from "./PromocodeInput.tsx";
-import { CustomButton } from "../ui/CustomButton.tsx";
+import { CustomButton } from "../../ui/CustomButton.tsx";
 import { CheckOut } from "./CheckOut.tsx";
 import {useForm, Controller, SubmitHandler} from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -15,7 +15,7 @@ import {getEventById} from "@/api/endpoints/events.ts";
 import {IEvent} from "@/types/events.ts";
 import {usePaymentStore} from "@/store/usePaymentStore.ts";
 import {orderHalyk, orderKaspi} from "@/api/endpoints/order.ts";
-import {PaymentHalyk} from "@/components/PaymentHalyk.tsx";
+import {PaymentHalyk} from "@/components/payment/PaymentHalyk.tsx";
 
 
 interface FormValues {

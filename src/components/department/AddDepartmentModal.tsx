@@ -34,7 +34,7 @@ export const AddDepartmentModal:FC = () => {
                     <CustomInput
                         onChange={(e) => setName(e.target.value)}
                         icon={<UserCircleIcon className={`text-[#6B9AB0]`} />}
-                        placeholder={"Enter event name"}
+                        placeholder={"Enter department name"}
                     />
                     <CustomButton
                         onClick={handleSubmit}

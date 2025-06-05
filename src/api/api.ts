@@ -71,7 +71,7 @@ api.interceptors.response.use(
             } catch (err) {
                 processQueue(err, undefined);
                 clearTokens();
-                window.location.href = "/login";
+                window.location.href = "/auth";
                 return Promise.reject(err);
             } finally {
                 isRefreshing = false;

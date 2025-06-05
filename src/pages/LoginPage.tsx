@@ -1,6 +1,6 @@
 import {FC} from "react";
-import {LoginForm} from "../components/LoginForm.tsx";
-import {Container} from "../components/Container.tsx";
+import {LoginForm} from "../components/auth/LoginForm.tsx";
+import {Container} from "../ui/Container.tsx";
 
 export const LoginPage:FC = () => {
     return (

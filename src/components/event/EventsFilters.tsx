@@ -1,5 +1,5 @@
 import {FC, useEffect, useState} from "react";
-import {AddEventModal} from "@/components/AddEventModal.tsx";
+import {AddEventModal} from "@/components/event/AddEventModal.tsx";
 import {useEventsStore} from "@/store/useEventsStore.ts";
 import {CustomButton} from "@/ui/CustomButton.tsx";
 import {getDepartments} from "@/api/endpoints/departments.ts";

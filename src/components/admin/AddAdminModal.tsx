@@ -1,10 +1,10 @@
 import { FC, useEffect, useState } from "react";
-import { CustomModal } from "@/ui/CustomModal";
-import { CustomButton } from "@/ui/CustomButton";
-import { CustomInput } from "@/ui/CustomInput";
+import { CustomModal } from "@/ui/CustomModal.tsx";
+import { CustomButton } from "@/ui/CustomButton.tsx";
+import { CustomInput } from "@/ui/CustomInput.tsx";
 import { EnvelopeIcon, LockClosedIcon, PlusIcon, UserIcon } from "@heroicons/react/24/outline";
-import { CustomSelect } from "@/ui/CustomSelect";
-import { getDepartments } from "@/api/endpoints/departments";
+import { CustomSelect } from "@/ui/CustomSelect.tsx";
+import { getDepartments } from "@/api/endpoints/departments.ts";
 import {useUsersStore} from "@/store/useUsersStore.ts";
 import {Department} from "@/types/departments.ts";
 
