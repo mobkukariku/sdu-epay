@@ -5,11 +5,16 @@ import {CustomButton} from "@/ui/CustomButton.tsx";
 import {getDepartments} from "@/api/endpoints/departments.ts";
 import {Department} from "@/types/departments.ts";
 import {CustomSelect} from "@/ui/CustomSelect.tsx";
+import {getEvents} from "@/api/endpoints/events.ts";
+import {AnimatePresence, motion} from "framer-motion";
 
 export const EventFilters:FC = () => {
     const [name, setName] = useState("");
     const [departments, setDepartments] = useState<{ label: string; value: string }[]>([]);
     const [selectedDepartment, setSelectedDepartment] = useState("");
+    const [eventSuggestions, setEventSuggestions] = useState<{title: string, id: string}[]>([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+
 
     const {fetchEvents} = useEventsStore();
 
@@ -21,6 +26,11 @@ export const EventFilters:FC = () => {
             size: 10,
         })
     }
+
+    const handleSelectEvent = (event: {title:string, id: string}) => {
+        setName(event.title);
+        setShowSuggestions(false);
+    };
 
     useEffect(() => {
         const fetchDepartments = async () => {
@@ -39,18 +49,61 @@ export const EventFilters:FC = () => {
         fetchDepartments();
     }, []);
 
+    useEffect(() => {
+        const timeout = setTimeout(async () => {
+            if (name.trim() === "") {
+                setEventSuggestions([]);
+                return;
+            }
+            try {
+                const response = await getEvents({
+                    title: name
+                });
+                setEventSuggestions(response.data);
+                setShowSuggestions(true);
+            } catch (error) {
+                console.error("Failed to fetch event suggestions:", error);
+            }
+        }, 300);
+
+        return () => clearTimeout(timeout);
+    }, [name]);
+
 
     return (
         <div className="flex justify-between items-end mb-[31px]">
             <div className="flex gap-[22px]">
-                <div className="flex flex-col gap-[10px]">
+                <div className="flex flex-col relative gap-[10px]">
                     <label>Events name</label>
                     <input
                         type="text"
+                        value={name}
                         onChange={(e) => setName(e.target.value)}
+                        onFocus={() => setShowSuggestions(true)}
                         className="bg-[#FFFFFF]  h-[37px] p-2 border-1 rounded-[4px] border-[#6B9AB0]"
                         placeholder="Enter Events name"
                     />
+                    {showSuggestions && eventSuggestions.length > 0 && (
+                        <AnimatePresence>
+                            <motion.ul
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                transition={{ duration: 0.2 }}
+                                className="absolute z-10 top-[70px] left-0 w-full bg-white border border-gray-300 rounded-md shadow-md max-h-[200px] overflow-y-auto"
+                            >
+                                {eventSuggestions.map((event) => (
+                                    <li
+                                        key={event.id}
+                                        className="p-2 hover:bg-blue-100 cursor-pointer text-sm"
+                                        onClick={() => handleSelectEvent(event)}
+                                    >
+                                        {event.title}
+                                    </li>
+                                ))}
+                            </motion.ul>
+                        </AnimatePresence>
+                    )}
                 </div>
                 <div className="flex flex-col gap-[10px]">
                     <label>Department</label>
