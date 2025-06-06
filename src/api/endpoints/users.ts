@@ -28,3 +28,14 @@ export const updateUser = async (id: string, payload: UpdateUserPayload): Promis
 
     return data;
 }
+
+export const getUserById = async (id: string): Promise<IUser> => {
+    const {data} = await api.get(`/users/${id}`);
+    return data;
+}
+
+export const deleteUser = async (id: string): Promise<IUser> => {
+    const {data} = await api.delete(`/users/${id}`);
+
+    return data;
+}

@@ -23,12 +23,25 @@ export const addEvent = async (event: IEvent): Promise<IEvent> => {
 }
 
 
-export const getEventById = async (id: string): Promise<IEvent[]> => {
+
+
+export const getEventById = async (id: string) => {
+    const { data } = await api.get(`/events/${id}`);
+    return data;
+}
+
+export const getPublicEventsById = async (id: string): Promise<IEvent[]> => {
     const { data } = await api.get(`/events/public?department_id=${id}`);
+
     return data;
 }
 
 export const updateEvent = async (id: string, payload: UpdateEventPayload): Promise<IEvent> => {
     const {data} = await api.patch(`/events/${id}`, payload);
+    return data;
+}
+
+export const deleteEvent = async (id: string)=> {
+    const {data} = await api.delete(`/events/${id}`);
     return data;
 }

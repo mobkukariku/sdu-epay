@@ -17,6 +17,12 @@ export const getDepartments = async (query?: DepartmentQuery) => {
     return data;
 }
 
+export const getDepartmentById = async (id:string) => {
+    const {data} = await api.get(`/departments/${id}`);
+
+    return data;
+}
+
 export const getPublicDepartments = async () => {
     const {data} = await api.get('/departments/public');
 
@@ -31,5 +37,10 @@ export const addDepartment = async (department: Department) => {
 export const updateDepartment = async (id: string, department: Department) => {
     const {data} = await api.put(`/departments/${id}`, department);
 
+    return data;
+}
+
+export const deleteDepartment = async (id: string) => {
+    const {data} = await api.delete(`/departments/${id}`);
     return data;
 }

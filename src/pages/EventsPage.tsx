@@ -5,10 +5,12 @@ import {CustomTable} from "@/ui/CustomTable.tsx";
 import {EventFilters} from "@/components/event/EventsFilters.tsx";
 import {useEventsStore} from "@/store/useEventsStore.ts";
 import {EditEventsModal} from "@/components/event/EditEventsModal.tsx";
+import {DeleteModal} from "@/ui/DeleteModal.tsx";
 
 export const EventsPage:FC = () => {
-    const {events, fetchEvents} = useEventsStore();
+    const {events, fetchEvents, deleteEvent} = useEventsStore();
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
 
     const columns = [
@@ -24,9 +26,23 @@ export const EventsPage:FC = () => {
         fetchEvents();
     }, []);
 
-    const handleEditClick = (admin: any) => {
-        setSelectedEvent(admin);
+    const handleEditClick = (event: any) => {
+        setSelectedEvent(event);
         setIsEditModalOpen(true);
+    };
+
+    const handleDeleteClick = (event: any) => {
+        setSelectedEvent(event);
+        setIsDeleteModalOpen(true)
+    }
+
+    const handleConfirmDelete = async () => {
+        if (selectedEvent) {
+            await deleteEvent(selectedEvent.id);
+            await fetchEvents();
+            setIsDeleteModalOpen(false);
+            setSelectedEvent(null);
+        }
     };
 
 
@@ -43,7 +59,7 @@ export const EventsPage:FC = () => {
                             <button onClick={() => handleEditClick(row)} className="text-blue-600 hover:text-blue-800">
                                 <PencilIcon className="w-4 cursor-pointer h-4" />
                             </button>
-                            <button className="text-red-600 hover:text-red-800">
+                            <button onClick={() => handleDeleteClick(row)} className="text-red-600 hover:text-red-800">
                                 <TrashIcon className="w-4 cursor-pointer h-4" />
                             </button>
                         </div>
@@ -52,10 +68,14 @@ export const EventsPage:FC = () => {
             </div>
 
             {selectedEvent && (
-                <EditEventsModal
-                    isOpen={isEditModalOpen}
-                    onClose={() => setIsEditModalOpen(false)}
-                    eventData={selectedEvent} />
+                <>
+                    <EditEventsModal
+                        isOpen={isEditModalOpen}
+                        onClose={() => setIsEditModalOpen(false)}
+                        eventData={selectedEvent}
+                    />
+                    <DeleteModal isOpen={isDeleteModalOpen} onDeleteClick={handleConfirmDelete} onClose={() => setIsDeleteModalOpen(false)} />
+                </>
             )}
         </AdminLayout>
     )

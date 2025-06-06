@@ -1,5 +1,5 @@
 import { create } from "zustand/react";
-import {getUsers, addUser, updateUser} from "@/api/endpoints/users";
+import {getUsers, addUser, updateUser, getUserById, deleteUser} from "@/api/endpoints/users";
 import {IUser, CreateUserPayload, UserQuery, UpdateUserPayload} from "@/types/users.ts";
 
 interface UsersState {
@@ -12,6 +12,7 @@ interface UsersState {
     fetchUsers: (query?: UserQuery) => Promise<void>;
     addUser: (user: CreateUserPayload) => Promise<void>;
     updateUser: (id: string, payload: UpdateUserPayload) => Promise<void>;
+    deleteUser: (id: string) => Promise<void>;
 }
 
 export const useUsersStore = create<UsersState>((set) => ({
@@ -56,14 +57,30 @@ export const useUsersStore = create<UsersState>((set) => ({
     updateUser: async (id, payload) => {
         set({ loading: true, error: null });
         try {
-            const updatedUser = await updateUser(id, payload);
+            await updateUser(id, payload);
+            const freshUser = await getUserById(id);
             set((state) => ({
                 users: state.users.map(user =>
-                    user.id === id ? { ...user, ...updatedUser } : user
+                    user.id === id ? freshUser : user
                 ),
                 loading: false
             }));
         } catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
+            set({ error: message, loading: false });
+        }
+    },
+    deleteUser: async (id: string) => {
+        set({ loading: true, error: null });
+        try{
+            await deleteUser(id);
+            const freshUser = await getUserById(id);
+            set((state) => ({
+                users: state.users.map(user =>
+                user.id === id ? freshUser : user),
+                loading: false,
+            }))
+        }catch(err){
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });
         }

@@ -11,7 +11,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { PulseLoader } from "react-spinners";
 import {getPublicDepartments} from "@/api/endpoints/departments.ts";
-import {getEventById} from "@/api/endpoints/events.ts";
+import {getPublicEventsById} from "@/api/endpoints/events.ts";
 import {IEvent} from "@/types/events.ts";
 import {usePaymentStore} from "@/store/usePaymentStore.ts";
 import {orderHalyk, orderKaspi} from "@/api/endpoints/order.ts";
@@ -76,7 +76,7 @@ export const PaymentForm: FC = () => {
         const fetchEvents = async () => {
             if (!selectedDepartmentId) return;
             try {
-                const data = await getEventById(selectedDepartmentId);
+                const data = await getPublicEventsById(selectedDepartmentId);
                 const mapped = data.map((event: IEvent) => ({
                     label: event.title || '',
                     value: event.id || '',
