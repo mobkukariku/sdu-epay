@@ -37,3 +37,13 @@ export const updatePromocode = async (id: string, payload: UpdatePromocodePayloa
 
     return data;
 }
+
+export const getPromocodeById = async (id: string) => {
+    const {data} = await api.get(`/promo-codes/${id}`);
+    return data;
+}
+
+export const deletePromoCode = async (id: string) => {
+    const {data} = await api.delete(`/promo-codes/${id}`);
+    return data;
+}

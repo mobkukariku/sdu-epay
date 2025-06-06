@@ -1,4 +1,4 @@
-import {addDepartment, getDepartments, updateDepartment} from "@/api/endpoints/departments";
+import {addDepartment, deleteDepartment, getDepartments, updateDepartment} from "@/api/endpoints/departments";
 import {create} from "zustand/react";
 import {Department, DepartmentQuery} from "@/types/departments.ts";
 
@@ -12,6 +12,7 @@ interface DepartmentsState {
     fetchDepartments: (query?:DepartmentQuery) => Promise<void>;
     addDepartment: (department: {name:string}) => Promise<void>;
     updateDepartment: (id: string, update: Department) => Promise<void>;
+    deleteDepartment: (id: string) => Promise<void>;
 }
 
 export const useDepartmentsStore = create<DepartmentsState>((set) => ({
@@ -63,6 +64,15 @@ export const useDepartmentsStore = create<DepartmentsState>((set) => ({
                 error: error instanceof Error ? error.message : String(error),
                 loading: false
             });
+        }
+    },
+    deleteDepartment: async (id: string) => {
+        set({ loading: true, error: null });
+        try{
+            await deleteDepartment(id);
+            set({loading: false});
+        }catch (error) {
+            console.error(error);
         }
     }
 }));

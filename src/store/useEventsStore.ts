@@ -1,6 +1,6 @@
 import {create} from "zustand/react";
 import {CreateEventPayload, EventQuery, IEvent, UpdateEventPayload} from "@/types/events.ts";
-import {addEvent, getEvents, updateEvent} from "@/api/endpoints/events.ts";
+import {addEvent, deleteEvent, getEventById, getEvents, updateEvent} from "@/api/endpoints/events.ts";
 
 interface EventsState {
     events: IEvent[];
@@ -12,6 +12,7 @@ interface EventsState {
     fetchEvents: (query?:EventQuery) => Promise<void>;
     addEvent: (event: CreateEventPayload) => Promise<void>;
     updateEvent: (id: string, payload: UpdateEventPayload) => Promise<void>;
+    deleteEvent: (id: string) => Promise<void>;
 }
 
 
@@ -58,13 +59,24 @@ export const useEventsStore = create<EventsState>((set) => ({
     updateEvent: async (id, payload) => {
         set({loading:true, error: null});
         try{
-            const updatedEvent = await updateEvent(id, payload);
+            await updateEvent(id, payload);
+            const freshEvent = await getEventById(id);
             set((state) => ({
                 events: state.events.map(event =>
-                    event.id === id ? {...event, ...updatedEvent} : event
+                    event.id === id ? freshEvent : event
                 ),
-                loading: false
-            }))
+                loading: false,
+            }));
+        }catch (err){
+            const message = err instanceof Error ? err.message : String(err);
+            set({ error: message, loading: false });
+        }
+    },
+    deleteEvent: async (id: string) => {
+        set({loading:true, error: null});
+        try{
+            await deleteEvent(id);
+            set({loading: false});
         }catch (err){
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });
