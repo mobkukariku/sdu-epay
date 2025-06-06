@@ -42,13 +42,16 @@ export const AdminFilters: FC = () => {
                 return;
             }
 
-            try{
+            try {
                 const response: any = await getUsers({
                     username: email
                 });
-                setMailSuggestions(response.data);
+
+                const filtered = response.data.filter((user: { active: boolean }) => user.active);
+
+                setMailSuggestions(filtered);
                 setShowSuggestions(true);
-            }catch (err){
+            } catch (err) {
                 console.error(err);
             }
         }, 300)
