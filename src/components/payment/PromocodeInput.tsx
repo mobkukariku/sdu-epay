@@ -22,17 +22,19 @@ export const PromocodeInput: FC<Props> = ({ promoCodeField }) => {
             return toast.error("Please enter a promo code");
         }
 
-        try {
-            await verifyPromo({
-                code: promoCodeField.value,
-                event_id: order.event_id,
-            });
+        const errorMessage = await verifyPromo({
+            code: promoCodeField.value,
+            event_id: order.event_id,
+        });
 
+        if (errorMessage) {
+            toast.error(errorMessage);
+        } else {
             toast.success("Promo code successfully applied!");
-        } catch {
-            toast.error("Invalid promo code");
         }
     };
+
+
 
     return (
         <div className="flex gap-[20px] mt-[20px] mb-[20px]">

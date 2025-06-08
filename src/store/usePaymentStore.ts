@@ -12,7 +12,7 @@ interface PaymentState {
     error: string | null;
     setOrderField: <K extends keyof IOrder>(key: K, value: IOrder[K]) => void;
     setPrice: (price: number) => void;
-    verifyPromo: (payload: VerifyPromocodePayload) => Promise<void>;
+    verifyPromo: (payload: VerifyPromocodePayload) => Promise<string | null>;
     applyPromo: (promoCode: string) => void;
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
@@ -72,9 +72,16 @@ export const usePaymentStore = create<PaymentState>((set) => ({
                     loading: false,
                 };
             });
-        } catch (err) {
-            const message = err instanceof Error ? err.message : String(err);
+            return null; // 👈 нет ошибки
+        } catch (err: any) {
+            let message = 'Something went wrong';
+            if (err.response?.status === 400) {
+                message = 'Invalid promo code';
+            } else if (err instanceof Error) {
+                message = err.message;
+            }
             set({ error: message, loading: false });
+            return message; // 👈 вернули ошибку
         }
     },
 
