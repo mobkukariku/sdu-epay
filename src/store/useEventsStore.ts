@@ -1,6 +1,6 @@
 import {create} from "zustand/react";
 import {CreateEventPayload, EventQuery, IEvent, UpdateEventPayload} from "@/types/events.ts";
-import {addEvent, deleteEvent, getEventById, getEvents, updateEvent} from "@/api/endpoints/events.ts";
+import {addEvent, deleteEvent, getEvents, updateEvent} from "@/api/endpoints/events.ts";
 
 interface EventsState {
     events: IEvent[];
@@ -46,11 +46,7 @@ export const useEventsStore = create<EventsState>((set) => ({
         set({loading:true, error: null});
 
         try{
-            const newEvent = await addEvent(event);
-            set((state) => ({
-                events: [...state.events, newEvent],
-                loading: false
-            }));
+            await addEvent(event);
         }catch (err){
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });
@@ -60,13 +56,6 @@ export const useEventsStore = create<EventsState>((set) => ({
         set({loading:true, error: null});
         try{
             await updateEvent(id, payload);
-            const freshEvent = await getEventById(id);
-            set((state) => ({
-                events: state.events.map(event =>
-                    event.id === id ? freshEvent : event
-                ),
-                loading: false,
-            }));
         }catch (err){
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });

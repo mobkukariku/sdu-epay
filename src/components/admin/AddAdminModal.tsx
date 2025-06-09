@@ -27,7 +27,7 @@ export const AddAdminModal: FC = () => {
 
 
 
-    const {addUser} = useUsersStore();
+    const {addUser, fetchUsers} = useUsersStore();
 
 
     const roleOptions = [
@@ -89,6 +89,8 @@ export const AddAdminModal: FC = () => {
                 role: selectedRole,
                 department_id: selectedDepartment,
             });
+
+            await fetchUsers();
 
             toast.success("Admin created successfully!");
 

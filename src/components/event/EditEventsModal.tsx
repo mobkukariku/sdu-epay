@@ -43,7 +43,7 @@ export const EditEventsModal: FC<EditEventsModalProps> = ({isOpen, onClose, even
     ]);
     const [departments, setDepartments] = useState<{ label: string; value: string }[]>([]);
 
-    const {updateEvent} = useEventsStore();
+    const {updateEvent, fetchEvents} = useEventsStore();
 
     useEffect(() => {
         if(isOpen){
@@ -97,6 +97,8 @@ export const EditEventsModal: FC<EditEventsModalProps> = ({isOpen, onClose, even
                 period_till: periodTillFormat,
                 department_id: selectedDepartment,
             })
+
+            await fetchEvents();
             onClose()
         }catch (err){
             console.error("Failed to update department", err);

@@ -34,7 +34,7 @@ export const AddPromoCodeModal: FC = () => {
         event: false,
     });
 
-    const { addPromoCode } = usePromoCodesStore();
+    const { addPromoCode, fetchPromoCodes } = usePromoCodesStore();
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -96,6 +96,9 @@ export const AddPromoCodeModal: FC = () => {
                 period_till: periodTo!,
                 event_id: selectedEvent,
             });
+
+            await fetchPromoCodes();
+
             toast.success("Promo code added successfully!");
             setIsModalOpen(false);
             // Очистка формы

@@ -31,7 +31,7 @@ export const AddEventModal: FC = () => {
         dates: false,
     });
 
-    const { addEvent } = useEventsStore();
+    const { addEvent, fetchEvents } = useEventsStore();
 
     useEffect(() => {
         const fetchDepartments = async () => {
@@ -91,6 +91,8 @@ export const AddEventModal: FC = () => {
                 period_till: periodTo!,
                 price: price,
             });
+
+            await fetchEvents()
 
             toast.success("Event created successfully!");
             setIsModalOpen(false);
