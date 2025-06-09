@@ -43,11 +43,7 @@ export const useUsersStore = create<UsersState>((set) => ({
     addUser: async (user) => {
         set({ loading: true, error: null });
         try {
-            const newUser = await addUser(user);
-            set((state) => ({
-                users: [...state.users, newUser],
-                loading: false
-            }));
+            await addUser(user);
         } catch (err) {
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });
@@ -58,13 +54,6 @@ export const useUsersStore = create<UsersState>((set) => ({
         set({ loading: true, error: null });
         try {
             await updateUser(id, payload);
-            const freshUser = await getUserById(id);
-            set((state) => ({
-                users: state.users.map(user =>
-                    user.id === id ? freshUser : user
-                ),
-                loading: false
-            }));
         } catch (err) {
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });

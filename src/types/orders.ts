@@ -1,6 +1,6 @@
 export interface IOrder {
     event_id: string;
-    promo_code?: string; // сделаем опциональным
+    promo_code: string | null; // сделаем опциональным
     fullname: string;
     email: string;
     cellphone: string;

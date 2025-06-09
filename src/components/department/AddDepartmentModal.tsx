@@ -16,7 +16,8 @@ export const AddDepartmentModal:FC = () => {
         try{
             await addDepartment({
                 name: name
-            })
+            });
+            setIsModalOpen(false);
         }catch (err){
             console.error("Failed to add department", err);
             alert("Error while adding department.");

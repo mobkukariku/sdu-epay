@@ -47,7 +47,7 @@ export const EditPromoCodeModal: FC<EditPromoCodeModalProps> = ({
     ]);
     const [events, setEvents] = useState<{ label: string; value: string }[]>([]);
 
-    const {updatePromoCode} = usePromoCodesStore();
+    const {updatePromoCode, fetchPromoCodes} = usePromoCodesStore();
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -109,6 +109,8 @@ export const EditPromoCodeModal: FC<EditPromoCodeModalProps> = ({
                 period_from: periodFromFormat,
                 period_till: periodTillFormat,
             });
+
+            await fetchPromoCodes();
 
             onClose();
         } catch (err) {

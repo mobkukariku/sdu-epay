@@ -16,13 +16,14 @@ import {IEvent} from "@/types/events.ts";
 import {usePaymentStore} from "@/store/usePaymentStore.ts";
 import {orderHalyk, orderKaspi} from "@/api/endpoints/order.ts";
 import {PaymentHalyk} from "@/components/payment/PaymentHalyk.tsx";
+import {toast} from "react-hot-toast";
 
 
 interface FormValues {
     fullname: string;
     email: string;
     cellphone: string;
-    promo_code?: string;
+    promo_code: string | null;
     department_id: string;
     event_id: string;
     additional: string;
@@ -106,7 +107,7 @@ export const PaymentForm: FC = () => {
             department_id: '',
             event_id: '',
             additional: '',
-            promo_code: '',
+            promo_code: null,
             paymentMethod: '',
         }
     });
@@ -129,7 +130,9 @@ export const PaymentForm: FC = () => {
             else {
                 console.warn("Unknown payment method");
             }
+
         } catch (err) {
+            toast.error("Something wrong, please try again")
             console.error("Payment API error:", err);
         } finally {
             setLoading(false);

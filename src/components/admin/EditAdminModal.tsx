@@ -31,7 +31,7 @@ export const EditAdminModal: FC<EditAdminModalProps> = ({ isOpen, onClose, admin
     const [selectedDepartment, setSelectedDepartment] = useState(adminData.department.id);
     const [departments, setDepartments] = useState<{ label: string; value: string }[]>([]);
 
-    const { updateUser } = useUsersStore();
+    const { updateUser, fetchUsers } = useUsersStore();
 
     useEffect(() => {
         if (isOpen) {
@@ -82,6 +82,8 @@ export const EditAdminModal: FC<EditAdminModalProps> = ({ isOpen, onClose, admin
                 role: selectedRole,
                 department_id: selectedDepartment,
             });
+
+            await fetchUsers();
             onClose();
         } catch (error) {
             console.error("Failed to update admin:", error);

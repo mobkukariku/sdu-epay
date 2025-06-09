@@ -3,7 +3,6 @@ import {create} from "zustand/react";
 import {
     addPromocode,
     deletePromoCode,
-    getPromocodeById,
     getPromocodes,
     updatePromocode
 } from "@/api/endpoints/promocodes.ts";
@@ -49,11 +48,7 @@ export const usePromoCodesStore = create<PromoCodesState>((set) => ({
     addPromoCode: async (promo) => {
         set({loading: true, error: null});
         try{
-            const users = await addPromocode(promo);
-            set((state) => ({
-                promoCodes: [...state.promoCodes, users],
-                loading: false
-            }))
+            await addPromocode(promo);
         }catch (err){
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });
@@ -63,14 +58,6 @@ export const usePromoCodesStore = create<PromoCodesState>((set) => ({
         set({loading: true, error: null});
         try{
             await updatePromocode(id, promo);
-            const freshPromo = await getPromocodeById(id);
-
-            set((state) => ({
-                promoCodes: state.promoCodes.map(event =>
-                    event.id === id ? freshPromo : event
-                ),
-                loading: false
-            }));
         }catch (err){
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });

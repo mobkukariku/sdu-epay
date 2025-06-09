@@ -12,6 +12,7 @@ import {DepartmentsPage} from "@/pages/DepartmentsPage.tsx";
 import {SuccessPaymentPage} from "@/components/payment/SuccessPaymentPage.tsx";
 import {FailPaymentPage} from "@/components/payment/FailPaymentPage.tsx";
 import {DashboardPage} from "@/pages/DashboardPage.tsx";
+import {Toaster} from "react-hot-toast";
 
 
 function App() {
@@ -50,6 +51,7 @@ function App() {
               <Route path={"/success"} element={<SuccessPaymentPage />} />
               <Route path={"/fail"} element={<FailPaymentPage />} />
           </Routes>
+          <Toaster position="top-right" />
       </PrimeReactProvider>
   )
 }
