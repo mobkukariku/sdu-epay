@@ -22,7 +22,7 @@ interface FormValues {
     fullname: string;
     email: string;
     cellphone: string;
-    promo_code?: string;
+    promo_code: string | null;
     department_id: string;
     event_id: string;
     additional: string;
@@ -106,7 +106,7 @@ export const PaymentForm: FC = () => {
             department_id: '',
             event_id: '',
             additional: '',
-            promo_code: '',
+            promo_code: null,
             paymentMethod: '',
         }
     });

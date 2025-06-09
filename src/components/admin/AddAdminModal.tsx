@@ -7,6 +7,7 @@ import { CustomSelect } from "@/ui/CustomSelect.tsx";
 import { getDepartments } from "@/api/endpoints/departments.ts";
 import {useUsersStore} from "@/store/useUsersStore.ts";
 import {Department} from "@/types/departments.ts";
+import {toast} from "react-hot-toast";
 
 export const AddAdminModal: FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,6 +17,15 @@ export const AddAdminModal: FC = () => {
     const [selectedRole, setSelectedRole] = useState("");
     const [selectedDepartment, setSelectedDepartment] = useState("");
     const [departments, setDepartments] = useState<{ label: string; value: string }[]>([]);
+    const [errors, setErrors] = useState({
+        username: false,
+        name: false,
+        password: false,
+        department: false,
+        role: false,
+    });
+
+
 
     const {addUser} = useUsersStore();
 
@@ -44,8 +54,30 @@ export const AddAdminModal: FC = () => {
     }, []);
 
     const handleSubmit = async () => {
-        if (!username || !name || !password || !selectedRole || !selectedDepartment) {
-            alert("Please fill in all fields.");
+        const newErrors = {
+            username: !username,
+            name: !name,
+            password: !password || password.length < 6,
+            department: !selectedDepartment,
+            role: !selectedRole,
+        };
+
+        setErrors(newErrors);
+
+        const messages: string[] = [];
+
+        if (newErrors.username) messages.push("Email is required");
+        if (newErrors.name) messages.push("Name is required");
+        if (!password) {
+            messages.push("Password is required");
+        } else if (password.length < 6) {
+            messages.push("Password must be at least 6 characters");
+        }
+        if (newErrors.department) messages.push("Department is required");
+        if (newErrors.role) messages.push("Role is required");
+
+        if (messages.length > 0) {
+            messages.forEach((msg) => toast.error(msg));
             return;
         }
 
@@ -58,18 +90,29 @@ export const AddAdminModal: FC = () => {
                 department_id: selectedDepartment,
             });
 
-            alert("Admin created successfully!");
+            toast.success("Admin created successfully!");
+
             setIsModalOpen(false);
             setUsername("");
             setName("");
             setPassword("");
             setSelectedRole("");
             setSelectedDepartment("");
+            setErrors({
+                username: false,
+                name: false,
+                password: false,
+                department: false,
+                role: false,
+            });
         } catch (error) {
             console.error("Failed to add admin:", error);
-            alert("Something went wrong!");
+            toast.error("Something went wrong while adding admin");
         }
     };
+
+
+
 
     return (
         <>
@@ -85,40 +128,45 @@ export const AddAdminModal: FC = () => {
             <CustomModal title="Add Admin" isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <div className="flex flex-col gap-[21px]">
                     <CustomInput
-                        icon={<EnvelopeIcon className="text-[#6B9AB0]" />}
+                        icon={<EnvelopeIcon className={errors.username ? " text-red-500" : "text-[#6B9AB0]"} />}
                         placeholder="Enter your email"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
+                        className={errors.username ? "border border-red-500" : ""}
                     />
+
                     <CustomInput
-                        icon={<UserIcon className="text-[#6B9AB0]" />}
+                        icon={<UserIcon className={errors.name ? " text-red-500" : "text-[#6B9AB0]"} />}
                         placeholder="Enter your name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
+                        className={errors.name ? "border border-red-500" : ""}
                     />
                     <CustomInput
-                        icon={<LockClosedIcon className="text-[#6B9AB0]" />}
+                        icon={<LockClosedIcon className={errors.password ? " text-red-500" : "text-[#6B9AB0]"} />}
                         placeholder="Enter your password"
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        className={errors.password ? "border border-red-500" : ""}
                     />
                     <CustomSelect
                         placeholder="Select department"
                         options={departments}
                         value={selectedDepartment}
                         onChange={setSelectedDepartment}
-                        triggerClassName="bg-white h-[50px] text-black"
+                        triggerClassName={`bg-white h-[50px] text-black ${errors.department ? "border border-red-500" : ""}`}
                         dropdownClassName="bg-gray-100"
                         optionClassName="text-sm"
                         activeOptionClassName="bg-blue-200"
                     />
+
                     <CustomSelect
                         options={roleOptions}
                         value={selectedRole}
                         onChange={setSelectedRole}
                         placeholder="Select role"
-                        triggerClassName="bg-white h-[50px] text-black"
+                        triggerClassName={`bg-white h-[50px] text-black ${errors.role ? "border border-red-500" : ""}`}
                         dropdownClassName="bg-gray-100"
                         optionClassName="text-sm"
                         activeOptionClassName="bg-blue-200"

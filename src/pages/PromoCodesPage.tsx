@@ -20,6 +20,7 @@ export const PromoCodesPage:FC = () => {
         {header: "Period till", accessor: "period_till"},
         { header: "Already used", accessor: "already_used" },
         { header: "Usage limit", accessor: "limit" },
+        { header: "Discount", accessor: "discount" },
     ];
 
 
@@ -56,7 +57,7 @@ export const PromoCodesPage:FC = () => {
     return (
         <AdminLayout>
             <div className="flex-1 p-8">
-                <h1 className="text-[32px] font-bold mb-6">Admin Information</h1>
+                <h1 className="text-[32px] font-bold mb-6">Promo codes Information</h1>
                 <PromoCodeFilters/>
                 <CustomTable
                     columns={columns}
