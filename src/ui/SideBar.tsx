@@ -5,7 +5,7 @@ import {
     BriefcaseIcon,
     CalendarIcon,
     ChartBarIcon,
-    ReceiptPercentIcon,
+    ReceiptPercentIcon, TableCellsIcon,
     UserIcon
 } from "@heroicons/react/24/outline";
 import {clearTokens} from "@/api/utils/tokenUtils.ts";
@@ -20,9 +20,10 @@ export const SideBar: FC = () => {
                 <div className="space-y-2">
                     <NavItem icon={<ChartBarIcon width={20} />} label="Dashboard" to="/dashboard" />
                     <NavItem icon={<UserIcon width={20} />} label="Admin" to="/admin" />
+                    <NavItem icon={<BriefcaseIcon width={20} />} label="Departments" to="/departments" />
                     <NavItem icon={<CalendarIcon width={20} />} label="Events" to="/events" />
                     <NavItem icon={<ReceiptPercentIcon width={20} />} label="Promo codes" to="/promo-codes" />
-                    <NavItem icon={<BriefcaseIcon width={20} />} label="Departments" to="/departments" />
+                    <NavItem icon={<TableCellsIcon width={20} />} label="File Reader" to="/file-reader  " />
                 </div>
                 <div className="pt-4 border-t border-gray-700">
                     <NavItem icon={<ArrowLeftStartOnRectangleIcon width={20} />}  label="Log Out" to="/login" onClick={() => {clearTokens()}} />
