@@ -17,7 +17,7 @@ const navItems = [
         label: "Dashboard",
         to: "/dashboard",
         icon: <ChartBarIcon width={20} />,
-        roles: ["SUPER_ADMIN"],
+        roles: ["SUPER_ADMIN", "ADMIN", "MANAGER"],
     },
     {
         label: "Admin",
