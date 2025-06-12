@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import {DepartmentDistributionChart} from "@/components/dashboard/DepartmentDistributionChart.tsx";
 import {PromoDistributionChart} from "@/components/dashboard/PromoDistributionChart.tsx";
 import {UsedPromoCodesChart} from "@/components/dashboard/UsedPromoCodesChart.tsx";
+import {TransactionLineChart} from "@/components/dashboard/TransactionLineChart.tsx";
 
 export const DashboardContent: FC = () => {
     const [active, setActive] = useState<"events" | "usedPromo" | "promos" | "transactions" | null>("events");
@@ -17,7 +18,7 @@ export const DashboardContent: FC = () => {
     const renderContent = () => {
         switch (active) {
             case "transactions":
-                return <div className="text-lg">Transactions content (еще не готово)</div>;
+                return <TransactionLineChart />
             case "events":
                 return <DepartmentDistributionChart />
             case "promos":

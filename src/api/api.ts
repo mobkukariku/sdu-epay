@@ -1,5 +1,6 @@
 import axios from "axios";
 import { getAccessToken, getRefreshToken, setTokens, clearTokens } from "./utils/tokenUtils.ts";
+
 type FailedRequest = {
     resolve: (token: string) => void;
     reject: (error: unknown) => void;
@@ -8,11 +9,10 @@ type FailedRequest = {
 let failedQueue: FailedRequest[] = [];
 let isRefreshing = false;
 
-
 const processQueue = (error: unknown, token?: string) => {
     failedQueue.forEach(p => {
         if (error || !token) {
-            p.reject(error ?? new Error('Token missing'));
+            p.reject(error ?? new Error("Token missing"));
         } else {
             p.resolve(token);
         }
@@ -56,16 +56,20 @@ api.interceptors.response.use(
             isRefreshing = true;
 
             try {
-                const refreshToken = getRefreshToken();
+                const refresh = getRefreshToken();
+                if (!refresh) throw new Error("No refresh token");
+
                 const response = await axios.post("https://epayapi.sdutechnopark.kz/api/auth/login/refresh", {
-                    refresh: refreshToken,
+                    refresh,
                 });
 
-                const { accessToken, refreshToken: newRefreshToken } = response.data;
-                setTokens(accessToken, newRefreshToken);
+                const { access, refresh: newRefresh } = response.data;
 
-                api.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
-                processQueue(null, accessToken);
+                // если сервер вернул новый refresh, сохраняем его, иначе старый
+                setTokens(access, newRefresh ?? refresh);
+
+                api.defaults.headers.common.Authorization = `Bearer ${access}`;
+                processQueue(null, access);
 
                 return api(originalRequest);
             } catch (err) {
