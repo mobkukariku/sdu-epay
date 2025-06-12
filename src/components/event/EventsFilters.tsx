@@ -24,7 +24,7 @@ export const EventFilters:FC = () => {
         setFirst(0);
         await fetchEvents({
             title: name || undefined,
-            department_id: selectedDepartment || undefined,
+            department_id: selectedDepartment !== "" ? selectedDepartment : undefined,
             page: 0,
             size: rows,
         })
@@ -35,7 +35,7 @@ export const EventFilters:FC = () => {
 
         await fetchEvents({
             title: name || undefined,
-            department_id: selectedDepartment || undefined,
+            department_id: selectedDepartment !== "" ? selectedDepartment : undefined,
             page: event.first / event.rows,
             size: event.rows,
         });
@@ -92,7 +92,7 @@ export const EventFilters:FC = () => {
         };
 
         load();
-    }, [first, rows, selectedDepartment]);
+    }, [first, rows]);
 
 
     return (
