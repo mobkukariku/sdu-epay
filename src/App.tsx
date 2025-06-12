@@ -49,7 +49,9 @@ function App() {
                   </ReauireAuth>
               } />
               <Route path="/file-reader" element={
-                  <FileViewerPage />
+                  <ReauireAuth>
+                      <FileViewerPage />
+                  </ReauireAuth>
               }
               />
 

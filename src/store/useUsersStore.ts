@@ -37,6 +37,7 @@ export const useUsersStore = create<UsersState>((set) => ({
         } catch (err) {
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });
+            throw err;
         }
     },
 
@@ -47,6 +48,7 @@ export const useUsersStore = create<UsersState>((set) => ({
         } catch (err) {
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });
+            throw err;
         }
     },
 
@@ -57,6 +59,7 @@ export const useUsersStore = create<UsersState>((set) => ({
         } catch (err) {
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });
+            throw err;
         }
     },
     deleteUser: async (id: string) => {
@@ -72,6 +75,7 @@ export const useUsersStore = create<UsersState>((set) => ({
         }catch(err){
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });
+            throw err;
         }
     }
 }));

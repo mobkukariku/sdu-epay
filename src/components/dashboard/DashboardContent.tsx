@@ -16,14 +16,14 @@ export const DashboardContent: FC = () => {
 
     const renderContent = () => {
         switch (active) {
+            case "transactions":
+                return <div className="text-lg">Transactions content (еще не готово)</div>;
             case "events":
                 return <DepartmentDistributionChart />
             case "promos":
                 return <PromoDistributionChart />
             case "usedPromo":
                 return <UsedPromoCodesChart />;
-            case "transactions":
-                return <div className="text-lg">Departments content (еще не готово)</div>;
             default:
                 return null;
         }
@@ -32,6 +32,11 @@ export const DashboardContent: FC = () => {
     return (
         <div className="w-full">
             <div className="flex w-full gap-10 mx-auto justify-around mt-5">
+                <MetricItemCard
+                    icon={<BriefcaseIcon width={50} />}
+                    name={"Statistics by transactions"}
+                    onClick={() => setActive("transactions")}
+                />
                 <MetricItemCard
                     icon={<CalendarIcon width={50} />}
                     name={"Total events"}
@@ -49,11 +54,6 @@ export const DashboardContent: FC = () => {
                     name={"Already used promo codes"}
                     num={100}
                     onClick={() => setActive("usedPromo")}
-                />
-                <MetricItemCard
-                    icon={<BriefcaseIcon width={50} />}
-                    name={"Statistics by transactions"}
-                    onClick={() => setActive("transactions")}
                 />
             </div>
 

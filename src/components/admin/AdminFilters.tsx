@@ -1,10 +1,11 @@
-import {FC, useEffect, useState} from "react";
+import { FC, useEffect, useState } from "react";
 import { CustomSelect } from "@/ui/CustomSelect.tsx";
 import { AddAdminModal } from "@/components/admin/AddAdminModal.tsx";
 import { useUsersStore } from "@/store/useUsersStore.ts";
-import {CustomButton} from "@/ui/CustomButton.tsx";
-import {AnimatePresence, motion} from "framer-motion";
-import {getUsers} from "@/api/endpoints/users.ts"; // путь к твоему Zustand store
+import { CustomButton } from "@/ui/CustomButton.tsx";
+import { AnimatePresence, motion } from "framer-motion";
+import { getUsers } from "@/api/endpoints/users.ts";
+import { Paginator } from "primereact/paginator";
 
 const roleOptions = [
     { label: "All", value: "" },
@@ -15,49 +16,72 @@ const roleOptions = [
 
 export const AdminFilters: FC = () => {
     const [email, setEmail] = useState("");
-    const [mailSuggestions, setMailSuggestions] = useState<{username: string, id: string}[]>([]);
+    const [mailSuggestions, setMailSuggestions] = useState<{ username: string; id: string }[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [selectedRole, setSelectedRole] = useState<"SUPER_ADMIN" | "ADMIN" | "MANAGER" | "">("");
 
-    const {fetchUsers} = useUsersStore();
+    const [first, setFirst] = useState(0);
+    const [rows, setRows] = useState(10);
+
+    const { fetchUsers, total } = useUsersStore();
 
     const handleSearch = async () => {
+        setFirst(0);
         await fetchUsers({
             username: email || undefined,
-            role: selectedRole !== "" ? selectedRole as "SUPER_ADMIN" | "ADMIN" | "MANAGER" : undefined,
+            role: selectedRole !== "" ? selectedRole : undefined,
             page: 0,
-            size: 10,
+            size: rows,
         });
     };
 
-    const handleSelectEvent = (mail: {username:string, id: string}) => {
+    const onPageChange = async (event: any) => {
+        setFirst(event.first);
+        setRows(event.rows);
+
+        await fetchUsers({
+            username: email || undefined,
+            role: selectedRole !== "" ? selectedRole : undefined,
+            page: event.first / event.rows,
+            size: event.rows,
+        });
+    };
+
+    const handleSelectEvent = (mail: { username: string; id: string }) => {
         setEmail(mail.username);
         setShowSuggestions(false);
     };
 
     useEffect(() => {
         const timeout = setTimeout(async () => {
-            if(email.trim() === ""){
+            if (email.trim() === "") {
                 setMailSuggestions([]);
                 return;
             }
 
             try {
-                const response: any = await getUsers({
-                    username: email
-                });
-
+                const response: any = await getUsers({ username: email });
                 const filtered = response.data.filter((user: { active: boolean }) => user.active);
-
                 setMailSuggestions(filtered);
                 setShowSuggestions(true);
             } catch (err) {
                 console.error(err);
             }
-        }, 300)
+        }, 300);
 
         return () => clearTimeout(timeout);
     }, [email]);
+
+    useEffect(() => {
+        const load = async () => {
+            await fetchUsers({
+                page: first / rows,
+                size: rows,
+            });
+        };
+
+        load();
+    }, [first, rows]);
 
     return (
         <div className="flex justify-between items-end mb-[31px]">
@@ -68,7 +92,7 @@ export const AdminFilters: FC = () => {
                         type="text"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="bg-[#FFFFFF]  h-[37px] p-2 border-1 rounded-[4px] border-[#6B9AB0]"
+                        className="bg-[#FFFFFF] h-[37px] p-2 border border-[#6B9AB0] rounded-[4px]"
                         placeholder="Enter Customer Email"
                     />
                     {showSuggestions && mailSuggestions.length > 0 && (
@@ -98,9 +122,9 @@ export const AdminFilters: FC = () => {
                     <CustomSelect
                         options={roleOptions}
                         value={selectedRole}
-                        onChange={(value: string) => setSelectedRole(value as "SUPER_ADMIN" | "ADMIN" | "MANAGER" | "")}
+                        onChange={(value: string) => setSelectedRole(value as any)}
                         placeholder="Choose role"
-                        triggerClassName="bg-white w-[150px]  h-[37px] text-black"
+                        triggerClassName="bg-white w-[150px] h-[37px] text-black text-sm"
                         dropdownClassName="bg-gray-100"
                         optionClassName="text-sm"
                         activeOptionClassName="bg-blue-200"
@@ -109,13 +133,22 @@ export const AdminFilters: FC = () => {
 
                 <CustomButton
                     onClick={handleSearch}
-                    className="h-[37px] px-4 mt-auto text-white rounded-[4px]  transition"
+                    className="h-[37px] px-4 mt-auto text-white rounded-[4px] transition"
                 >
                     Search
                 </CustomButton>
             </div>
-
-            <AddAdminModal />
+            <div className="flex items-center gap-5">
+                <Paginator
+                    first={first}
+                    rows={rows}
+                    totalRecords={total}
+                    rowsPerPageOptions={[10, 20, 30]}
+                    onPageChange={onPageChange}
+                    className="custom-paginator"
+                />
+                <AddAdminModal />
+            </div>
         </div>
     );
 };

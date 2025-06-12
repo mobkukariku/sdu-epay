@@ -51,6 +51,9 @@ export const AddEventModal: FC = () => {
     }, []);
 
     const handleSubmit = async () => {
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
         const periodFrom = Array.isArray(dates) && dates[0]
             ? dates[0].toISOString().split("T")[0]
             : null;
@@ -61,7 +64,7 @@ export const AddEventModal: FC = () => {
 
         const newErrors = {
             name: !name,
-            email: !email,
+            email: !email || !emailRegex.test(email),
             department: !selectedDepartment,
             price: !price || price <= 0,
             dates: !periodFrom || !periodTo,
@@ -72,7 +75,12 @@ export const AddEventModal: FC = () => {
         const messages: string[] = [];
 
         if (newErrors.name) messages.push("Event name is required");
-        if (newErrors.email) messages.push("Manager email is required");
+        if (!email) {
+            messages.push("Manager email is required")
+        }
+        else if (!emailRegex.test(email)) {
+            messages.push("Invalid email format");
+        };
         if (newErrors.department) messages.push("Department is required");
         if (newErrors.price) messages.push("Valid price is required");
         if (newErrors.dates) messages.push("Event date range is required");
