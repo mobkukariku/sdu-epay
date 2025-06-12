@@ -64,7 +64,7 @@ export const AddPromoCodeModal: FC = () => {
         const limitNum = Number(limit);
 
         const newErrors = {
-            code: !code,
+            code: !code || code.length<3,
             limit: !limit || limitNum <= 0,
             discount: !discount || discountNum <= 0,
             discountTooHigh: discountNum >= 100,

@@ -2,11 +2,16 @@ import { FC, useEffect, useState } from "react";
 import { CustomModal } from "@/ui/CustomModal.tsx";
 import { CustomButton } from "@/ui/CustomButton.tsx";
 import { CustomInput } from "@/ui/CustomInput.tsx";
-import { EnvelopeIcon, LockClosedIcon, UserIcon } from "@heroicons/react/24/outline";
+import {
+    EnvelopeIcon,
+    LockClosedIcon,
+    UserIcon,
+} from "@heroicons/react/24/outline";
 import { CustomSelect } from "@/ui/CustomSelect.tsx";
 import { getDepartments } from "@/api/endpoints/departments.ts";
 import { useUsersStore } from "@/store/useUsersStore.ts";
 import { Department } from "@/types/departments.ts";
+import { toast } from "react-hot-toast";
 
 interface EditAdminModalProps {
     isOpen: boolean;
@@ -30,6 +35,12 @@ export const EditAdminModal: FC<EditAdminModalProps> = ({ isOpen, onClose, admin
     const [selectedRole, setSelectedRole] = useState(adminData.role);
     const [selectedDepartment, setSelectedDepartment] = useState(adminData.department.id);
     const [departments, setDepartments] = useState<{ label: string; value: string }[]>([]);
+    const [errors, setErrors] = useState({
+        username: false,
+        name: false,
+        department: false,
+        role: false,
+    });
 
     const { updateUser, fetchUsers } = useUsersStore();
 
@@ -40,10 +51,14 @@ export const EditAdminModal: FC<EditAdminModalProps> = ({ isOpen, onClose, admin
             setPassword("");
             setSelectedRole(adminData.role);
             setSelectedDepartment(adminData.department.id);
-
+            setErrors({
+                username: false,
+                name: false,
+                department: false,
+                role: false,
+            });
         }
     }, [isOpen, adminData]);
-
 
     const roleOptions = [
         { label: "Super Admin", value: "SUPER_ADMIN" },
@@ -67,10 +82,36 @@ export const EditAdminModal: FC<EditAdminModalProps> = ({ isOpen, onClose, admin
 
         fetchDepartments();
     }, []);
+        const handleUpdate = async () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    const handleUpdate = async () => {
-        if (!username || !name || !selectedRole || !selectedDepartment) {
-            alert("Please fill in all required fields.");
+        const newErrors = {
+            username: !username.trim() || !emailRegex.test(username.trim()),
+            name: !name.trim(),
+            department: !selectedDepartment,
+            role: !selectedRole,
+        };
+
+        setErrors(newErrors);
+
+        const messages: string[] = [];
+
+        if (!username) {
+            messages.push("Email is required");
+        } else if (!emailRegex.test(username.trim())) {
+            messages.push("Email is invalid");
+        }
+
+        if (newErrors.name) messages.push("Name is required");
+        if (newErrors.department) messages.push("Department must be selected");
+        if (newErrors.role) messages.push("Role must be selected");
+
+        if (password && password.length < 6) {
+            messages.push("Password must be at least 6 characters long");
+        }
+
+        if (messages.length > 0) {
+            messages.forEach((msg) => toast.error(msg));
             return;
         }
 
@@ -84,23 +125,29 @@ export const EditAdminModal: FC<EditAdminModalProps> = ({ isOpen, onClose, admin
             });
 
             await fetchUsers();
+            toast.success("Admin updated successfully.");
             onClose();
-        } catch (error) {
-            console.error("Failed to update admin:", error);
+        } catch (error: any) {
+            const message =
+                error?.response?.data?.message ||
+                error?.message ||
+                "Failed to update admin.";
+            toast.error(message);
         }
     };
+
 
     return (
         <CustomModal title="Edit Admin" isOpen={isOpen} onClose={onClose}>
             <div className="flex flex-col gap-[21px]">
                 <CustomInput
-                    icon={<EnvelopeIcon className="text-[#6B9AB0]" />}
+                    icon={<EnvelopeIcon className={errors.username ? "text-red-500" : "text-[#6B9AB0]"} />}
                     placeholder="Enter email"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                 />
                 <CustomInput
-                    icon={<UserIcon className="text-[#6B9AB0]" />}
+                    icon={<UserIcon className={errors.name ? "text-red-500" : "text-[#6B9AB0]"} />}
                     placeholder="Enter name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -117,7 +164,7 @@ export const EditAdminModal: FC<EditAdminModalProps> = ({ isOpen, onClose, admin
                     options={departments}
                     value={selectedDepartment}
                     onChange={setSelectedDepartment}
-                    triggerClassName="bg-white h-[50px] text-black"
+                    triggerClassName={`bg-white h-[50px] text-black ${errors.department ? "border border-red-500" : ""}`}
                     dropdownClassName="bg-gray-100"
                     optionClassName="text-sm"
                     activeOptionClassName="bg-blue-200"
@@ -127,7 +174,7 @@ export const EditAdminModal: FC<EditAdminModalProps> = ({ isOpen, onClose, admin
                     value={selectedRole}
                     onChange={setSelectedRole}
                     placeholder="Select role"
-                    triggerClassName="bg-white h-[50px] text-black"
+                    triggerClassName={`bg-white h-[50px] text-black ${errors.role ? "border border-red-500" : ""}`}
                     dropdownClassName="bg-gray-100"
                     optionClassName="text-sm"
                     activeOptionClassName="bg-blue-200"

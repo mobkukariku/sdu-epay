@@ -23,6 +23,7 @@
     "clsx": "^2.1.1",
     "epay-payment-widget": "^1.1.1",
     "framer-motion": "^12.7.4",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.503.0",
     "primereact": "^10.9.5",
     "react": "^19.0.0",

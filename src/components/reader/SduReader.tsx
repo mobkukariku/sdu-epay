@@ -38,11 +38,14 @@ const generateText = (json: Record<string, any>) => {
 
 export const SduReader: FC = () => {
     const [tableHTML, setTableHTML] = useState<string>("");
+    const [fileName, setFileName] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
+
+        setFileName(file.name)
 
         const reader = new FileReader();
         reader.onload = function (event) {
@@ -99,7 +102,9 @@ export const SduReader: FC = () => {
                     if (typeof parsed === "object") {
                         cellContent = generateText(parsed);
                     }
-                } catch (e) {}
+                } catch (e) {
+                    console.error(e)
+                }
 
                 html += `<td class='border px-4 py-2 align-top'>${
                     typeof cellContent === "string" ? cellContent : String(cellContent)
@@ -115,8 +120,14 @@ export const SduReader: FC = () => {
     return (
         <div className=" mx-auto mt-10 p-6 bg-white rounded-xl ">
             <h2 className="text-2xl font-bold mb-4 text-center text-[#006799] ">
-                📄 Upload Excel file - SDU University
+                Upload Excel file - SDU University
             </h2>
+
+            {fileName && (
+                <p className="text-center mt-4 text-gray-600">
+                    <p className="font-medium">Selected file: <span className={"font-bold"}>{fileName}</span> </p>
+                </p>
+            )}
 
             <label className="block text-center">
                 <input

@@ -39,6 +39,7 @@ export const useEventsStore = create<EventsState>((set) => ({
         }catch (err){
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });
+            throw err;
         }
     },
 
@@ -50,6 +51,7 @@ export const useEventsStore = create<EventsState>((set) => ({
         }catch (err){
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });
+            throw err;
         }
     },
     updateEvent: async (id, payload) => {
@@ -59,6 +61,7 @@ export const useEventsStore = create<EventsState>((set) => ({
         }catch (err){
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });
+            throw err;
         }
     },
     deleteEvent: async (id: string) => {
@@ -69,6 +72,7 @@ export const useEventsStore = create<EventsState>((set) => ({
         }catch (err){
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });
+            throw err;
         }
     }
 }));

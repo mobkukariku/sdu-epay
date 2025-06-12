@@ -5,11 +5,14 @@ const indexesToRemove: number[] = []; // Пока не удаляем ни од�
 
 export const DormReader: FC = () => {
     const [tableHTML, setTableHTML] = useState<string>("");
+    const [fileName, setFileName] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
+
+        setFileName(file.name);
 
         const reader = new FileReader();
         reader.onload = function (event) {
@@ -77,8 +80,14 @@ export const DormReader: FC = () => {
     return (
         <div className="mx-auto mt-10 p-6 bg-white rounded-xl">
             <h2 className="text-2xl font-bold mb-4 text-center text-[#006799]">
-                🏢 Загрузка Excel-файла — Dorm Payments
+                Upload Excel file - Dormitory
             </h2>
+
+            {fileName && (
+                <p className="text-center mt-4 text-gray-600">
+                    <p className="font-medium">Selected file: <span className={"font-bold"}>{fileName}</span> </p>
+                </p>
+            )}
 
             <label className="block text-center">
                 <input

@@ -12,6 +12,7 @@ import {CustomButton} from "@/ui/CustomButton.tsx";
 import {CustomModal} from "@/ui/CustomModal.tsx";
 import {Calendar} from "primereact/calendar";
 import {CustomSelect} from "@/ui/CustomSelect.tsx";
+import { toast } from "react-hot-toast";
 
 interface EditEventsModalProps {
     isOpen: boolean;
@@ -41,21 +42,31 @@ export const EditEventsModal: FC<EditEventsModalProps> = ({isOpen, onClose, even
         new Date(eventData.period_from),
         new Date(eventData.period_till)
     ]);
+    const [errors, setErrors] = useState({
+        title: false,
+        email: false,
+        department: false,
+        price: false,
+        dates: false,
+    });
     const [departments, setDepartments] = useState<{ label: string; value: string }[]>([]);
 
     const {updateEvent, fetchEvents} = useEventsStore();
 
     useEffect(() => {
-        if(isOpen){
+        if (isOpen) {
             setTitle(eventData.title);
             setEmail(eventData.manager_email);
             setPrice(eventData.price);
             setPeriodFrom(eventData.period_from);
             setPeriodTill(eventData.period_till);
             setSelectedDepartment(eventData.department.id);
+            setDates([
+                new Date(eventData.period_from),
+                new Date(eventData.period_till)
+            ]);
         }
     }, [isOpen, eventData]);
-
 
     useEffect(() => {
         const fetchDepartments = async () => {
@@ -74,48 +85,76 @@ export const EditEventsModal: FC<EditEventsModalProps> = ({isOpen, onClose, even
         fetchDepartments();
     }, []);
 
-    const handleUpdate = async () => {
-        const periodFromFormat = Array.isArray(dates) && dates[0]
+
+    const handleSubmit = async () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        const from = Array.isArray(dates) && dates[0]
             ? dates[0].toISOString().split("T")[0]
             : null;
 
-        const periodTillFormat = Array.isArray(dates) && dates[1]
+        const till = Array.isArray(dates) && dates[1]
             ? dates[1].toISOString().split("T")[0]
             : null;
 
-        if(!title || !email || !periodFrom || !periodTill || !price || !selectedDepartment ){
-            alert("Please fill in all required fields.");
+        const newErrors = {
+            title: !title.trim(),
+            email: !email.trim() || !emailRegex.test(email),
+            department: !selectedDepartment,
+            price: !price || price <= 0,
+            dates: !periodFrom || !periodTill,
+        };
+
+        setErrors(newErrors);
+
+        const messages: string[] = [];
+
+        if (newErrors.title) messages.push("Event title is required");
+        if (!email.trim()) {
+            messages.push("Manager email is required");
+        } else if (!emailRegex.test(email)) {
+            messages.push("Invalid email format");
+        }
+        if (newErrors.department) messages.push("Department is required");
+        if (newErrors.price) messages.push("Valid price is required");
+        if (newErrors.dates) messages.push("Event date range is required");
+
+        if (messages.length > 0) {
+            messages.forEach((msg) => toast.error(msg));
             return;
         }
 
-        try{
+        try {
             await updateEvent(eventData.id, {
                 title,
                 manager_email: email,
-                price: price || 0,
-                period_from: periodFromFormat,
-                period_till: periodTillFormat,
                 department_id: selectedDepartment,
-            })
+                price,
+                period_from: from!,
+                period_till: till!,
+            });
 
             await fetchEvents();
-            onClose()
-        }catch (err){
-            console.error("Failed to update department", err);
-        };
-    }
+
+            toast.success("Event updated successfully!");
+            onClose();
+        } catch (err) {
+            console.error("Failed to update event:", err);
+            toast.error("Something went wrong while updating the event.");
+        }
+    };
 
     return (
         <CustomModal title="Edit Event" isOpen={isOpen} onClose={onClose}>
             <div className="flex flex-col gap-[21px]">
                 <CustomInput
-                    icon={<InformationCircleIcon className="text-[#6B9AB0]" />}
+                    icon={<InformationCircleIcon className={errors.title ? " text-red-500" : "text-[#6B9AB0]"} />}
                     placeholder="Enter title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                 />
                 <CustomInput
-                    icon={<EnvelopeIcon className="text-[#6B9AB0]" />}
+                    icon={<EnvelopeIcon className={errors.email ? " text-red-500" : "text-[#6B9AB0]"} />}
                     placeholder="Enter email"
                     type="email"
                     value={email}
@@ -126,20 +165,20 @@ export const EditEventsModal: FC<EditEventsModalProps> = ({isOpen, onClose, even
                     options={departments}
                     value={selectedDepartment}
                     onChange={setSelectedDepartment}
-                    triggerClassName="bg-white h-[50px] text-black"
+                    triggerClassName={`bg-white h-[50px] text-black ${errors.department ? "border border-red-500" : ""}`}
                     dropdownClassName="bg-gray-100"
                     optionClassName="text-sm"
                     activeOptionClassName="bg-blue-200"
                 />
                 <CustomInput
-                    icon={<CurrencyDollarIcon className="text-[#6B9AB0]" />}
+                    icon={<CurrencyDollarIcon className={errors.price ? " text-red-500" : "text-[#6B9AB0]"} />}
                     placeholder="Enter price"
                     type="number"
                     value={String(price)}
                     onChange={(e) => setPrice(Number(e.target.value))}
                 />
                 <Calendar
-                    className="w-full border border-[#6B9AB0] rounded-md shadow-sm"
+                    className={`w-full border ${errors.dates ? " border-red-500" : "border-[#6B9AB0]"} rounded-md shadow-sm`}
                     placeholder="Choose a date"
                     value={dates}
                     onChange={(e) => setDates(e.value as Date[])}
@@ -148,13 +187,10 @@ export const EditEventsModal: FC<EditEventsModalProps> = ({isOpen, onClose, even
                     hideOnRangeSelection
                 />
 
-                <CustomButton onClick={handleUpdate} className="w-full">
+                <CustomButton onClick={handleSubmit} className="w-full">
                     Save Changes
                 </CustomButton>
             </div>
         </CustomModal>
-    )
-
-
-}
-
+    );
+};

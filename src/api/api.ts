@@ -14,7 +14,7 @@ const processQueue = (error: unknown, token?: string) => {
         if (error || !token) {
             p.reject(error ?? new Error('Token missing'));
         } else {
-            p.resolve(token); // теперь гарантировано string
+            p.resolve(token);
         }
     });
     failedQueue = [];
@@ -58,7 +58,7 @@ api.interceptors.response.use(
             try {
                 const refreshToken = getRefreshToken();
                 const response = await axios.post("https://epayapi.sdutechnopark.kz/api/auth/login/refresh", {
-                    refreshToken,
+                    refresh: refreshToken,
                 });
 
                 const { accessToken, refreshToken: newRefreshToken } = response.data;

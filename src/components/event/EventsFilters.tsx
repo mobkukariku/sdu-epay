@@ -7,6 +7,7 @@ import {Department} from "@/types/departments.ts";
 import {CustomSelect} from "@/ui/CustomSelect.tsx";
 import {getEvents} from "@/api/endpoints/events.ts";
 import {AnimatePresence, motion} from "framer-motion";
+import {Paginator} from "primereact/paginator";
 
 export const EventFilters:FC = () => {
     const [name, setName] = useState("");
@@ -14,18 +15,31 @@ export const EventFilters:FC = () => {
     const [selectedDepartment, setSelectedDepartment] = useState("");
     const [eventSuggestions, setEventSuggestions] = useState<{title: string, id: string}[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
+    const [first, setFirst] = useState(0);
+    const [rows, setRows] = useState(10);
 
-
-    const {fetchEvents} = useEventsStore();
+    const {fetchEvents, total} = useEventsStore();
 
     const handleSearch = async () => {
+        setFirst(0);
         await fetchEvents({
             title: name || undefined,
             department_id: selectedDepartment || undefined,
             page: 0,
-            size: 10,
+            size: rows,
         })
     }
+    const onPageChange = async (event: any) => {
+        setFirst(event.first);
+        setRows(event.rows);
+
+        await fetchEvents({
+            title: name || undefined,
+            department_id: selectedDepartment || undefined,
+            page: event.first / event.rows,
+            size: event.rows,
+        });
+    };
 
     const handleSelectEvent = (event: {title:string, id: string}) => {
         setName(event.title);
@@ -68,6 +82,17 @@ export const EventFilters:FC = () => {
 
         return () => clearTimeout(timeout);
     }, [name]);
+
+    useEffect(() => {
+        const load = async () => {
+            await fetchEvents({
+                page: first / rows,
+                size: rows,
+            });
+        };
+
+        load();
+    }, [first, rows, selectedDepartment]);
 
 
     return (
@@ -124,7 +149,17 @@ export const EventFilters:FC = () => {
                     Search
                 </CustomButton>
             </div>
-            <AddEventModal />
+            <div className="flex items-center gap-5">
+                <Paginator
+                    first={first}
+                    rows={rows}
+                    totalRecords={total}
+                    rowsPerPageOptions={[10, 20, 30]}
+                    onPageChange={onPageChange}
+                    className="custom-paginator"
+                />
+                <AddEventModal />
+            </div>
         </div>
     )
 }

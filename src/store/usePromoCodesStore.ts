@@ -43,6 +43,7 @@ export const usePromoCodesStore = create<PromoCodesState>((set) => ({
         }catch (err){
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });
+            throw err;
         }
     },
     addPromoCode: async (promo) => {
@@ -52,6 +53,7 @@ export const usePromoCodesStore = create<PromoCodesState>((set) => ({
         }catch (err){
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });
+            throw err;
         }
     },
     updatePromoCode: async (id, promo) => {
@@ -61,6 +63,7 @@ export const usePromoCodesStore = create<PromoCodesState>((set) => ({
         }catch (err){
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });
+            throw err;
         }
     },
     deletePromoCode: async (id: string) => {
@@ -71,6 +74,7 @@ export const usePromoCodesStore = create<PromoCodesState>((set) => ({
         }catch (err){
             const message = err instanceof Error ? err.message : String(err);
             set({ error: message, loading: false });
+            throw err;
         }
     }
 }));

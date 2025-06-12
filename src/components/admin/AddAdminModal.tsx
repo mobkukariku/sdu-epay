@@ -54,8 +54,10 @@ export const AddAdminModal: FC = () => {
     }, []);
 
     const handleSubmit = async () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
         const newErrors = {
-            username: !username,
+            username: !username || !emailRegex.test(username),
             name: !name,
             password: !password || password.length < 6,
             department: !selectedDepartment,
@@ -66,7 +68,11 @@ export const AddAdminModal: FC = () => {
 
         const messages: string[] = [];
 
-        if (newErrors.username) messages.push("Email is required");
+        if (!username) {
+            messages.push("Email is required");
+        } else if (!emailRegex.test(username)) {
+            messages.push("Invalid email format");
+        }
         if (newErrors.name) messages.push("Name is required");
         if (!password) {
             messages.push("Password is required");
@@ -115,7 +121,6 @@ export const AddAdminModal: FC = () => {
 
 
 
-
     return (
         <>
             <CustomButton
@@ -132,6 +137,7 @@ export const AddAdminModal: FC = () => {
                     <CustomInput
                         icon={<EnvelopeIcon className={errors.username ? " text-red-500" : "text-[#6B9AB0]"} />}
                         placeholder="Enter your email"
+                        type="email"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         className={errors.username ? "border border-red-500" : ""}
