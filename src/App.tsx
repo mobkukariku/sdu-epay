@@ -13,6 +13,7 @@ import {SuccessPaymentPage} from "@/components/payment/SuccessPaymentPage.tsx";
 import {FailPaymentPage} from "@/components/payment/FailPaymentPage.tsx";
 import {DashboardPage} from "@/pages/DashboardPage.tsx";
 import {Toaster} from "react-hot-toast";
+import {FileViewerPage} from "@/pages/FileViewerPage.tsx";
 
 
 function App() {
@@ -47,6 +48,10 @@ function App() {
                       <DepartmentsPage />
                   </ReauireAuth>
               } />
+              <Route path="/file-reader" element={
+                  <FileViewerPage />
+              }
+              />
 
               <Route path={"/success"} element={<SuccessPaymentPage />} />
               <Route path={"/fail"} element={<FailPaymentPage />} />
