@@ -113,9 +113,9 @@ export const AddAdminModal: FC = () => {
                 department: false,
                 role: false,
             });
-        } catch (error) {
-            console.error("Failed to add admin:", error);
-            toast.error("Something went wrong while adding admin");
+        } catch (error: any) {
+            console.error("Failed to add admin:", error.response.data.detail);
+            toast.error(error.response.data.detail);
         }
     };
 

@@ -35,6 +35,7 @@ export const useDepartmentsStore = create<DepartmentsState>((set) => ({
             });
         } catch (error) {
             set({ error: error instanceof Error ? error.message : String(error), loading: false });
+            throw error;
         }
     },
     addDepartment: async (department) => {
@@ -47,6 +48,7 @@ export const useDepartmentsStore = create<DepartmentsState>((set) => ({
             }));
         } catch (error) {
             set({ error: error instanceof Error ? error.message : String(error), loading: false });
+            throw error;
         }
     },
     updateDepartment: async (id, department) => {
@@ -64,6 +66,7 @@ export const useDepartmentsStore = create<DepartmentsState>((set) => ({
                 error: error instanceof Error ? error.message : String(error),
                 loading: false
             });
+            throw error;
         }
     },
     deleteDepartment: async (id: string) => {
@@ -73,6 +76,7 @@ export const useDepartmentsStore = create<DepartmentsState>((set) => ({
             set({loading: false});
         }catch (error) {
             console.error(error);
+            throw error;
         }
     }
 }));

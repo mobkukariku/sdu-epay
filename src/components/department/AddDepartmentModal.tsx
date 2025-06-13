@@ -4,6 +4,7 @@ import {CustomButton} from "@/ui/CustomButton.tsx";
 import {PlusIcon, UserCircleIcon} from "@heroicons/react/24/outline";
 import {CustomModal} from "@/ui/CustomModal.tsx";
 import {CustomInput} from "@/ui/CustomInput.tsx";
+import {toast} from "react-hot-toast";
 
 
 export const AddDepartmentModal:FC = () => {
@@ -18,9 +19,10 @@ export const AddDepartmentModal:FC = () => {
                 name: name
             });
             setIsModalOpen(false);
-        }catch (err){
-            console.error("Failed to add department", err);
-            alert("Error while adding department.");
+            toast.success("Department created Successfully")
+        }catch (err:any){
+            console.log(err)
+           toast.error(err.response.data.detail[0].msg)
         }
     }
 

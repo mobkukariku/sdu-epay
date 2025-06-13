@@ -4,36 +4,21 @@ import {CustomButton} from "@/ui/CustomButton.tsx";
 import {AddDepartmentModal} from "@/components/department/AddDepartmentModal.tsx";
 import {getDepartments} from "@/api/endpoints/departments.ts";
 import {AnimatePresence, motion} from "framer-motion";
-import {Paginator} from "primereact/paginator";
 
 export const DepartmentsFilters:FC = () => {
     const [name, setName] = useState("");
     const [depSuggestions, setDepSuggestions] = useState<{name: string, id: string}[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
-    const [first, setFirst] = useState(0);
-    const [rows, setRows] = useState(10);
 
 
-    const {fetchDepartments, total} = useDepartmentsStore();
+    const {fetchDepartments, } = useDepartmentsStore();
     const handleSearch = async () => {
-        setFirst(0);
         await fetchDepartments({
             name: name || undefined,
-            size: rows,
             page: 0,
         });
     }
 
-    const onPageChange = async (event: any) => {
-        setFirst(event.first);
-        setRows(event.rows);
-
-        await fetchDepartments({
-            name: name || undefined,
-            page: event.first / event.rows,
-            size: event.rows,
-        });
-    };
 
     const handleSelectEvent = (dep: {name:string, id: string}) => {
         setName(dep.name);
@@ -60,16 +45,6 @@ export const DepartmentsFilters:FC = () => {
         return () => clearTimeout(timeout);
     }, [name]);
 
-    useEffect(() => {
-        const load = async () => {
-            await fetchDepartments({
-                page: first / rows,
-                size: rows,
-            });
-        };
-
-        load();
-    }, [first, rows, name]);
 
 
     return (
@@ -114,14 +89,6 @@ export const DepartmentsFilters:FC = () => {
                 </CustomButton>
             </div>
             <div className="flex items-center gap-5">
-                <Paginator
-                    first={first}
-                    rows={rows}
-                    totalRecords={total}
-                    rowsPerPageOptions={[10, 20, 30]}
-                    onPageChange={onPageChange}
-                    className="custom-paginator"
-                />
                 <AddDepartmentModal />
             </div>
         </div>

@@ -5,17 +5,30 @@ import { AdminLayout } from "@/layouts/AdminLayout.tsx";
 import { AdminFilters } from "@/components/admin/AdminFilters.tsx";
 import { useUsersStore } from "@/store/useUsersStore.ts";
 import { EditAdminModal } from "@/components/admin/EditAdminModal.tsx";
-import {DeleteModal} from "@/ui/DeleteModal.tsx"; // подключи модал
+import {DeleteModal} from "@/ui/DeleteModal.tsx";
+import {Paginator} from "primereact/paginator";
+import {toast} from "react-hot-toast"; // подключи модал
 
 export const AdminPage: FC = () => {
-    const { fetchUsers, users, deleteUser} = useUsersStore();
+    const { fetchUsers, users, deleteUser, total} = useUsersStore();
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedAdmin, setSelectedAdmin] = useState<any | null>(null);
-
+    const [first, setFirst] = useState(0);
+    const [rows, setRows] = useState(10);
     useEffect(() => {
         fetchUsers();
     }, [fetchUsers]);
+
+    const onPageChange = async (event: any) => {
+        setFirst(event.first);
+        setRows(event.rows);
+
+        await fetchUsers({
+            page: event.first / event.rows,
+            size: event.rows,
+        });
+    };
 
     const handleEditClick = (admin: any) => {
         setSelectedAdmin(admin);
@@ -29,11 +42,29 @@ export const AdminPage: FC = () => {
 
     const handleConfirmDelete = async () => {
         if (selectedAdmin) {
-            await deleteUser(selectedAdmin.id);
-            setIsDeleteModalOpen(false);
-            setSelectedAdmin(null);
+            try{
+                await deleteUser(selectedAdmin.id);
+                setIsDeleteModalOpen(false);
+                setSelectedAdmin(null);
+                toast.success("User is deleted")
+            }catch (err:any){
+                toast.error(err.response.data.detail[0].msg)
+
+            }
         }
     };
+
+    useEffect(() => {
+        const load = async () => {
+            await fetchUsers({
+                page: first / rows,
+                size: rows,
+            });
+        };
+
+        load();
+    }, [first, rows]);
+
 
     const columns = [
         { header: "Email", accessor: "username" },
@@ -62,6 +93,14 @@ export const AdminPage: FC = () => {
                             </button>
                         </div>
                     )}
+                />
+                <Paginator
+                    first={first}
+                    rows={rows}
+                    totalRecords={total}
+                    rowsPerPageOptions={[10, 20, 30]}
+                    onPageChange={onPageChange}
+                    className="custom-paginator"
                 />
             </div>
 

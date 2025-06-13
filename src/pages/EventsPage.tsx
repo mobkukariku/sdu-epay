@@ -6,12 +6,17 @@ import {EventFilters} from "@/components/event/EventsFilters.tsx";
 import {useEventsStore} from "@/store/useEventsStore.ts";
 import {EditEventsModal} from "@/components/event/EditEventsModal.tsx";
 import {DeleteModal} from "@/ui/DeleteModal.tsx";
+import {toast} from "react-hot-toast";
+import {Paginator} from "primereact/paginator";
 
 export const EventsPage:FC = () => {
-    const {events, fetchEvents, deleteEvent} = useEventsStore();
+    const {events, fetchEvents, deleteEvent, total} = useEventsStore();
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
+    const [first, setFirst] = useState(0);
+    const [rows, setRows] = useState(10);
+
 
     const columns = [
         { header: "Event Name", accessor: "title" },
@@ -26,6 +31,18 @@ export const EventsPage:FC = () => {
         fetchEvents();
     }, []);
 
+
+    const onPageChange = async (event: any) => {
+        setFirst(event.first);
+        setRows(event.rows);
+
+        await fetchEvents({
+            page: event.first / event.rows,
+            size: event.rows,
+        });
+    };
+
+
     const handleEditClick = (event: any) => {
         setSelectedEvent(event);
         setIsEditModalOpen(true);
@@ -36,12 +53,28 @@ export const EventsPage:FC = () => {
         setIsDeleteModalOpen(true)
     }
 
+    useEffect(() => {
+        const load = async () => {
+            await fetchEvents({
+                page: first / rows,
+                size: rows,
+            });
+        };
+
+        load();
+    }, [first, rows]);
+
     const handleConfirmDelete = async () => {
         if (selectedEvent) {
-            await deleteEvent(selectedEvent.id);
-            await fetchEvents();
-            setIsDeleteModalOpen(false);
-            setSelectedEvent(null);
+            try{
+                await deleteEvent(selectedEvent.id);
+                await fetchEvents();
+                setIsDeleteModalOpen(false);
+                setSelectedEvent(null);
+                toast.success("Event is deleted")
+            }catch (err:any){
+                toast.error(err.response.data.detail[0].msg)
+            }
         }
     };
 
@@ -64,6 +97,14 @@ export const EventsPage:FC = () => {
                             </button>
                         </div>
                     )}
+                />
+                <Paginator
+                    first={first}
+                    rows={rows}
+                    totalRecords={total}
+                    rowsPerPageOptions={[10, 20, 30]}
+                    onPageChange={onPageChange}
+                    className="custom-paginator"
                 />
             </div>
 

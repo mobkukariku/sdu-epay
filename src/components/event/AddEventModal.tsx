@@ -116,8 +116,9 @@ export const AddEventModal: FC = () => {
                 price: false,
                 dates: false,
             });
-        } catch (err) {
-            console.error("Failed to add department:", err);
+            toast.success("Event added successfully")
+        } catch (err:any) {
+            console.error("Failed to add event:", err);
             toast.error("Something went wrong while adding the event.");
         }
     };

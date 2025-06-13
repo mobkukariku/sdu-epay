@@ -138,9 +138,9 @@ export const EditEventsModal: FC<EditEventsModalProps> = ({isOpen, onClose, even
 
             toast.success("Event updated successfully!");
             onClose();
-        } catch (err) {
+        } catch (err: any) {
             console.error("Failed to update event:", err);
-            toast.error("Something went wrong while updating the event.");
+            toast.error(err.response.data.detail[0].msg)
         }
     };
 
