@@ -17,6 +17,7 @@ import {usePaymentStore} from "@/store/usePaymentStore.ts";
 import {orderHalyk, orderKaspi} from "@/api/endpoints/order.ts";
 import {PaymentHalyk} from "@/components/payment/PaymentHalyk.tsx";
 import {toast} from "react-hot-toast";
+import {Calendar} from "primereact/calendar";
 
 
 interface FormValues {
@@ -37,7 +38,7 @@ const schema = yup.object().shape({
     promo_code: yup.string().nullable(),
     department_id: yup.string().required("Department type is required"),
     event_id: yup.string().required("Event type is required"),
-    additional: yup.string().required("Additional field is required"),
+    additional: yup.string().optional(),
     paymentMethod: yup.string().required("Payment method is required"),
 });
 
@@ -53,6 +54,9 @@ export const PaymentForm: FC = () => {
     const [paymentData, setPaymentData] = useState<any>(null);
     const [departmentOptions, setDepartmentOptions] = useState<Option[]>([]);
     const [eventOptions, setEventOptions] = useState<Option[]>([]);
+    const [departments, setDepartments] = useState<any[]>([]); // store all data
+    const [additionalFields, setAdditionalFields] = useState<any[]>([]);
+    const [additionalFieldValues, setAdditionalFieldValues] = useState<Record<string, string | boolean>>({});
 
 
 
@@ -60,6 +64,7 @@ export const PaymentForm: FC = () => {
         const fetchDepartments = async () => {
             try {
                 const data = await getPublicDepartments();
+                setDepartments(data);
                 const mapped = data.map((dept: { name: string; id: string }) => ({
                     label: dept.name,
                     value: dept.id,
@@ -112,18 +117,35 @@ export const PaymentForm: FC = () => {
         }
     });
 
+    const handleAdditionalChange = (key: string, value: any) => {
+        const formattedValue =
+            value instanceof Date ? formatDate(value) : value;
+
+        setAdditionalFieldValues((prev) => ({
+            ...prev,
+            [key]: formattedValue,
+        }));
+    };
+
+
 
     const onSubmit: SubmitHandler<FormValues> = async (data) => {
+
         setLoading(true);
         try {
+            const payload = {
+                ...data,
+                additional_fields: additionalFieldValues
+            };
+
             if (data.paymentMethod === "KaspiBank") {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const { paymentMethod, department_id, ...dataWithoutPaymentMethodAndDepartment } = data;
+                const { paymentMethod, department_id, ...dataWithoutPaymentMethodAndDepartment } = payload;
 
                 await orderKaspi(dataWithoutPaymentMethodAndDepartment);
             }else if (data.paymentMethod === "HalykBank") {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const { paymentMethod, department_id, ...dataWithoutPaymentMethodAndDepartment } = data;
+                const { paymentMethod, department_id, ...dataWithoutPaymentMethodAndDepartment } = payload;
                 setPaymentData(await orderHalyk(dataWithoutPaymentMethodAndDepartment));
                 setShowWidget(true);
             }
@@ -138,6 +160,9 @@ export const PaymentForm: FC = () => {
             setLoading(false);
         }
     };
+
+    const formatDate = (date: Date) => date.toISOString().split("T")[0];
+
 
 
     return (
@@ -225,6 +250,17 @@ export const PaymentForm: FC = () => {
                                 onChange={(val) => {
                                     field.onChange(val);
                                     setSelectedDepartmentId(val);
+                                    type AdditionalFieldsMap = Record<string, { type: string }>;
+
+                                    const selected = departments.find((d) => d.id === val);
+                                    const additional = (selected?.additional_fields || {}) as AdditionalFieldsMap;
+
+                                    const parsed = Object.entries(additional).map(([label, config]) => ({
+                                        label,
+                                        type: config.type,
+                                        name: label.replace(/\s+/g, "_").toLowerCase()
+                                    }));
+                                    setAdditionalFields(parsed);
                                 }}
                                 triggerClassName={"text-white"}
                                 placeholder="Select payment destination"
@@ -267,23 +303,47 @@ export const PaymentForm: FC = () => {
                                 </>
                             )}
                         />
+                        {additionalFields.map((field) => {
+                            const key = field.name;
 
-                        <Controller
-                            name="additional"
-                            control={control}
-                            render={({ field }) => (
+                            if (field.type === "checkbox") {
+                                return (
+                                    <label key={key} className="flex items-center gap-2 ml-2">
+                                        <input
+                                            type="checkbox"
+                                            checked={Boolean(additionalFieldValues[key])}
+                                            onChange={(e) => handleAdditionalChange(key, e.target.checked)}
+                                        />
+                                        <span>{field.label}</span>
+                                    </label>
+                                );
+                            }else if (field.type === "date") {
+                                return (
+                                    <Calendar
+                                        value={
+                                            typeof additionalFieldValues[key] === "string" ||
+                                            typeof additionalFieldValues[key] === "number"
+                                                ? new Date(additionalFieldValues[key])
+                                                : null
+                                        }
+                                        dateFormat="yy-mm-dd"
+                                        placeholder={field.label}
+                                        onChange={(e) => handleAdditionalChange(key, e.value)}
+                                    />
+                                )
+                            }
+
+                            return (
                                 <CustomInput
-                                    {...field}
+                                    key={key}
                                     icon={<UserIcon className="text-[#6B9AB0]" />}
-                                    type="text"
-                                    onChange={(e) => {
-                                        field.onChange(e);
-                                        setOrderField("additional", e.target.value);
-                                    }}
-                                    placeholder="Additional field"
+                                    type={field.type}
+                                    value={additionalFieldValues[key] || ""}
+                                    onChange={(e) => handleAdditionalChange(key, e.target.value)}
+                                    placeholder={field.label}
                                 />
-                            )}
-                        />
+                            );
+                        })}
                         <Controller
                             name="paymentMethod"
                             control={control}

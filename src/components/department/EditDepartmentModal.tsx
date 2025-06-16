@@ -5,6 +5,8 @@ import {EnvelopeIcon, } from "@heroicons/react/24/outline";
 import {CustomButton} from "@/ui/CustomButton.tsx";
 import {CustomModal} from "@/ui/CustomModal.tsx";
 import {toast} from "react-hot-toast";
+import { AddAdditionalFields } from "@/components/department/AddAdditionalFields";
+
 
 interface EditDepartmentModalProps {
     isOpen: boolean;
@@ -12,47 +14,71 @@ interface EditDepartmentModalProps {
     departmentData: {
         id:string;
         name: string;
+        additional_fields?: Record<string, { type: string }>;
     },
 }
 
 
 export const EditDepartmentModal: FC<EditDepartmentModalProps> = ({isOpen, onClose, departmentData}) => {
+    const [additionalFields, setAdditionalFields] = useState<{ name: string; type: string }[]>([]);
     const [name, setName] = useState(departmentData.name);
 
     const {updateDepartment} = useDepartmentsStore();
 
     useEffect(() => {
-        if(isOpen){
+        if (isOpen) {
             setName(departmentData.name);
+            const fields = departmentData.additional_fields
+                ? Object.entries(departmentData.additional_fields).map(([key, value]) => ({
+                    name: key,
+                    type: value.type,
+                }))
+                : [];
+            setAdditionalFields(fields);
         }
     }, [isOpen, departmentData]);
 
     const handleUpdate = async () => {
+        const additional_fields: Record<string, { type: string }> = {};
+        additionalFields.forEach((field) => {
+            additional_fields[field.name] = { type: field.type };
+        });
 
         try {
             await updateDepartment(departmentData.id, {
-                name
-            })
+                name,
+                additional_fields,
+            });
             onClose();
-            toast.success("Department successfully changed")
-        } catch (error:any) {
-            console.error("Failed to update department:", error)
-            toast.error(error.response.data.detail[0].msg)
+            toast.success("Department successfully changed");
+        } catch (error: any) {
+            console.error("Failed to update department:", error);
+            toast.error(error.response.data.detail?.[0]?.msg || "Update failed");
         }
-    }
-        return (
-            <CustomModal title="Edit Department" isOpen={isOpen} onClose={onClose}>
-                <div className="flex flex-col gap-[21px]">
-                    <CustomInput
-                        icon={<EnvelopeIcon className="text-[#6B9AB0]" />}
-                        placeholder="Enter name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                    <CustomButton onClick={handleUpdate} className="w-full">
-                        Save Changes
-                    </CustomButton>
-                </div>
-            </CustomModal>
-        )
+    };
+
+    return (
+        <CustomModal
+            title="Edit Department"
+            className="max-w-md w-full"
+            isOpen={isOpen}
+            onClose={onClose}
+        >
+            <div className="flex flex-col gap-[21px]">
+                <CustomInput
+                    icon={<EnvelopeIcon className="text-[#6B9AB0]" />}
+                    placeholder="Enter name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                />
+
+                <AddAdditionalFields value={additionalFields} onChange={setAdditionalFields} />
+
+                <CustomButton onClick={handleUpdate} className="w-full">
+                    Save Changes
+                </CustomButton>
+            </div>
+        </CustomModal>
+    );
+
 }

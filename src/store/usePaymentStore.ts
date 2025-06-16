@@ -26,6 +26,7 @@ const initialOrder: IOrder = {
     email: '',
     cellphone: '',
     additional: '',
+    additional_fields: null
 }
 
 

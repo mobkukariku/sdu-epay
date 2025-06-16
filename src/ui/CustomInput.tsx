@@ -5,7 +5,7 @@ export type InputProps = {
     icon?: ReactNode;
     placeholder?: string;
     type?: string;
-    value?: string;
+    value?: any;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     error?: string;
 };

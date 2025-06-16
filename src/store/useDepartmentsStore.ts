@@ -10,7 +10,7 @@ interface DepartmentsState {
     loading: boolean;
     error: string | null;
     fetchDepartments: (query?:DepartmentQuery) => Promise<void>;
-    addDepartment: (department: {name:string}) => Promise<void>;
+    addDepartment: (department: {name:string, additional_fields: any}) => Promise<void>;
     updateDepartment: (id: string, update: Department) => Promise<void>;
     deleteDepartment: (id: string) => Promise<void>;
 }

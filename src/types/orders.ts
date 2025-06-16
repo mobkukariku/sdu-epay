@@ -1,12 +1,12 @@
 export interface IOrder {
-    event_id: string;
-    promo_code: string | null; // сделаем опциональным
+    additional_fields: Record<string, string | boolean> | null;
     fullname: string;
     email: string;
     cellphone: string;
-    additional: string;
+    promo_code: string | null;
+    event_id: string;
+    additional?: string;
 }
-
 
 
 export interface PaymentResponseKaspi {

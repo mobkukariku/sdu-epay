@@ -132,7 +132,7 @@ export const AddAdminModal: FC = () => {
                 ADD
             </CustomButton>
 
-            <CustomModal title="Add Admin" isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <CustomModal className={"max-w-md w-full"} title="Add Admin" isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <div className="flex flex-col gap-[21px]">
                     <CustomInput
                         icon={<EnvelopeIcon className={errors.username ? " text-red-500" : "text-[#6B9AB0]"} />}

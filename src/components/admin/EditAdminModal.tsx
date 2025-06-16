@@ -138,7 +138,7 @@ export const EditAdminModal: FC<EditAdminModalProps> = ({ isOpen, onClose, admin
 
 
     return (
-        <CustomModal title="Edit Admin" isOpen={isOpen} onClose={onClose}>
+        <CustomModal className={"max-w-md w-full"} title="Edit Admin" isOpen={isOpen} onClose={onClose}>
             <div className="flex flex-col gap-[21px]">
                 <CustomInput
                     icon={<EnvelopeIcon className={errors.username ? "text-red-500" : "text-[#6B9AB0]"} />}

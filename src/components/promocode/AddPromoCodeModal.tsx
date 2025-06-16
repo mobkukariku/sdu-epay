@@ -131,7 +131,7 @@ export const AddPromoCodeModal: FC = () => {
                 <PlusIcon />
                 ADD
             </CustomButton>
-            <CustomModal title={"Add Promo-Code"} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <CustomModal className={"max-w-md w-full"} title={"Add Promo-Code"} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <div className={"flex flex-col gap-[21px]"}>
                     <CustomInput
                         value={code}

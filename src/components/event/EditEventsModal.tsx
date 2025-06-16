@@ -145,7 +145,7 @@ export const EditEventsModal: FC<EditEventsModalProps> = ({isOpen, onClose, even
     };
 
     return (
-        <CustomModal title="Edit Event" isOpen={isOpen} onClose={onClose}>
+        <CustomModal title="Edit Event" isOpen={isOpen} className={"max-w-md w-full"} onClose={onClose}>
             <div className="flex flex-col gap-[21px]">
                 <CustomInput
                     icon={<InformationCircleIcon className={errors.title ? " text-red-500" : "text-[#6B9AB0]"} />}
