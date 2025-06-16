@@ -4,39 +4,22 @@ import {CustomButton} from "@/ui/CustomButton.tsx";
 import {AddPromoCodeModal} from "@/components/promocode/AddPromoCodeModal.tsx";
 import {getEvents} from "@/api/endpoints/events.ts";
 import {AnimatePresence, motion} from "framer-motion";
-import {Paginator} from "primereact/paginator"; // должен возвращать [{ id, title }]
 export const PromoCodeFilters: FC = () => {
     const [promo, setPromo] = useState("");
     const [eventName, setEventName] = useState("");
     const [eventSuggestions, setEventSuggestions] = useState<{title: string, id: string}[]>([]);
     const [selectedEventId, setSelectedEventId] = useState<string | undefined>(undefined);
     const [showSuggestions, setShowSuggestions] = useState(false);
-    const [first, setFirst] = useState(0);
-    const [rows, setRows] = useState(10);
-    const {fetchPromoCodes, total} = usePromoCodesStore();
+    const {fetchPromoCodes} = usePromoCodesStore();
 
     const handleSearch = async () => {
-        setFirst(0);
         await fetchPromoCodes({
             code: promo || undefined,
             event_id: selectedEventId || undefined,
-            page: 0,
-            size: rows,
         });
         setShowSuggestions(false);
     };
 
-    const onPageChange = async (event: any) => {
-        setFirst(event.first);
-        setRows(event.rows);
-
-        await fetchPromoCodes({
-            code: promo || undefined,
-            event_id: selectedEventId || undefined,
-            page: event.first / event.rows,
-            size: event.rows,
-        });
-    };
 
     const handleSelectEvent = (event: {title:string, id: string}) => {
         setEventName(event.title);
@@ -64,16 +47,6 @@ export const PromoCodeFilters: FC = () => {
         return () => clearTimeout(timeout);
     }, [eventName]);
 
-    useEffect(() => {
-        const load = async () => {
-            await fetchPromoCodes({
-                page: first / rows,
-                size: rows,
-            });
-        };
-
-        load();
-    }, [first, rows]);
 
     return (
         <div className="flex justify-between items-end mb-[31px] relative">
@@ -132,14 +105,6 @@ export const PromoCodeFilters: FC = () => {
                 </CustomButton>
             </div>
             <div className="flex items-center gap-5">
-                <Paginator
-                    first={first}
-                    rows={rows}
-                    totalRecords={total}
-                    rowsPerPageOptions={[10, 20, 30]}
-                    onPageChange={onPageChange}
-                    className="custom-paginator"
-                />
                 <AddPromoCodeModal />
             </div>
         </div>

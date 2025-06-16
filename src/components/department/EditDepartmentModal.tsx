@@ -4,6 +4,7 @@ import {CustomInput} from "@/ui/CustomInput.tsx";
 import {EnvelopeIcon, } from "@heroicons/react/24/outline";
 import {CustomButton} from "@/ui/CustomButton.tsx";
 import {CustomModal} from "@/ui/CustomModal.tsx";
+import {toast} from "react-hot-toast";
 
 interface EditDepartmentModalProps {
     isOpen: boolean;
@@ -27,18 +28,16 @@ export const EditDepartmentModal: FC<EditDepartmentModalProps> = ({isOpen, onClo
     }, [isOpen, departmentData]);
 
     const handleUpdate = async () => {
-        if (!name) {
-            alert("Please fill in all required fields.");
-            return;
-        }
 
         try {
             await updateDepartment(departmentData.id, {
                 name
             })
             onClose();
-        } catch (error) {
+            toast.success("Department successfully changed")
+        } catch (error:any) {
             console.error("Failed to update department:", error)
+            toast.error(error.response.data.detail[0].msg)
         }
     }
         return (

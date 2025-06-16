@@ -3,7 +3,7 @@ import {Navigate} from "react-router-dom";
 
 
 export const ReauireAuth: FC<{ children: ReactNode }> = ({ children }) => {
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = localStorage.getItem("access");
 
     if (!accessToken) return <Navigate to="/" replace />;
 

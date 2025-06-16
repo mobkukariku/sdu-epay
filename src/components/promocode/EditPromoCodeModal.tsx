@@ -89,8 +89,9 @@ export const EditPromoCodeModal: FC<EditPromoCodeModalProps> = ({
                         dates: false,
                     });
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.error("Failed to fetch events:", error);
+                toast.error(error.response.data.detail[0].msg)
             }
         };
 
@@ -145,9 +146,7 @@ export const EditPromoCodeModal: FC<EditPromoCodeModalProps> = ({
             toast.success("Promo code updated successfully.");
             onClose();
         } catch (err: any) {
-            const message =
-                err?.response?.data?.message || err?.message || "Update failed.";
-            toast.error(message);
+            toast.error(err.response.data.detail[0].msg)
         }
     };
 

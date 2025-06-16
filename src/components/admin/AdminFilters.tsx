@@ -5,7 +5,7 @@ import { useUsersStore } from "@/store/useUsersStore.ts";
 import { CustomButton } from "@/ui/CustomButton.tsx";
 import { AnimatePresence, motion } from "framer-motion";
 import { getUsers } from "@/api/endpoints/users.ts";
-import { Paginator } from "primereact/paginator";
+import {toast} from "react-hot-toast";
 
 const roleOptions = [
     { label: "All", value: "" },
@@ -20,30 +20,12 @@ export const AdminFilters: FC = () => {
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [selectedRole, setSelectedRole] = useState<"SUPER_ADMIN" | "ADMIN" | "MANAGER" | "">("");
 
-    const [first, setFirst] = useState(0);
-    const [rows, setRows] = useState(10);
-
-    const { fetchUsers, total } = useUsersStore();
+    const { fetchUsers } = useUsersStore();
 
     const handleSearch = async () => {
-        setFirst(0);
         await fetchUsers({
             username: email || undefined,
             role: selectedRole !== "" ? selectedRole : undefined,
-            page: 0,
-            size: rows,
-        });
-    };
-
-    const onPageChange = async (event: any) => {
-        setFirst(event.first);
-        setRows(event.rows);
-
-        await fetchUsers({
-            username: email || undefined,
-            role: selectedRole !== "" ? selectedRole : undefined,
-            page: event.first / event.rows,
-            size: event.rows,
         });
     };
 
@@ -64,24 +46,15 @@ export const AdminFilters: FC = () => {
                 const filtered = response.data.filter((user: { active: boolean }) => user.active);
                 setMailSuggestions(filtered);
                 setShowSuggestions(true);
-            } catch (err) {
+            } catch (err:any) {
                 console.error(err);
+                toast.error(err.response.data.detail[0].msg)
             }
         }, 300);
 
         return () => clearTimeout(timeout);
     }, [email]);
 
-    useEffect(() => {
-        const load = async () => {
-            await fetchUsers({
-                page: first / rows,
-                size: rows,
-            });
-        };
-
-        load();
-    }, [first, rows]);
 
     return (
         <div className="flex justify-between items-end mb-[31px]">
@@ -139,14 +112,6 @@ export const AdminFilters: FC = () => {
                 </CustomButton>
             </div>
             <div className="flex items-center gap-5">
-                <Paginator
-                    first={first}
-                    rows={rows}
-                    totalRecords={total}
-                    rowsPerPageOptions={[10, 20, 30]}
-                    onPageChange={onPageChange}
-                    className="custom-paginator"
-                />
                 <AddAdminModal />
             </div>
         </div>

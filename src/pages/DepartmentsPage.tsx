@@ -6,12 +6,16 @@ import {PencilIcon, TrashIcon} from "lucide-react";
 import {DepartmentsFilters} from "@/components/department/DepartmentsFilters.tsx";
 import {EditDepartmentModal} from "@/components/department/EditDepartmentModal.tsx";
 import {DeleteModal} from "@/ui/DeleteModal.tsx";
+import {Paginator} from "primereact/paginator";
+import {toast} from "react-hot-toast";
 
 export const DepartmentsPage:FC = () => {
-    const {departments, fetchDepartments, deleteDepartment} = useDepartmentsStore();
+    const {departments, fetchDepartments, deleteDepartment, total} = useDepartmentsStore();
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedDepartment, setSelectedDepartment] = useState<any | null>(null);
+    const [first, setFirst] = useState(0);
+    const [rows, setRows] = useState(10);
 
     const columns = [
         {header: "Department", accessor: "name"}
@@ -20,6 +24,16 @@ export const DepartmentsPage:FC = () => {
     useEffect(() => {
         fetchDepartments()
     }, []);
+
+    const onPageChange = async (event: any) => {
+        setFirst(event.first);
+        setRows(event.rows);
+
+        await fetchDepartments({
+            page: event.first / event.rows,
+            size: event.rows,
+        });
+    };
 
     const handleEditClick = (dep: any) => {
         setSelectedDepartment(dep);
@@ -32,12 +46,29 @@ export const DepartmentsPage:FC = () => {
 
     const handleConfirmDelete = async () => {
         if (selectedDepartment) {
-            await deleteDepartment(selectedDepartment.id);
-            await fetchDepartments();
-            setIsDeleteModalOpen(false);
-            setSelectedDepartment(null);
+            try{
+                await deleteDepartment(selectedDepartment.id);
+                await fetchDepartments();
+                setIsDeleteModalOpen(false);
+                setSelectedDepartment(null);
+                toast.success("Department is deleted")
+            }catch (err:any){
+                toast.error(err.response.data.detail[0].msg)
+            }
         }
     };
+
+    useEffect(() => {
+        const load = async () => {
+            await fetchDepartments({
+                page: first / rows,
+                size: rows,
+            });
+        };
+
+        load();
+    }, [first, rows]);
+
 
     return(
         <AdminLayout>
@@ -57,6 +88,14 @@ export const DepartmentsPage:FC = () => {
                             </button>
                         </div>
                     )}
+                />
+                <Paginator
+                    first={first}
+                    rows={rows}
+                    totalRecords={total}
+                    rowsPerPageOptions={[10, 20, 30]}
+                    onPageChange={onPageChange}
+                    className="custom-paginator"
                 />
             </div>
             {selectedDepartment && (

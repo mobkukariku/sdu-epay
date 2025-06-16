@@ -6,12 +6,16 @@ import {PromoCodeFilters} from "@/components/promocode/PromoCodeFilters.tsx";
 import {usePromoCodesStore} from "@/store/usePromoCodesStore.ts";
 import {EditPromoCodeModal} from "@/components/promocode/EditPromoCodeModal.tsx";
 import {DeleteModal} from "@/ui/DeleteModal.tsx";
+import {toast} from "react-hot-toast";
+import {Paginator} from "primereact/paginator";
 
 export const PromoCodesPage:FC = () => {
-    const {promoCodes, fetchPromoCodes, deletePromoCode} = usePromoCodesStore();
+    const {promoCodes, fetchPromoCodes, deletePromoCode, total} = usePromoCodesStore();
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedPromo, setSelectedPromo] = useState<any | null>(null);
+    const [first, setFirst] = useState(0);
+    const [rows, setRows] = useState(10);
 
     const columns = [
         { header: "Promo code", accessor: "code" },
@@ -28,6 +32,16 @@ export const PromoCodesPage:FC = () => {
         fetchPromoCodes();
     }, []);
 
+    const onPageChange = async (event: any) => {
+        setFirst(event.first);
+        setRows(event.rows);
+
+        await fetchPromoCodes({
+            page: event.first / event.rows,
+            size: event.rows,
+        });
+    };
+
     const handleEditClick = (promo: any) => {
         setSelectedPromo(promo);
         setIsEditModalOpen(true);
@@ -40,12 +54,28 @@ export const PromoCodesPage:FC = () => {
 
     const handleConfirmDelete = async () => {
         if (selectedPromo) {
-            await deletePromoCode(selectedPromo.id);
-            await fetchPromoCodes();
-            setIsDeleteModalOpen(false);
-            setSelectedPromo(null);
+            try{
+                await deletePromoCode(selectedPromo.id);
+                await fetchPromoCodes();
+                setIsDeleteModalOpen(false);
+                setSelectedPromo(null);
+                toast.success("Promo is deleted")
+            }catch (err:any){
+                toast.error(err.response.data.detail[0].msg)
+            }
         }
     };
+
+    useEffect(() => {
+        const load = async () => {
+            await fetchPromoCodes({
+                page: first / rows,
+                size: rows,
+            });
+        };
+
+        load();
+    }, [first, rows]);
 
     const formattedData = promoCodes.map((promo) => ({
         ...promo,
@@ -72,6 +102,14 @@ export const PromoCodesPage:FC = () => {
                             </button>
                         </div>
                     )}
+                />
+                <Paginator
+                    first={first}
+                    rows={rows}
+                    totalRecords={total}
+                    rowsPerPageOptions={[10, 20, 30]}
+                    onPageChange={onPageChange}
+                    className="custom-paginator"
                 />
             </div>
 
