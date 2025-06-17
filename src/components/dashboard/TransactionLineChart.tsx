@@ -10,8 +10,10 @@ import {
     Tooltip,
     Legend,
 } from "chart.js";
+import { Calendar } from "primereact/calendar";
 import { getDepartmentOrders } from "@/api/endpoints/statistics";
 import { StatisticsDepartmentData } from "@/types/statistics";
+import { addMonths, format } from "date-fns";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -30,27 +32,41 @@ function formatMonth(isoMonth: string) {
 
 export const TransactionLineChart: FC = () => {
     const [data, setData] = useState<StatisticsDepartmentData[]>([]);
-    const [startDate, setStartDate] = useState("2024-06");
-    const [endDate, setEndDate] = useState("2025-06");
+    const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
+        new Date("2024-06-01"),
+        new Date("2025-06-01"),
+    ]);
+
+    const fetchData = async () => {
+        const [start, end] = dateRange;
+        if (!start || !end) return;
+
+        const formattedStart = format(start, "yyyy-MM-dd");
+        const formattedEnd = format(addMonths(end, 1), "yyyy-MM-dd"); // include full month
+
+        const response = await getDepartmentOrders({
+            start_date: formattedStart,
+            end_date: formattedEnd,
+        });
+        setData(response);
+    };
 
     useEffect(() => {
-        const fetchData = async () => {
-            const response = await getDepartmentOrders(); // загрузка всех данных
-            setData(response);
-        };
         fetchData();
-    }, []);
+    }, [dateRange]);
 
     const chartData = useMemo(() => {
-        if (!data.length) return null;
+        if (!data.length || !dateRange[0] || !dateRange[1]) return null;
+
+        const startMonth = format(dateRange[0], "yyyy-MM");
+        const endMonth = format(dateRange[1], "yyyy-MM");
 
         const labels = data[0].time_buckets
-            .map(b => b.bucket)
-            .filter(bucket => bucket >= startDate && bucket <= endDate)
-            .map(formatMonth);
+            .filter(bucket => bucket.bucket >= startMonth && bucket.bucket <= endMonth)
+            .map(b => formatMonth(b.bucket));
 
         const datasets = data.map((dep, idx) => {
-            const filtered = dep.time_buckets.filter(tb => tb.bucket >= startDate && tb.bucket <= endDate);
+            const filtered = dep.time_buckets.filter(tb => tb.bucket >= startMonth && tb.bucket <= endMonth);
             return {
                 label: dep.department_name,
                 data: filtered.map(b => b.amount_sum),
@@ -61,7 +77,7 @@ export const TransactionLineChart: FC = () => {
         });
 
         return { labels, datasets };
-    }, [data, startDate, endDate]);
+    }, [data, dateRange]);
 
     const options = {
         responsive: true,
@@ -81,23 +97,17 @@ export const TransactionLineChart: FC = () => {
         <div className="w-full max-w-full px-4">
             <h2 className="text-xl font-semibold mb-4">График транзакций</h2>
 
-            <div className="flex gap-4 mb-4">
+            <div className="flex flex-col sm:flex-row gap-4 items-center mb-6">
                 <label className="flex flex-col">
-                    Дата начала
-                    <input
-                        type="month"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        className="border bg-white p-2 rounded"
-                    />
-                </label>
-                <label className="flex flex-col">
-                    Дата окончания
-                    <input
-                        type="month"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        className="border p-2 bg-white rounded"
+                    Выберите диапазон дат:
+                    <Calendar
+                        selectionMode="range"
+                        value={dateRange}
+                        onChange={(e) => setDateRange(e.value as [Date, Date])}
+                        view="month"
+                        dateFormat="mm/yy"
+                        className="bg-white"
+                        showIcon
                     />
                 </label>
             </div>
