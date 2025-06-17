@@ -11,14 +11,23 @@ import {DepartmentDistributionChart} from "@/components/dashboard/DepartmentDist
 import {PromoDistributionChart} from "@/components/dashboard/PromoDistributionChart.tsx";
 import {UsedPromoCodesChart} from "@/components/dashboard/UsedPromoCodesChart.tsx";
 import {TransactionLineChart} from "@/components/dashboard/TransactionLineChart.tsx";
+import {StatisticsDepartmentData} from "@/types/statistics.ts";
+import {getDepartmentOrders} from "@/api/endpoints/statistics.ts";
+import {DashboardWelcome} from "@/components/dashboard/DashboardWelcome.tsx";
 
 export const DashboardContent: FC = () => {
-    const [active, setActive] = useState<"events" | "usedPromo" | "promos" | "transactions" | null>("events");
+    const [active, setActive] = useState<"events" | "usedPromo" | "promos" | "transactions" | null>(null);
+    const [transactionsData, setTransactionsData] = useState<StatisticsDepartmentData[]>([])
+
+    const handlePost = async () => {
+        const data = await getDepartmentOrders();
+        setTransactionsData(data);
+    }
 
     const renderContent = () => {
         switch (active) {
             case "transactions":
-                return <TransactionLineChart />
+                return <TransactionLineChart data={transactionsData} />
             case "events":
                 return <DepartmentDistributionChart />
             case "promos":
@@ -26,7 +35,7 @@ export const DashboardContent: FC = () => {
             case "usedPromo":
                 return <UsedPromoCodesChart />;
             default:
-                return null;
+                return <DashboardWelcome />;
         }
     };
 
@@ -36,7 +45,10 @@ export const DashboardContent: FC = () => {
                 <MetricItemCard
                     icon={<BriefcaseIcon width={50} />}
                     name={"Statistics by transactions"}
-                    onClick={() => setActive("transactions")}
+                    onClick={() => {
+                        setActive("transactions");
+                        handlePost()
+                    }}
                 />
                 <MetricItemCard
                     icon={<CalendarIcon width={50} />}

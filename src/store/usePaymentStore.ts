@@ -32,9 +32,9 @@ const initialOrder: IOrder = {
 
 export const usePaymentStore = create<PaymentState>((set) => ({
     order: { ...initialOrder },
-    price: 0,         // исходная цена без скидки
-    discount: 0,      // скидка в процентах
-    finalPrice: 0,    // цена с учетом скидки
+    price: 0,
+    discount: 0,
+    finalPrice: 0,
     loading: false,
     error: null,
 
