@@ -11,23 +11,15 @@ import { DepartmentDistributionChart } from "@/components/dashboard/DepartmentDi
 import { PromoDistributionChart } from "@/components/dashboard/PromoDistributionChart.tsx";
 import { UsedPromoCodesChart } from "@/components/dashboard/UsedPromoCodesChart.tsx";
 import { TransactionLineChart } from "@/components/dashboard/TransactionLineChart.tsx";
-import { StatisticsDepartmentData } from "@/types/statistics.ts";
-import { getDepartmentOrders } from "@/api/endpoints/statistics.ts";
 import { DashboardWelcome } from "@/components/dashboard/DashboardWelcome.tsx";
 
 export const DashboardContent: FC = () => {
     const [active, setActive] = useState<"events" | "usedPromo" | "promos" | "transactions" | null>(null);
-    const [transactionsData, setTransactionsData] = useState<StatisticsDepartmentData[]>([])
-
-    const handlePost = async () => {
-        const data = await getDepartmentOrders();
-        setTransactionsData(data);
-    }
 
     const renderContent = () => {
         switch (active) {
             case "transactions":
-                return <TransactionLineChart data={transactionsData} />
+                return <TransactionLineChart  />
             case "events":
                 return <DepartmentDistributionChart />
             case "promos":
@@ -47,7 +39,6 @@ export const DashboardContent: FC = () => {
                     name={"Статистика по транзакциям"}
                     onClick={() => {
                         setActive("transactions");
-                        handlePost()
                     }}
                 />
                 <MetricItemCard
