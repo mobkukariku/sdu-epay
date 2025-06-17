@@ -50,16 +50,16 @@ export const EditDepartmentModal: FC<EditDepartmentModalProps> = ({isOpen, onClo
                 additional_fields,
             });
             onClose();
-            toast.success("Department successfully changed");
+            toast.success("Департамент успешно изменен");
         } catch (error: any) {
             console.error("Failed to update department:", error);
-            toast.error(error.response.data.detail?.[0]?.msg || "Update failed");
+            toast.error(error.response.data.detail?.[0]?.msg || "Ошибка с редактированием");
         }
     };
 
     return (
         <CustomModal
-            title="Edit Department"
+            title="Редактирование департамента"
             className="max-w-md w-full"
             isOpen={isOpen}
             onClose={onClose}
@@ -67,7 +67,7 @@ export const EditDepartmentModal: FC<EditDepartmentModalProps> = ({isOpen, onClo
             <div className="flex flex-col gap-[21px]">
                 <CustomInput
                     icon={<EnvelopeIcon className="text-[#6B9AB0]" />}
-                    placeholder="Enter name"
+                    placeholder="Введите название"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />

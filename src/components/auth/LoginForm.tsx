@@ -6,11 +6,11 @@ import { PulseLoader } from "react-spinners";
 import { CustomInput } from "../../ui/CustomInput.tsx";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { CustomButton } from "../../ui/CustomButton.tsx";
-import {login} from "@/api/endpoints/auth.ts";
+import { login } from "@/api/endpoints/auth.ts";
 
 const schema = yup.object().shape({
-    email: yup.string().email("Invalid email").required("Email is required"),
-    password: yup.string().min(6, "Minimum 6 characters").required("Password is required"),
+    email: yup.string().email("Некорректный email").required("Email обязателен"),
+    password: yup.string().min(6, "Минимум 6 символов").required("Пароль обязателен"),
 });
 
 type FormData = yup.InferType<typeof schema>;
@@ -28,12 +28,12 @@ export const LoginForm: FC = () => {
 
     const onSubmit = async (data: FormData) => {
         setLoading(true);
-        try{
+        try {
             await login(data.email, data.password)
             window.location.href = "/dashboard";
-        }catch (err){
-            console.error("Login failed:", err);
-        }finally {
+        } catch (err) {
+            console.error("Ошибка входа:", err);
+        } finally {
             setLoading(false)
         }
     };
@@ -49,7 +49,7 @@ export const LoginForm: FC = () => {
                             {...field}
                             icon={<EnvelopeIcon className={`text-[#6B9AB0] ${errors.email ? "text-red-500" : ""}`} />}
                             type="email"
-                            placeholder="Enter your email"
+                            placeholder="Введите email"
                             error={errors.email?.message}
                         />
                         {errors.email?.message && (
@@ -68,7 +68,7 @@ export const LoginForm: FC = () => {
                             {...field}
                             icon={<LockClosedIcon className={`text-[#6B9AB0] ${errors.password ? "text-red-500" : ""}`} />}
                             type="password"
-                            placeholder="Enter your password"
+                            placeholder="Введите пароль"
                             error={errors.password?.message}
                         />
                         {errors.password?.message && (
@@ -79,7 +79,7 @@ export const LoginForm: FC = () => {
             />
 
             {!loading ? (
-                <CustomButton type="submit" variant="submit">Log in</CustomButton>
+                <CustomButton type="submit" variant="submit">Войти</CustomButton>
             ) : (
                 <CustomButton type="submit" disabled={true} variant="disabled">
                     <PulseLoader size={6} color="#ffffff" />

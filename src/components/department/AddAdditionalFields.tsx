@@ -42,6 +42,7 @@ export const AddAdditionalFields: FC<AddAdditionalFieldsProps> = ({ value, onCha
                         >
                             <CustomInput
                                 value={field.name}
+                                placeholder={"Введите название поля"}
                                 icon={<InformationCircleIcon className="text-[#6B9AB0]" />}
                                 onChange={(e) => updateField(index, "name", e.target.value)}
                             />
@@ -61,7 +62,7 @@ export const AddAdditionalFields: FC<AddAdditionalFieldsProps> = ({ value, onCha
                                 variant="cancel"
                                 className="text-white hover:underline"
                             >
-                                Cancel
+                                Отмена
                             </CustomButton>
                         </motion.div>
                     ))}
@@ -72,7 +73,7 @@ export const AddAdditionalFields: FC<AddAdditionalFieldsProps> = ({ value, onCha
                 onClick={addField}
                 className="px-4 py-2 cursor-pointer rounded-md text-white bg-[#4c96ba] hover:bg-[#3b7ca0] transition"
             >
-                + Additional field
+                + Допольнительные поле
             </button>
         </div>
     );

@@ -69,7 +69,7 @@ const options = {
 export const UsedPromoCodesChart:FC = () => {
     return (
         <div className="w-full max-w-full px-4">
-            <h2 className="text-xl font-semibold mb-4">Used Promo Codes by Event</h2>
+            <h2 className="text-xl font-semibold mb-4">Использованные промо-коды по событиям</h2>
             <div className="bg-white p-6 rounded-2xl w-full ">
                 <Bar data={data} options={options} />
             </div>

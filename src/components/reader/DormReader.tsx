@@ -80,7 +80,7 @@ export const DormReader: FC = () => {
     return (
         <div className="mx-auto mt-10 p-6 bg-white rounded-xl">
             <h2 className="text-2xl font-bold mb-4 text-center text-[#006799]">
-                Upload Excel file - Dormitory
+                Загрузить файл Excel - Dormitory
             </h2>
 
             {fileName && (

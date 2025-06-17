@@ -69,18 +69,18 @@ export const AddAdminModal: FC = () => {
         const messages: string[] = [];
 
         if (!username) {
-            messages.push("Email is required");
+            messages.push("Поле Email обязательно для заполнения");
         } else if (!emailRegex.test(username)) {
-            messages.push("Invalid email format");
+            messages.push("Некорректный формат email");
         }
-        if (newErrors.name) messages.push("Name is required");
+        if (newErrors.name) messages.push("Поле Имя обязательно для заполнения");
         if (!password) {
-            messages.push("Password is required");
+            messages.push("Поле Пароль обязательно для заполнения");
         } else if (password.length < 6) {
-            messages.push("Password must be at least 6 characters");
+            messages.push("Пароль должен быть не менее 6 символов");
         }
-        if (newErrors.department) messages.push("Department is required");
-        if (newErrors.role) messages.push("Role is required");
+        if (newErrors.department) messages.push("Выберите департамент");
+        if (newErrors.role) messages.push("Выберите роль");
 
         if (messages.length > 0) {
             messages.forEach((msg) => toast.error(msg));
@@ -98,7 +98,7 @@ export const AddAdminModal: FC = () => {
 
             await fetchUsers();
 
-            toast.success("Admin created successfully!");
+            toast.success("Админ успешно создан!");
 
             setIsModalOpen(false);
             setUsername("");
@@ -129,14 +129,14 @@ export const AddAdminModal: FC = () => {
                 onClick={() => setIsModalOpen(true)}
             >
                 <PlusIcon className="w-5 h-5" />
-                ADD
+                Добавить
             </CustomButton>
 
-            <CustomModal className={"max-w-md w-full"} title="Add Admin" isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <CustomModal className={"max-w-md w-full"} title="Добавить пользователя" isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <div className="flex flex-col gap-[21px]">
                     <CustomInput
                         icon={<EnvelopeIcon className={errors.username ? " text-red-500" : "text-[#6B9AB0]"} />}
-                        placeholder="Enter your email"
+                        placeholder="Введите email"
                         type="email"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
@@ -145,21 +145,21 @@ export const AddAdminModal: FC = () => {
 
                     <CustomInput
                         icon={<UserIcon className={errors.name ? " text-red-500" : "text-[#6B9AB0]"} />}
-                        placeholder="Enter your name"
+                        placeholder="Введите имя"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         className={errors.name ? "border border-red-500" : ""}
                     />
                     <CustomInput
                         icon={<LockClosedIcon className={errors.password ? " text-red-500" : "text-[#6B9AB0]"} />}
-                        placeholder="Enter your password"
+                        placeholder="Введите пароль"
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className={errors.password ? "border border-red-500" : ""}
                     />
                     <CustomSelect
-                        placeholder="Select department"
+                        placeholder="Выберите департамент"
                         options={departments}
                         value={selectedDepartment}
                         onChange={setSelectedDepartment}
@@ -173,14 +173,14 @@ export const AddAdminModal: FC = () => {
                         options={roleOptions}
                         value={selectedRole}
                         onChange={setSelectedRole}
-                        placeholder="Select role"
+                        placeholder="Выберите роль"
                         triggerClassName={`bg-white h-[50px] text-black ${errors.role ? "border border-red-500" : ""}`}
                         dropdownClassName="bg-gray-100"
                         optionClassName="text-sm"
                         activeOptionClassName="bg-blue-200"
                     />
                     <CustomButton onClick={handleSubmit} className="w-full">
-                        ADD
+                        ДОБАВИТЬ
                     </CustomButton>
                 </div>
             </CustomModal>

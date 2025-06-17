@@ -18,13 +18,13 @@ export const PromoCodesPage:FC = () => {
     const [rows, setRows] = useState(10);
 
     const columns = [
-        { header: "Promo code", accessor: "code" },
-        { header: "Event Name", accessor: "eventName" },
-        { header: "Period from", accessor: "period_from" },
-        {header: "Period till", accessor: "period_till"},
-        { header: "Already used", accessor: "already_used" },
-        { header: "Usage limit", accessor: "limit" },
-        { header: "Discount", accessor: "discount" },
+        { header: "Промокод", accessor: "code" },
+        { header: "Название мероприятия", accessor: "eventName" },
+        { header: "Период с", accessor: "period_from" },
+        { header: "Период по", accessor: "period_till" },
+        { header: "Уже использовано", accessor: "already_used" },
+        { header: "Лимит использования", accessor: "limit" },
+        { header: "Скидка", accessor: "discount" },
     ];
 
 
@@ -59,7 +59,7 @@ export const PromoCodesPage:FC = () => {
                 await fetchPromoCodes();
                 setIsDeleteModalOpen(false);
                 setSelectedPromo(null);
-                toast.success("Promo is deleted")
+                toast.success("Промо-код удален")
             }catch (err:any){
                 toast.error(err.response.data.detail[0].msg)
             }
@@ -87,7 +87,7 @@ export const PromoCodesPage:FC = () => {
     return (
         <AdminLayout>
             <div className="flex-1 p-8">
-                <h1 className="text-[32px] font-bold mb-6">Promo codes Information</h1>
+                <h1 className="text-[32px] font-bold mb-6">Информация о промо-кодах</h1>
                 <PromoCodeFilters/>
                 <CustomTable
                     columns={columns}

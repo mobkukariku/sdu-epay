@@ -38,7 +38,7 @@ export const EventFilters:FC = () => {
                     label: dept.name,
                     value: dept.id,
                 }));
-                setDepartments([{ label: "All", value: "" }, ...formatted]);
+                setDepartments([{ label: "Все", value: "" }, ...formatted]);
             } catch (error) {
                 console.error("Failed to fetch departments:", error);
             }
@@ -73,14 +73,14 @@ export const EventFilters:FC = () => {
         <div className="flex justify-between items-end mb-[31px]">
             <div className="flex gap-[22px]">
                 <div className="flex flex-col relative gap-[10px]">
-                    <label>Events name</label>
+                    <label>Название</label>
                     <input
                         type="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         onFocus={() => setShowSuggestions(true)}
                         className="bg-[#FFFFFF]  h-[37px] p-2 border-1 rounded-[4px] border-[#6B9AB0]"
-                        placeholder="Enter Events name"
+                        placeholder="Название события"
                     />
                     {showSuggestions && eventSuggestions.length > 0 && (
                         <AnimatePresence>
@@ -105,7 +105,7 @@ export const EventFilters:FC = () => {
                     )}
                 </div>
                 <div className="flex flex-col gap-[10px]">
-                    <label>Department</label>
+                    <label>Департамент</label>
                     <CustomSelect
                         options={departments}
                         value={selectedDepartment}
@@ -120,7 +120,7 @@ export const EventFilters:FC = () => {
                     onClick={handleSearch}
                     className="h-[37px] px-4 mt-auto text-white rounded-[4px]  transition"
                 >
-                    Search
+                    Поиск
                 </CustomButton>
             </div>
             <div className="flex items-center gap-5">

@@ -8,7 +8,7 @@ import { getUsers } from "@/api/endpoints/users.ts";
 import {toast} from "react-hot-toast";
 
 const roleOptions = [
-    { label: "All", value: "" },
+    { label: "Все", value: "" },
     { label: "Super Admin", value: "SUPER_ADMIN" },
     { label: "Admin", value: "ADMIN" },
     { label: "Manager", value: "MANAGER" },
@@ -60,13 +60,13 @@ export const AdminFilters: FC = () => {
         <div className="flex justify-between items-end mb-[31px]">
             <div className="flex gap-[22px]">
                 <div className="flex relative flex-col gap-[10px]">
-                    <label>Email</label>
+                    <label>Почта</label>
                     <input
                         type="text"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className="bg-[#FFFFFF] h-[37px] p-2 border border-[#6B9AB0] rounded-[4px]"
-                        placeholder="Enter Customer Email"
+                        placeholder="Введите email"
                     />
                     {showSuggestions && mailSuggestions.length > 0 && (
                         <AnimatePresence>
@@ -91,7 +91,7 @@ export const AdminFilters: FC = () => {
                     )}
                 </div>
                 <div className="flex flex-col gap-[10px]">
-                    <label>Roles</label>
+                    <label>Роли</label>
                     <CustomSelect
                         options={roleOptions}
                         value={selectedRole}
@@ -108,7 +108,7 @@ export const AdminFilters: FC = () => {
                     onClick={handleSearch}
                     className="h-[37px] px-4 mt-auto text-white rounded-[4px] transition"
                 >
-                    Search
+                    Поиск
                 </CustomButton>
             </div>
             <div className="flex items-center gap-5">

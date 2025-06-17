@@ -74,21 +74,21 @@ export const AddEventModal: FC = () => {
 
         const messages: string[] = [];
 
-        if (newErrors.name) messages.push("Event name is required");
+        if (newErrors.name) messages.push("Название мероприятия обязательно");
         if (!email) {
-            messages.push("Manager email is required")
+            messages.push("Email администратора обязателен");
+        } else if (!emailRegex.test(email)) {
+            messages.push("Неверный формат email");
         }
-        else if (!emailRegex.test(email)) {
-            messages.push("Invalid email format");
-        };
-        if (newErrors.department) messages.push("Department is required");
-        if (newErrors.price) messages.push("Valid price is required");
-        if (newErrors.dates) messages.push("Event date range is required");
+        if (newErrors.department) messages.push("Необходимо выбрать департамент");
+        if (newErrors.price) messages.push("Укажите корректную цену");
+        if (newErrors.dates) messages.push("Необходимо указать период проведения");
 
         if (messages.length > 0) {
             messages.forEach((msg) => toast.error(msg));
             return;
         }
+
 
         try {
             await addEvent({
@@ -102,7 +102,7 @@ export const AddEventModal: FC = () => {
 
             await fetchEvents()
 
-            toast.success("Event created successfully!");
+            toast.success("Событие успешно создано!");
             setIsModalOpen(false);
             setName("");
             setEmail("");
@@ -116,10 +116,9 @@ export const AddEventModal: FC = () => {
                 price: false,
                 dates: false,
             });
-            toast.success("Event added successfully")
         } catch (err:any) {
             console.error("Failed to add event:", err);
-            toast.error("Something went wrong while adding the event.");
+            toast.error("Что-то пошло не так при добавлении события.");
         }
     };
 
@@ -131,16 +130,16 @@ export const AddEventModal: FC = () => {
                 onClick={() => setIsModalOpen(true)}
             >
                 <PlusIcon />
-                ADD
+                Добавить
             </CustomButton>
 
-            <CustomModal title={"Add Event"} isOpen={isModalOpen} className={"max-w-md w-full"} onClose={() => setIsModalOpen(false)}>
+            <CustomModal title={"Добавить событие"} isOpen={isModalOpen} className={"max-w-md w-full"} onClose={() => setIsModalOpen(false)}>
                 <div className="flex flex-col gap-[21px]">
                     <CustomInput
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         icon={<UserCircleIcon className={errors.name ? "text-red-500" : "text-[#6B9AB0]"} />}
-                        placeholder="Enter event name"
+                        placeholder="Название события"
                         className={errors.name ? "border border-red-500" : ""}
                     />
 
@@ -148,12 +147,12 @@ export const AddEventModal: FC = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         icon={<EnvelopeIcon className={errors.email ? "text-red-500" : "text-[#6B9AB0]"} />}
-                        placeholder="Enter manager's email"
+                        placeholder="Email менеджера"
                         className={errors.email ? "border border-red-500" : ""}
                     />
 
                     <CustomSelect
-                        placeholder="Select department"
+                        placeholder="Выберите департамент"
                         options={departments}
                         value={selectedDepartment}
                         onChange={setSelectedDepartment}
@@ -167,7 +166,7 @@ export const AddEventModal: FC = () => {
                         value={String(price)}
                         onChange={(e) => setPrice(Number(e.target.value))}
                         icon={<CurrencyDollarIcon className={errors.price ? "text-red-500" : "text-[#6B9AB0]"} />}
-                        placeholder="Enter price"
+                        placeholder="Введите цену"
                         type="number"
                         className={errors.price ? "border border-red-500" : ""}
                     />
@@ -175,7 +174,7 @@ export const AddEventModal: FC = () => {
                     <div className={`card flex justify-content-center ${errors.dates ? "border border-red-500 rounded-md" : ""}`}>
                         <Calendar
                             className="w-full rounded-md shadow-sm"
-                            placeholder="Choose date range"
+                            placeholder="Выберите диапазон дат"
                             value={dates}
                             onChange={(e) => setDates(e.value as Date[])}
                             selectionMode="range"
@@ -185,7 +184,7 @@ export const AddEventModal: FC = () => {
                     </div>
 
                     <CustomButton onClick={handleSubmit} className="w-full">
-                        ADD
+                        Добавить
                     </CustomButton>
                 </div>
             </CustomModal>
