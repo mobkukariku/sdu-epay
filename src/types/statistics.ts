@@ -8,3 +8,8 @@ export interface StatisticsDepartmentData {
     department_name: string;
     time_buckets: TimeBucket[];
 }
+
+export interface TransactionsQuery {
+    start_date?: string;
+    end_date?: string;
+}
