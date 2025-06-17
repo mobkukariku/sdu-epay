@@ -32,16 +32,15 @@ interface FormValues {
 }
 
 const schema = yup.object().shape({
-    fullname: yup.string().required("Full name is required"),
-    email: yup.string().email("Invalid email").required("Email is required"),
-    cellphone: yup.string().required("Phone number is required"),
+    fullname: yup.string().required("Полное имя обязательно"),
+    email: yup.string().email("Некорректный email").required("Email обязателен"),
+    cellphone: yup.string().required("Номер телефона обязателен"),
     promo_code: yup.string().nullable(),
-    department_id: yup.string().required("Department type is required"),
-    event_id: yup.string().required("Event type is required"),
+    department_id: yup.string().required("Выбор направления обязателен"),
+    event_id: yup.string().required("Выбор мероприятия обязателен"),
     additional: yup.string().optional(),
-    paymentMethod: yup.string().required("Payment method is required"),
+    paymentMethod: yup.string().required("Выбор способа оплаты обязателен"),
 });
-
 
 
 
@@ -154,7 +153,7 @@ export const PaymentForm: FC = () => {
             }
 
         } catch (err) {
-            toast.error("Something wrong, please try again")
+            toast.error("Что-то пошло не так, попробуйте снова");
             console.error("Payment API error:", err);
         } finally {
             setLoading(false);
@@ -170,7 +169,7 @@ export const PaymentForm: FC = () => {
             onSubmit={handleSubmit(onSubmit)}
             className="bg-[#FFFFFF] font-medium text-[20px] w-[610px] px-[94px] py-[32px] rounded-[6px] border-2 border-[#006799]"
         >
-            <p className="mb-[31px] text-[24px]">Personal information</p>
+            <p className="mb-[31px] text-[24px]">Личная информация</p>
             <div className="flex flex-col gap-[20px]">
                 <Controller
                     name="fullname"
@@ -185,7 +184,7 @@ export const PaymentForm: FC = () => {
                                     field.onChange(e);
                                     setOrderField("fullname", e.target.value);
                                 }}
-                                placeholder="Enter your full name"
+                                placeholder="Введите полное имя"
                                 error={errors.fullname?.message}
                             />
                             {errors.fullname && (
@@ -207,7 +206,7 @@ export const PaymentForm: FC = () => {
                                     field.onChange(e);
                                     setOrderField("email", e.target.value);
                                 }}
-                                placeholder="Enter your email"
+                                placeholder="Введите email"
                                 error={errors.email?.message}
                             />
                             {errors.email && (
@@ -229,7 +228,7 @@ export const PaymentForm: FC = () => {
                                     field.onChange(e);
                                     setOrderField("cellphone", e.target.value);
                                 }}
-                                placeholder="Enter your phone number"
+                                placeholder="Введите номер телефона"
                                 error={errors.cellphone?.message}
                             />
                             {errors.cellphone && (
@@ -263,7 +262,7 @@ export const PaymentForm: FC = () => {
                                     setAdditionalFields(parsed);
                                 }}
                                 triggerClassName={"text-white"}
-                                placeholder="Select payment destination"
+                                placeholder="Выберите департамент"
                                 error={errors.department_id?.message}
                             />
                             {errors.department_id && (
@@ -294,7 +293,7 @@ export const PaymentForm: FC = () => {
                                             }
                                         }}
                                         triggerClassName={"text-white"}
-                                        placeholder="Select Event"
+                                        placeholder="Выберите событие"
                                         error={errors.event_id?.message}
                                     />
                                     {errors.event_id && (
@@ -374,7 +373,7 @@ export const PaymentForm: FC = () => {
 
                         <CheckOut />
                         {!loading ? (
-                            <CustomButton type="submit" variant="submit">PAY</CustomButton>
+                            <CustomButton type="submit" variant="submit">Оплатить</CustomButton>
                         ) : (
                             <CustomButton type="submit" disabled={true} variant="disabled">
                                 <PulseLoader size={6} color={"#ffff"} />

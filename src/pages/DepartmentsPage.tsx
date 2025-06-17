@@ -18,7 +18,7 @@ export const DepartmentsPage:FC = () => {
     const [rows, setRows] = useState(10);
 
     const columns = [
-        {header: "Department", accessor: "name"}
+        {header: "Департамент", accessor: "name"}
     ]
 
     useEffect(() => {
@@ -51,7 +51,7 @@ export const DepartmentsPage:FC = () => {
                 await fetchDepartments();
                 setIsDeleteModalOpen(false);
                 setSelectedDepartment(null);
-                toast.success("Department is deleted")
+                toast.success("Департамент успешно удален")
             }catch (err:any){
                 toast.error(err.response.data.detail[0].msg)
             }
@@ -73,7 +73,7 @@ export const DepartmentsPage:FC = () => {
     return(
         <AdminLayout>
             <div className="flex-1 p-8">
-                <h1 className="text-[32px] font-bold mb-6">Departments Information</h1>
+                <h1 className="text-[32px] font-bold mb-6">Информация о департаментах</h1>
                 <DepartmentsFilters />
                 <CustomTable
                     columns={columns}

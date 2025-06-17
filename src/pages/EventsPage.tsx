@@ -19,13 +19,14 @@ export const EventsPage:FC = () => {
 
 
     const columns = [
-        { header: "Event Name", accessor: "title" },
-        { header: "Department", accessor: "department" },
-        { header: "Admin`s Email", accessor: "manager_email" },
-        { header: "Period From", accessor: "period_from" },
-        { header: "Period Till", accessor: "period_till"},
-        { header: "Price", accessor: "price" },
+        { header: "Событие", accessor: "title" },
+        { header: "Департамент", accessor: "department" },
+        { header: "Email Менеджера", accessor: "manager_email" },
+        { header: "Период с", accessor: "period_from" },
+        { header: "Период по", accessor: "period_till" },
+        { header: "Цена", accessor: "price" },
     ];
+
 
     useEffect(() => {
         fetchEvents();
@@ -71,7 +72,7 @@ export const EventsPage:FC = () => {
                 await fetchEvents();
                 setIsDeleteModalOpen(false);
                 setSelectedEvent(null);
-                toast.success("Event is deleted")
+                toast.success("Событие успешно удалилось")
             }catch (err:any){
                 toast.error(err.response.data.detail[0].msg)
             }
@@ -82,7 +83,7 @@ export const EventsPage:FC = () => {
     return (
         <AdminLayout>
             <div className="flex-1 p-8">
-                <h1 className="text-[32px] font-bold mb-6">Events Information</h1>
+                <h1 className="text-[32px] font-bold mb-6">Информация о событиях</h1>
                 <EventFilters />
                 <CustomTable
                     columns={columns}

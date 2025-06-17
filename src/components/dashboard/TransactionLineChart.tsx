@@ -71,7 +71,7 @@ export const TransactionLineChart: FC<TransactionLineChartProps> = ({data}) => {
 
     return (
         <div className="w-full max-w-full px-4">
-            <h2 className="text-xl font-semibold mb-4">Transactions chart</h2>
+            <h2 className="text-xl font-semibold mb-4">График транзакций</h2>
             <div className="bg-white p-6 rounded-2xl w-full">
                 {chartData ? <Line data={chartData} options={options} /> : <p>No data</p>}
             </div>

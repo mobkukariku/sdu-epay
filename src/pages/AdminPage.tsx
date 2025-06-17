@@ -46,7 +46,7 @@ export const AdminPage: FC = () => {
                 await deleteUser(selectedAdmin.id);
                 setIsDeleteModalOpen(false);
                 setSelectedAdmin(null);
-                toast.success("User is deleted")
+                toast.success("Пользователь удален")
             }catch (err:any){
                 toast.error(err.response.data.detail[0].msg)
 
@@ -67,15 +67,16 @@ export const AdminPage: FC = () => {
 
 
     const columns = [
-        { header: "Email", accessor: "username" },
-        { header: "Department", accessor: "department" },
-        { header: "Role", accessor: "role" },
+        { header: "Почта", accessor: "username" },
+        { header: "Департамент", accessor: "department" },
+        { header: "Роль", accessor: "role" },
     ];
+
 
     return (
         <AdminLayout>
             <div className="flex-1 p-8">
-                <h1 className="text-[32px] font-bold mb-6">Admin Information</h1>
+                <h1 className="text-[32px] font-bold mb-6">Инфомация о пользователях</h1>
                 <AdminFilters />
                 <CustomTable
                     columns={columns}

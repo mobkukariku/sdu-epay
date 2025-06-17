@@ -39,22 +39,22 @@ export const DeleteModal: FC<DeleteModalProps> = ({ isOpen, onClose, onDeleteCli
                         exit={{ y: 50, opacity: 0, scale: 0.95 }}
                         transition={{ type: "spring", stiffness: 300, damping: 25 }}
                     >
-                        <h2 className="mb-4 text-xl font-bold text-gray-800 text-center">Confirm Deletion</h2>
+                        <h2 className="mb-4 text-xl font-bold text-gray-800 text-center">Подтвердите удаление</h2>
                         <p className="mb-6 text-center text-gray-700">
-                            Are you sure you want to delete this item?
+                            Вы уверены, что хотите удалить этот элемент?
                         </p>
                         <div className="flex gap-4">
                             <button
                                 onClick={onDeleteClick}
                                 className="w-full rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700 transition"
                             >
-                                Delete
+                                Удалить
                             </button>
                             <button
                                 onClick={onClose}
                                 className="w-full rounded-lg bg-gray-200 px-4 py-2 text-gray-800 hover:bg-gray-300 transition"
                             >
-                                Cancel
+                                Отмена
                             </button>
                         </div>
                     </motion.div>

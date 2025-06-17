@@ -27,7 +27,7 @@ export const AddDepartmentModal:FC = () => {
                 additional_fields
             });
             setIsModalOpen(false);
-            toast.success("Department created Successfully")
+            toast.success("Департамент успешно добавлен")
         }catch (err:any){
             console.log(err)
            toast.error(err.response.data.detail[0].msg)
@@ -38,14 +38,14 @@ export const AddDepartmentModal:FC = () => {
         <>
             <CustomButton variant="submit" className="h-[38px] font-bold gap-[5px] px-[20px] flex rounded-[4px]" onClick={() => setIsModalOpen(true)}>
                 <PlusIcon />
-                ADD
+                Добавить
             </CustomButton>
-            <CustomModal className={"w-[600px]"} title={"Add Department"}  isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <CustomModal className={"w-[600px]"} title={"Добавить департамент"}  isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <div className={"flex flex-col gap-[21px]"}>
                     <CustomInput
                         onChange={(e) => setName(e.target.value)}
                         icon={<UserCircleIcon className={`text-[#6B9AB0]`} />}
-                        placeholder={"Enter department name"}
+                        placeholder={"Введите название"}
                     />
                     <AddAdditionalFields value={additionalFields} onChange={setAdditionalFields} />
                     <CustomButton
@@ -53,7 +53,7 @@ export const AddDepartmentModal:FC = () => {
                         className="w-full"
 
                     >
-                        ADD
+                        Добавить
                     </CustomButton>
                 </div>
             </CustomModal>

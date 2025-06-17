@@ -19,7 +19,7 @@ export const PromocodeInput: FC<Props> = ({ promoCodeField }) => {
 
     const onClick = async () => {
         if (!promoCodeField.value) {
-            return toast.error("Please enter a promo code");
+            return toast.error("Пожалуйста, введите промокод");
         }
 
         const errorMessage = await verifyPromo({
@@ -28,25 +28,23 @@ export const PromocodeInput: FC<Props> = ({ promoCodeField }) => {
         });
 
         if (errorMessage) {
-            toast.error("Something wrong with promo code");
+            toast.error("Промокод недействителен");
         } else {
-            toast.success("Promo code successfully verified!");
+            toast.success("Промокод успешно применён!");
         }
     };
-
-
 
     return (
         <div className="flex gap-[20px] mt-[20px] mb-[20px]">
             <CustomInput
                 icon={<ReceiptPercentIcon className="text-[#6B9AB0]" />}
                 type="text"
-                placeholder="Promo code"
+                placeholder="Промокод"
                 value={promoCodeField.value || ""}
                 onChange={(e) => promoCodeField.onChange(e)}
             />
             <CustomButton onClick={onClick} variant="default" className="text-[16px]">
-                Verify
+                Проверить
             </CustomButton>
         </div>
     );

@@ -52,7 +52,7 @@ export const PromoCodeFilters: FC = () => {
         <div className="flex justify-between items-end mb-[31px] relative">
             <div className="flex gap-[22px] relative">
                 <div className="flex flex-col gap-[10px] relative">
-                    <label>Event name</label>
+                    <label>Название события</label>
                     <input
                         type="text"
                         value={eventName}
@@ -62,7 +62,7 @@ export const PromoCodeFilters: FC = () => {
                         }}
                         onFocus={() => setShowSuggestions(true)}
                         className="bg-[#FFFFFF] h-[37px] p-2 border border-[#6B9AB0] rounded-[4px]"
-                        placeholder="Enter Event name"
+                        placeholder="Введите Название события"
                     />
                     {showSuggestions && eventSuggestions.length > 0 && (
                         <AnimatePresence>
@@ -88,12 +88,12 @@ export const PromoCodeFilters: FC = () => {
                 </div>
 
                 <div className="flex flex-col gap-[10px]">
-                    <label>Promo code</label>
+                    <label>Промо-код</label>
                     <input
                         type="text"
                         onChange={(e) => setPromo(e.target.value)}
                         className="bg-[#FFFFFF] h-[37px] p-2 border border-[#6B9AB0] rounded-[4px]"
-                        placeholder="Enter Promo code"
+                        placeholder="Введите промо-код"
                     />
                 </div>
 
@@ -101,7 +101,7 @@ export const PromoCodeFilters: FC = () => {
                     onClick={handleSearch}
                     className="h-[37px] px-4 mt-auto text-white rounded-[4px] transition"
                 >
-                    Search
+                    Поиск
                 </CustomButton>
             </div>
             <div className="flex items-center gap-5">

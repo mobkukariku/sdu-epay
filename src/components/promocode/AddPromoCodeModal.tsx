@@ -75,12 +75,13 @@ export const AddPromoCodeModal: FC = () => {
         setErrors(newErrors);
 
         const messages: string[] = [];
-        if (newErrors.code) messages.push("Promo code is required");
-        if (newErrors.limit) messages.push("Usage limit must be a positive number");
-        if (newErrors.discount) messages.push("Discount must be a positive number");
-        if (newErrors.discountTooHigh) messages.push("Discount must be less than 100%");
-        if (newErrors.dates) messages.push("Promo code period is required");
-        if (newErrors.event) messages.push("Event selection is required");
+        if (newErrors.code) messages.push("Промокод обязателен");
+        if (newErrors.limit) messages.push("Лимит использования должен быть положительным числом");
+        if (newErrors.discount) messages.push("Скидка должна быть положительным числом");
+        if (newErrors.discountTooHigh) messages.push("Скидка должна быть меньше 100%");
+        if (newErrors.dates) messages.push("Необходимо указать период действия промокода");
+        if (newErrors.event) messages.push("Необходимо выбрать мероприятие");
+
 
         if (messages.length > 0) {
             messages.forEach((msg) => toast.error(msg));
@@ -99,7 +100,7 @@ export const AddPromoCodeModal: FC = () => {
 
             await fetchPromoCodes();
 
-            toast.success("Promo code added successfully!");
+            toast.success("Промо-код удален, промо-код успешно добавлен!");
             setIsModalOpen(false);
             // Очистка формы
             setCode("");
@@ -117,7 +118,7 @@ export const AddPromoCodeModal: FC = () => {
             });
         } catch (err) {
             console.error("Failed to add promo code:", err);
-            toast.error("Error while adding promo code.");
+            toast.error("Ошибка при добавлении промо-кода.");
         }
     };
 
@@ -129,20 +130,20 @@ export const AddPromoCodeModal: FC = () => {
                 onClick={() => setIsModalOpen(true)}
             >
                 <PlusIcon />
-                ADD
+                Добавить
             </CustomButton>
-            <CustomModal className={"max-w-md w-full"} title={"Add Promo-Code"} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <CustomModal className={"max-w-md w-full"} title={"Добавить промо-код"} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <div className={"flex flex-col gap-[21px]"}>
                     <CustomInput
                         value={code}
                         onChange={(e) => setCode(e.target.value)}
                         icon={<HashIcon className={`text-[#6B9AB0] ${errors.code ? "text-red-500" : ""}`} />}
-                        placeholder={"Enter Promo-code"}
+                        placeholder={"Введите название"}
                         className={errors.code ? "border border-red-500" : ""}
                     />
 
                     <CustomSelect
-                        placeholder="Select event"
+                        placeholder="Выберите событие"
                         options={events}
                         value={selectedEvent}
                         onChange={setSelectedEvent}
@@ -156,7 +157,7 @@ export const AddPromoCodeModal: FC = () => {
                         value={limit}
                         onChange={(e) => setLimit(e.target.value)}
                         icon={<InformationCircleIcon className={`text-[#6B9AB0] ${errors.limit ? "text-red-500" : ""}`} />}
-                        placeholder={"Enter usage limit"}
+                        placeholder={"Введите лимит использования"}
                         className={errors.limit ? "border border-red-500" : ""}
                         type="number"
 
@@ -166,7 +167,7 @@ export const AddPromoCodeModal: FC = () => {
                         value={discount}
                         onChange={(e) => setDiscount(e.target.value)}
                         icon={<ReceiptPercentIcon className={`text-[#6B9AB0] ${errors.discount || errors.discountTooHigh ? "text-red-500" : ""}`} />}
-                        placeholder={"Enter discount percentage"}
+                        placeholder={"Введите процент скидки"}
                         className={errors.discount || errors.discountTooHigh ? "border border-red-500" : ""}
                         type="number"
                     />
@@ -174,7 +175,7 @@ export const AddPromoCodeModal: FC = () => {
                     <div className={`card flex justify-content-center ${errors.dates ? "border border-red-500 rounded-md" : ""}`}>
                         <Calendar
                             className="w-full rounded-md shadow-sm"
-                            placeholder="Promo code period"
+                            placeholder="Период действия промо-кода"
                             value={dates}
                             onChange={(e) => setDates(e.value as Date[])}
                             selectionMode="range"
@@ -184,7 +185,7 @@ export const AddPromoCodeModal: FC = () => {
                     </div>
 
                     <CustomButton onClick={handleSubmit} className="w-full">
-                        ADD
+                        Добавить
                     </CustomButton>
                 </div>
             </CustomModal>

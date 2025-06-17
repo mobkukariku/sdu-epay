@@ -48,7 +48,7 @@ export const CustomTable: FC<CustomTableProps> = ({ columns, data, actions }) =>
                             {col.header}
                         </th>
                     ))}
-                    {actions && <th className="px-6 py-3">Actions</th>}
+                    {actions && <th className="px-6 py-3">Действия</th>}
                 </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 text-[16px]">

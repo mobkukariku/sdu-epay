@@ -109,15 +109,16 @@ export const EditEventsModal: FC<EditEventsModalProps> = ({isOpen, onClose, even
 
         const messages: string[] = [];
 
-        if (newErrors.title) messages.push("Event title is required");
+        if (newErrors.title) messages.push("Название мероприятия обязательно.");
         if (!email.trim()) {
-            messages.push("Manager email is required");
+            messages.push("Email менеджера обязателен.");
         } else if (!emailRegex.test(email)) {
-            messages.push("Invalid email format");
+            messages.push("Неверный формат email.");
         }
-        if (newErrors.department) messages.push("Department is required");
-        if (newErrors.price) messages.push("Valid price is required");
-        if (newErrors.dates) messages.push("Event date range is required");
+        if (newErrors.department) messages.push("Необходимо выбрать департамент.");
+        if (newErrors.price) messages.push("Укажите корректную цену.");
+        if (newErrors.dates) messages.push("Укажите период проведения мероприятия.");
+
 
         if (messages.length > 0) {
             messages.forEach((msg) => toast.error(msg));
@@ -136,7 +137,7 @@ export const EditEventsModal: FC<EditEventsModalProps> = ({isOpen, onClose, even
 
             await fetchEvents();
 
-            toast.success("Event updated successfully!");
+            toast.success("Событие успешно обновлено!");
             onClose();
         } catch (err: any) {
             console.error("Failed to update event:", err);
@@ -145,23 +146,23 @@ export const EditEventsModal: FC<EditEventsModalProps> = ({isOpen, onClose, even
     };
 
     return (
-        <CustomModal title="Edit Event" isOpen={isOpen} className={"max-w-md w-full"} onClose={onClose}>
+        <CustomModal title="Редактировать событие" isOpen={isOpen} className={"max-w-md w-full"} onClose={onClose}>
             <div className="flex flex-col gap-[21px]">
                 <CustomInput
                     icon={<InformationCircleIcon className={errors.title ? " text-red-500" : "text-[#6B9AB0]"} />}
-                    placeholder="Enter title"
+                    placeholder="Введите название"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                 />
                 <CustomInput
                     icon={<EnvelopeIcon className={errors.email ? " text-red-500" : "text-[#6B9AB0]"} />}
-                    placeholder="Enter email"
+                    placeholder="Введите email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
                 <CustomSelect
-                    placeholder="Select department"
+                    placeholder="Выберите департамент"
                     options={departments}
                     value={selectedDepartment}
                     onChange={setSelectedDepartment}
@@ -172,14 +173,14 @@ export const EditEventsModal: FC<EditEventsModalProps> = ({isOpen, onClose, even
                 />
                 <CustomInput
                     icon={<CurrencyDollarIcon className={errors.price ? " text-red-500" : "text-[#6B9AB0]"} />}
-                    placeholder="Enter price"
+                    placeholder="Введите сумму"
                     type="number"
                     value={String(price)}
                     onChange={(e) => setPrice(Number(e.target.value))}
                 />
                 <Calendar
                     className={`w-full border ${errors.dates ? " border-red-500" : "border-[#6B9AB0]"} rounded-md shadow-sm`}
-                    placeholder="Choose a date"
+                    placeholder="Выберите диапазон дат"
                     value={dates}
                     onChange={(e) => setDates(e.value as Date[])}
                     selectionMode="range"
@@ -188,7 +189,7 @@ export const EditEventsModal: FC<EditEventsModalProps> = ({isOpen, onClose, even
                 />
 
                 <CustomButton onClick={handleSubmit} className="w-full">
-                    Save Changes
+                    Сохранить
                 </CustomButton>
             </div>
         </CustomModal>

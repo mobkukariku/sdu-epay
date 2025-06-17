@@ -5,7 +5,7 @@ import {DashboardContent} from "@/components/dashboard/DashboardContent.tsx";
 export const DashboardPage:FC = () => {
     return (
         <AdminLayout>
-            <p className={"text-2xl font-semibold"}>Dashboard</p>
+            <p className={"text-2xl font-semibold"}>Панель управления</p>
             <DashboardContent />
         </AdminLayout>
     )

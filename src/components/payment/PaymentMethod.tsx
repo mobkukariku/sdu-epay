@@ -16,7 +16,7 @@ export const PaymentMethod: FC<PaymentMethodProps> = ({ error, onChange }) => {
 
     return (
         <div>
-            <p className="text-[24px] font-medium mt-[26px] mb-[12px]">Payment method</p>
+            <p className="text-[24px] font-medium mt-[26px] mb-[12px]">Способ оплаты</p>
             <div className="flex justify-between gap-[16px]">
                 <PaymentMethodItem
                     icon="/icons/HalykBank.svg"

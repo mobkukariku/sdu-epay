@@ -96,26 +96,27 @@ export const EditAdminModal: FC<EditAdminModalProps> = ({ isOpen, onClose, admin
 
         const messages: string[] = [];
 
-        if (!username) {
-            messages.push("Email is required");
-        } else if (!emailRegex.test(username.trim())) {
-            messages.push("Email is invalid");
-        }
+            if (!username) {
+                messages.push("Email обязателен");
+            } else if (!emailRegex.test(username.trim())) {
+                messages.push("Некорректный формат email");
+            }
 
-        if (newErrors.name) messages.push("Name is required");
-        if (newErrors.department) messages.push("Department must be selected");
-        if (newErrors.role) messages.push("Role must be selected");
+            if (newErrors.name) messages.push("Имя обязательно");
+            if (newErrors.department) messages.push("Выберите департамент");
+            if (newErrors.role) messages.push("Выберите роль");
 
-        if (password && password.length < 6) {
-            messages.push("Password must be at least 6 characters long");
-        }
+            if (password && password.length < 6) {
+                messages.push("Пароль должен содержать минимум 6 символов");
+            }
 
-        if (messages.length > 0) {
-            messages.forEach((msg) => toast.error(msg));
-            return;
-        }
+            if (messages.length > 0) {
+                messages.forEach((msg) => toast.error(msg));
+                return;
+            }
 
-        try {
+
+            try {
             await updateUser(adminData.id, {
                 username,
                 name,
@@ -125,7 +126,7 @@ export const EditAdminModal: FC<EditAdminModalProps> = ({ isOpen, onClose, admin
             });
 
             await fetchUsers();
-            toast.success("Admin updated successfully.");
+            toast.success("Пользователь успешно обновлен");
             onClose();
         } catch (error: any) {
             const message =
@@ -138,29 +139,29 @@ export const EditAdminModal: FC<EditAdminModalProps> = ({ isOpen, onClose, admin
 
 
     return (
-        <CustomModal className={"max-w-md w-full"} title="Edit Admin" isOpen={isOpen} onClose={onClose}>
+        <CustomModal className={"max-w-md w-full"} title="Редактировать Пользователя" isOpen={isOpen} onClose={onClose}>
             <div className="flex flex-col gap-[21px]">
                 <CustomInput
                     icon={<EnvelopeIcon className={errors.username ? "text-red-500" : "text-[#6B9AB0]"} />}
-                    placeholder="Enter email"
+                    placeholder="Введите email"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                 />
                 <CustomInput
                     icon={<UserIcon className={errors.name ? "text-red-500" : "text-[#6B9AB0]"} />}
-                    placeholder="Enter name"
+                    placeholder="Введите имя"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
                 <CustomInput
                     icon={<LockClosedIcon className="text-[#6B9AB0]" />}
-                    placeholder="Enter new password (optional)"
+                    placeholder="Введите новый пароль (необязательно)"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <CustomSelect
-                    placeholder="Select department"
+                    placeholder="Выберите департамент"
                     options={departments}
                     value={selectedDepartment}
                     onChange={setSelectedDepartment}
@@ -173,16 +174,17 @@ export const EditAdminModal: FC<EditAdminModalProps> = ({ isOpen, onClose, admin
                     options={roleOptions}
                     value={selectedRole}
                     onChange={setSelectedRole}
-                    placeholder="Select role"
+                    placeholder="Выберите роль"
                     triggerClassName={`bg-white h-[50px] text-black ${errors.role ? "border border-red-500" : ""}`}
                     dropdownClassName="bg-gray-100"
                     optionClassName="text-sm"
                     activeOptionClassName="bg-blue-200"
                 />
                 <CustomButton onClick={handleUpdate} className="w-full">
-                    Save Changes
+                    Сохранить изменения
                 </CustomButton>
             </div>
         </CustomModal>
+
     );
 };

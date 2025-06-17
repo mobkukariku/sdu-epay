@@ -11,45 +11,45 @@ import {
 } from "@heroicons/react/24/outline";
 import { clearTokens } from "@/api/utils/tokenUtils.ts";
 import { useUserData } from "@/hooks/useUserData.ts";
-
 const navItems = [
     {
-        label: "Dashboard",
+        label: "Панель управления",
         to: "/dashboard",
         icon: <ChartBarIcon width={20} />,
         roles: ["SUPER_ADMIN", "ADMIN", "MANAGER"],
     },
     {
-        label: "Admin",
+        label: "Пользователи",
         to: "/admin",
         icon: <UserIcon width={20} />,
         roles: ["SUPER_ADMIN"],
     },
     {
-        label: "Departments",
+        label: "Департаменты",
         to: "/departments",
         icon: <BriefcaseIcon width={20} />,
         roles: ["SUPER_ADMIN", "ADMIN"],
     },
     {
-        label: "Events",
+        label: "События",
         to: "/events",
         icon: <CalendarIcon width={20} />,
         roles: ["ADMIN", "SUPER_ADMIN", "MANAGER"],
     },
     {
-        label: "Promo codes",
+        label: "Промокоды",
         to: "/promo-codes",
         icon: <ReceiptPercentIcon width={20} />,
         roles: ["SUPER_ADMIN", "ADMIN", "MANAGER"],
     },
     {
-        label: "File Reader",
+        label: "Чтение файлов",
         to: "/file-reader",
         icon: <TableCellsIcon width={20} />,
         roles: ["ADMIN", "SUPER_ADMIN", "MANAGER"],
     },
 ];
+
 
 export const SideBar: FC = () => {
     const user = useUserData();
@@ -87,7 +87,7 @@ export const SideBar: FC = () => {
                     </div>
                     <NavItem
                         icon={<ArrowLeftStartOnRectangleIcon width={20} />}
-                        label="Log Out"
+                        label="Выйти"
                         to="/login"
                         onClick={() => {
                             clearTokens();

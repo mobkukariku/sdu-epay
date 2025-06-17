@@ -120,17 +120,13 @@ export const EditPromoCodeModal: FC<EditPromoCodeModalProps> = ({
 
         const messages: string[] = [];
 
-        if (newErrors.code) messages.push("Promo code is required.");
-        if (newErrors.limit) messages.push("Limit must be at least 1.");
+        if (newErrors.code) messages.push("Промокод обязателен.");
+        if (newErrors.limit) messages.push("Лимит должен быть не менее 1.");
         if (newErrors.discount)
-            messages.push("Discount must be between 1 and 100.");
-        if (newErrors.event) messages.push("Please select an event.");
-        if (newErrors.dates) messages.push("Please select a valid date range.");
+            messages.push("Скидка должна быть от 1 до 100%.");
+        if (newErrors.event) messages.push("Пожалуйста, выберите мероприятие.");
+        if (newErrors.dates) messages.push("Пожалуйста, укажите корректный период действия.");
 
-        if (messages.length > 0) {
-            messages.forEach((msg) => toast.error(msg));
-            return;
-        }
 
         try {
             await updatePromoCode(promoData.id, {
@@ -143,7 +139,7 @@ export const EditPromoCodeModal: FC<EditPromoCodeModalProps> = ({
             });
 
             await fetchPromoCodes();
-            toast.success("Promo code updated successfully.");
+            toast.success("Промокод успешно обновлен.");
             onClose();
         } catch (err: any) {
             toast.error(err.response.data.detail[0].msg)
@@ -151,18 +147,18 @@ export const EditPromoCodeModal: FC<EditPromoCodeModalProps> = ({
     };
 
     return (
-        <CustomModal className={"max-w-md w-full"} title="Edit Promo Code" isOpen={isOpen} onClose={onClose}>
+        <CustomModal className={"max-w-md w-full"} title="Редактировать Промо-код" isOpen={isOpen} onClose={onClose}>
             <div className="flex flex-col gap-[21px]">
                 <CustomInput
                     icon={
                         <HashIcon className={errors.code ? "text-red-500" : "text-[#6B9AB0]"} />
                     }
-                    placeholder="Enter promo code"
+                    placeholder="Введите промо-код"
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
                 />
                 <CustomSelect
-                    placeholder="Select event"
+                    placeholder="Выберите событие"
                     options={events}
                     value={selectedEvent}
                     onChange={setSelectedEvent}
@@ -179,13 +175,13 @@ export const EditPromoCodeModal: FC<EditPromoCodeModalProps> = ({
                             className={errors.limit ? "text-red-500" : "text-[#6B9AB0]"}
                         />
                     }
-                    placeholder="Enter usage limit"
+                    placeholder="Введите лимит использования"
                     type="number"
                     value={String(limit)}
                     onChange={(e) => setLimit(Number(e.target.value))}
                 />
                 <CustomInput
-                    placeholder="Enter discount %"
+                    placeholder="Введите скидку %"
                     type="number"
                     icon={
                         <ReceiptPercentIcon
@@ -200,7 +196,7 @@ export const EditPromoCodeModal: FC<EditPromoCodeModalProps> = ({
                     className={`w-full border ${
                         errors.dates ? "border-red-500" : "border-[#6B9AB0]"
                     } rounded-md shadow-sm`}
-                    placeholder="Choose a date range"
+                    placeholder="Выберите диапазон дат"
                     value={dates}
                     onChange={(e) => setDates(e.value as Date[])}
                     selectionMode="range"
@@ -208,7 +204,7 @@ export const EditPromoCodeModal: FC<EditPromoCodeModalProps> = ({
                     hideOnRangeSelection
                 />
                 <CustomButton onClick={handleUpdate} className="w-full">
-                    Save Changes
+                    Сохранить
                 </CustomButton>
             </div>
         </CustomModal>
