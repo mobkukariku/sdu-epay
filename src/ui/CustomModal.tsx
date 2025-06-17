@@ -6,9 +6,10 @@ interface ModalProps {
     onClose: () => void;
     title?: string;
     children: ReactNode;
+    className?: string;
 }
 
-export const CustomModal: FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+export const CustomModal: FC<ModalProps> = ({ isOpen, onClose, title, children, className }) => {
     return (
         <AnimatePresence>
             {isOpen && (
@@ -19,7 +20,7 @@ export const CustomModal: FC<ModalProps> = ({ isOpen, onClose, title, children }
                     exit={{ opacity: 0 }}
                 >
                     <motion.div
-                        className="bg-white pb-[50px] rounded-[4px] shadow-xl w-full max-w-md p-[30px] relative"
+                        className={`bg-white ${className} pb-[50px] rounded-[4px] shadow-xl  p-[30px] relative `}
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.9, opacity: 0 }}

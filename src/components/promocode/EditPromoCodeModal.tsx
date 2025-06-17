@@ -151,7 +151,7 @@ export const EditPromoCodeModal: FC<EditPromoCodeModalProps> = ({
     };
 
     return (
-        <CustomModal title="Edit Promo Code" isOpen={isOpen} onClose={onClose}>
+        <CustomModal className={"max-w-md w-full"} title="Edit Promo Code" isOpen={isOpen} onClose={onClose}>
             <div className="flex flex-col gap-[21px]">
                 <CustomInput
                     icon={

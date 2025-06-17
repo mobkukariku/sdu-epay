@@ -134,7 +134,7 @@ export const AddEventModal: FC = () => {
                 ADD
             </CustomButton>
 
-            <CustomModal title={"Add Event"} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <CustomModal title={"Add Event"} isOpen={isModalOpen} className={"max-w-md w-full"} onClose={() => setIsModalOpen(false)}>
                 <div className="flex flex-col gap-[21px]">
                     <CustomInput
                         value={name}

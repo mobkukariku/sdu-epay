@@ -5,18 +5,26 @@ import {PlusIcon, UserCircleIcon} from "@heroicons/react/24/outline";
 import {CustomModal} from "@/ui/CustomModal.tsx";
 import {CustomInput} from "@/ui/CustomInput.tsx";
 import {toast} from "react-hot-toast";
+import {AddAdditionalFields} from "@/components/department/AddAdditionalFields.tsx";
 
 
 export const AddDepartmentModal:FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [additionalFields, setAdditionalFields] = useState<{name:string; type:string}[]>([]);
     const [name, setName] = useState("");
 
     const {addDepartment} = useDepartmentsStore();
 
     const handleSubmit = async () => {
+        const additional_fields: Record<string, any> = {};
+        additionalFields.forEach((field) => {
+            additional_fields[field.name] = { type: field.type };
+        });
+
         try{
             await addDepartment({
-                name: name
+                name: name,
+                additional_fields
             });
             setIsModalOpen(false);
             toast.success("Department created Successfully")
@@ -32,13 +40,14 @@ export const AddDepartmentModal:FC = () => {
                 <PlusIcon />
                 ADD
             </CustomButton>
-            <CustomModal title={"Add Event"} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <CustomModal className={"w-[600px]"} title={"Add Department"}  isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <div className={"flex flex-col gap-[21px]"}>
                     <CustomInput
                         onChange={(e) => setName(e.target.value)}
                         icon={<UserCircleIcon className={`text-[#6B9AB0]`} />}
                         placeholder={"Enter department name"}
                     />
+                    <AddAdditionalFields value={additionalFields} onChange={setAdditionalFields} />
                     <CustomButton
                         onClick={handleSubmit}
                         className="w-full"
