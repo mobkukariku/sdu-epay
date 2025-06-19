@@ -36,8 +36,8 @@ export const TransactionLineChart: FC = () => {
         const [start, end] = dateRange;
         if (!start || !end) return;
 
-        const formattedStart = format(start, "yyyy-MM-dd HH:mm:ss");
-        const formattedEnd = format(end, "yyyy-MM-dd HH:mm:ss");
+        const formattedStart = format(start, "yyyy-MM-dd");
+        const formattedEnd = format(end, "yyyy-MM-dd");
 
         const response = await getDepartmentOrders({
             start_date: formattedStart,
