@@ -13,7 +13,7 @@ import {
 import { Calendar } from "primereact/calendar";
 import { getDepartmentOrders } from "@/api/endpoints/statistics";
 import { StatisticsDepartmentData } from "@/types/statistics";
-import { addMonths, format } from "date-fns";
+import { format } from "date-fns";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -24,11 +24,6 @@ const colors = [
     { borderColor: "rgba(255, 206, 86, 1)", backgroundColor: "rgba(255, 206, 86, 0.2)" },
 ];
 
-function formatMonth(isoMonth: string) {
-    const [year, month] = isoMonth.split("-");
-    const date = new Date(Number(year), Number(month) - 1);
-    return date.toLocaleString("en-US", { month: "short", year: "numeric" });
-}
 
 export const TransactionLineChart: FC = () => {
     const [data, setData] = useState<StatisticsDepartmentData[]>([]);
@@ -41,8 +36,8 @@ export const TransactionLineChart: FC = () => {
         const [start, end] = dateRange;
         if (!start || !end) return;
 
-        const formattedStart = format(start, "yyyy-MM-dd");
-        const formattedEnd = format(addMonths(end, 1), "yyyy-MM-dd"); // include full month
+        const formattedStart = format(start, "yyyy-MM-dd HH:mm:ss");
+        const formattedEnd = format(end, "yyyy-MM-dd HH:mm:ss");
 
         const response = await getDepartmentOrders({
             start_date: formattedStart,
@@ -51,22 +46,55 @@ export const TransactionLineChart: FC = () => {
         setData(response);
     };
 
+
     useEffect(() => {
         fetchData();
     }, [dateRange]);
 
+    function formatBucket(bucket: string, diffHours: number): string {
+        const date = new Date(bucket);
+
+        if (diffHours <= 48) {
+            return date.toLocaleString("ru-RU", {
+                hour: "2-digit",
+                minute: "2-digit",
+                day: "2-digit",
+                month: "short",
+            });
+        } else if (diffHours <= 24 * 30) {
+            return date.toLocaleDateString("ru-RU", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+            });
+        } else {
+            return date.toLocaleDateString("ru-RU", {
+                month: "short",
+                year: "numeric",
+            });
+        }
+    }
+
+
     const chartData = useMemo(() => {
         if (!data.length || !dateRange[0] || !dateRange[1]) return null;
 
-        const startMonth = format(dateRange[0], "yyyy-MM");
-        const endMonth = format(dateRange[1], "yyyy-MM");
+        const [start, end] = dateRange;
+        const diffHours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
 
         const labels = data[0].time_buckets
-            .filter(bucket => bucket.bucket >= startMonth && bucket.bucket <= endMonth)
-            .map(b => formatMonth(b.bucket));
+            .filter(bucket => {
+                const bucketTime = new Date(bucket.bucket).getTime();
+                return bucketTime >= start.getTime() && bucketTime <= end.getTime();
+            })
+            .map(b => formatBucket(b.bucket, diffHours));
 
         const datasets = data.map((dep, idx) => {
-            const filtered = dep.time_buckets.filter(tb => tb.bucket >= startMonth && tb.bucket <= endMonth);
+            const filtered = dep.time_buckets.filter(tb => {
+                const time = new Date(tb.bucket).getTime();
+                return time >= start.getTime() && time <= end.getTime();
+            });
+
             return {
                 label: dep.department_name,
                 data: filtered.map(b => b.amount_sum),
@@ -78,6 +106,11 @@ export const TransactionLineChart: FC = () => {
 
         return { labels, datasets };
     }, [data, dateRange]);
+
+
+
+
+
 
     const options = {
         responsive: true,
@@ -104,10 +137,11 @@ export const TransactionLineChart: FC = () => {
                         selectionMode="range"
                         value={dateRange}
                         onChange={(e) => setDateRange(e.value as [Date, Date])}
-                        view="month"
-                        dateFormat="mm/yy"
+                        view="date"
+                        dateFormat="dd/mm/yy"
                         className="bg-white"
                         showIcon
+                        showButtonBar
                     />
                 </label>
             </div>
