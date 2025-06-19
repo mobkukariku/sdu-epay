@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import {FC, useEffect, useState} from "react";
 import { MetricItemCard } from "@/components/dashboard/MetricItemCard.tsx";
 import {
     BriefcaseIcon,
@@ -12,9 +12,38 @@ import { PromoDistributionChart } from "@/components/dashboard/PromoDistribution
 import { UsedPromoCodesChart } from "@/components/dashboard/UsedPromoCodesChart.tsx";
 import { TransactionLineChart } from "@/components/dashboard/TransactionLineChart.tsx";
 import { DashboardWelcome } from "@/components/dashboard/DashboardWelcome.tsx";
+import {fetchTotalEvents, fetchTotalPromos, fetchUsedPromos} from "@/api/endpoints/statistics.ts";
 
 export const DashboardContent: FC = () => {
     const [active, setActive] = useState<"events" | "usedPromo" | "promos" | "transactions" | null>(null);
+    const [totals, setTotals] = useState({
+        events: 0,
+        promos: 0,
+        usedPromos: 0
+    });
+
+    useEffect(() => {
+        const loadTotals = async () => {
+            try {
+                const [events, promos, usedPromos] = await Promise.all([
+                    fetchTotalEvents(),
+                    fetchTotalPromos(),
+                    fetchUsedPromos()
+                ]);
+
+                setTotals({
+                    events,
+                    promos,
+                    usedPromos
+                });
+            } catch (error) {
+                console.error("Failed to fetch totals", error);
+            }
+        };
+
+        loadTotals();
+    }, []);
+
 
     const renderContent = () => {
         switch (active) {
@@ -44,21 +73,22 @@ export const DashboardContent: FC = () => {
                 <MetricItemCard
                     icon={<CalendarIcon width={50} />}
                     name={"Всего мероприятий"}
-                    num={100}
+                    num={totals.events}
                     onClick={() => setActive("events")}
                 />
                 <MetricItemCard
                     icon={<UserIcon width={50} />}
                     name={"Всего промокодов"}
-                    num={100}
+                    num={totals.promos}
                     onClick={() => setActive("promos")}
                 />
                 <MetricItemCard
                     icon={<ReceiptPercentIcon width={50} />}
                     name={"Использованные промокоды"}
-                    num={100}
+                    num={totals.usedPromos}
                     onClick={() => setActive("usedPromo")}
                 />
+
             </div>
 
             <div className="mt-10 min-h-[300px]">

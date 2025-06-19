@@ -7,3 +7,19 @@ export const getDepartmentOrders = async (query: TransactionsQuery) => {
     });
     return data;
 };
+
+export const fetchTotalEvents = async () => {
+    const { data } = await api.get('/statistics/events/total');
+    return data.total;
+}
+
+export const fetchTotalPromos = async () => {
+    const { data } = await api.get('/statistics/promo-codes/total');
+    return data.total;
+}
+
+export const fetchUsedPromos = async () => {
+    const { data } = await api.get('/statistics/promo-codes/already-used/total');
+
+    return data.total;
+}
