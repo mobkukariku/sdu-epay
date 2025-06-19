@@ -16,11 +16,9 @@ export const MetricItemCard: FC<MetricItemCardProps> = ({ name, num, icon, onCli
                     {icon}
                 </div>
             </div>
-            {num && (
-                <div>
-                    <p className="text-3xl font-bold text-gray-900">{num}</p>
-                </div>
-            )}
+            <div>
+                <p className="text-3xl font-bold text-gray-900">{num}</p>
+            </div>
         </div>
     );
 };

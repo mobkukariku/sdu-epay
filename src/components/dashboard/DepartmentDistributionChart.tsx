@@ -7,33 +7,10 @@ import {
     Tooltip,
     Legend,
 } from "chart.js";
-import {FC} from "react";
+import { FC, useEffect, useState } from "react";
+import {fetchEventsDistrubution} from "@/api/endpoints/statistics.ts"; // если у тебя axios instance тут
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
-
-const mockData = [
-    { title: "AI Conf", department: "CS", manager_email: "a@sdu.kz" },
-    { title: "Web Bootcamp", department: "CS", manager_email: "b@sdu.kz" },
-    { title: "Math Fest", department: "Math", manager_email: "c@sdu.kz" },
-    { title: "AI Lab", department: "CS", manager_email: "d@sdu.kz" },
-    { title: "Physics Demo", department: "Physics", manager_email: "e@sdu.kz" },
-];
-
-const departmentCounts: Record<string, number> = {};
-mockData.forEach((event) => {
-    departmentCounts[event.department] = (departmentCounts[event.department] || 0) + 1;
-});
-
-const data = {
-    labels: Object.keys(departmentCounts),
-    datasets: [
-        {
-            label: "Number of Events",
-            data: Object.values(departmentCounts),
-            backgroundColor: "#6366f1",
-        },
-    ],
-};
 
 const options = {
     responsive: true,
@@ -64,14 +41,51 @@ const options = {
     },
 };
 
-export const DepartmentDistributionChart:FC =() => {
+interface DepartmentStat {
+    department_id: string;
+    department_name: string;
+    total: number;
+}
+
+export const DepartmentDistributionChart: FC = () => {
+    const [chartData, setChartData] = useState<any>(null);
+
+    useEffect(() => {
+        const fetchDepartmentStats = async () => {
+            try {
+                const data:DepartmentStat[] = await fetchEventsDistrubution();
+
+                const labels = data.map((item) => item.department_name);
+                const totals = data.map((item) => item.total);
+
+                setChartData({
+                    labels,
+                    datasets: [
+                        {
+                            label: "Number of Events",
+                            data: totals,
+                            backgroundColor: "#6366f1",
+                        },
+                    ],
+                });
+            } catch (error) {
+                console.error("Failed to fetch department stats:", error);
+            }
+        };
+
+        fetchDepartmentStats();
+    }, []);
+
     return (
         <div className="w-full max-w-full px-4">
             <h2 className="text-xl font-semibold mb-4">Распределение по департаментам</h2>
             <div className="bg-white p-6 rounded-2xl w-full">
-                <Bar data={data} options={options} />
+                {chartData ? (
+                    <Bar data={chartData} options={options} />
+                ) : (
+                    <div>Загрузка...</div>
+                )}
             </div>
         </div>
     );
-}
-
+};
