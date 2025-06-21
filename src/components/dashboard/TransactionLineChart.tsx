@@ -11,6 +11,7 @@ import {
     Legend,
 } from "chart.js";
 import { Calendar } from "primereact/calendar";
+import { Dropdown } from "primereact/dropdown";
 import { getDepartmentOrders } from "@/api/endpoints/statistics";
 import { StatisticsDepartmentData } from "@/types/statistics";
 import { format } from "date-fns";
@@ -24,6 +25,12 @@ const colors = [
     { borderColor: "rgba(255, 206, 86, 1)", backgroundColor: "rgba(255, 206, 86, 0.2)" },
 ];
 
+const predefinedRanges = [
+    { label: "За день", value: "day" },
+    { label: "За неделю", value: "week" },
+    { label: "За месяц", value: "month" },
+    { label: "За год", value: "year" },
+];
 
 export const TransactionLineChart: FC = () => {
     const [data, setData] = useState<StatisticsDepartmentData[]>([]);
@@ -31,20 +38,40 @@ export const TransactionLineChart: FC = () => {
         new Date("2024-06-01"),
         new Date("2025-06-01"),
     ]);
+    const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
+
+    const applyPresetRange = (preset: string) => {
+        const now = new Date();
+        let from = new Date(now);
+        switch (preset) {
+            case "day":
+                from.setDate(now.getDate() - 1);
+                break;
+            case "week":
+                from.setDate(now.getDate() - 7);
+                break;
+            case "month":
+                from.setMonth(now.getMonth() - 1);
+                break;
+            case "year":
+                from.setFullYear(now.getFullYear() - 1);
+                break;
+        }
+        setDateRange([from, now]);
+    };
 
     const fetchData = async () => {
         let [start, end] = dateRange;
         if (!start) return;
 
-        // Если выбрана только одна дата — делаем end на 1 день позже
         if (!end) {
             start = new Date(start);
             end = new Date(start);
             end.setDate(end.getDate() + 1);
         }
 
-        const formattedStart = format(start, "yyyy-MM-dd"); // Только дата
-        const formattedEnd = format(end, "yyyy-MM-dd");     // Только дата
+        const formattedStart = format(start, "yyyy-MM-dd");
+        const formattedEnd = format(end, "yyyy-MM-dd");
 
         const response = await getDepartmentOrders({
             start_date: formattedStart,
@@ -54,16 +81,12 @@ export const TransactionLineChart: FC = () => {
         setData(response);
     };
 
-
-
-
     useEffect(() => {
         fetchData();
     }, [dateRange]);
 
     function formatBucket(bucket: string, diffHours: number): string {
         const date = new Date(bucket);
-
         if (diffHours <= 48) {
             return date.toLocaleString("ru-RU", {
                 hour: "2-digit",
@@ -84,7 +107,6 @@ export const TransactionLineChart: FC = () => {
             });
         }
     }
-
 
     const chartData = useMemo(() => {
         if (!data.length || !dateRange[0] || !dateRange[1]) return null;
@@ -116,11 +138,6 @@ export const TransactionLineChart: FC = () => {
 
         return { labels, datasets };
     }, [data, dateRange]);
-
-
-
-
-
 
     const options = {
         responsive: true,
@@ -154,10 +171,24 @@ export const TransactionLineChart: FC = () => {
                         showButtonBar
                     />
                 </label>
+
+                <label className="flex flex-col">
+                    Быстрый выбор периода:
+                    <Dropdown
+                        value={selectedPreset}
+                        options={predefinedRanges}
+                        onChange={(e) => {
+                            setSelectedPreset(e.value);
+                            applyPresetRange(e.value);
+                        }}
+                        placeholder="Выбрать"
+                        className="w-full min-w-[12rem]"
+                    />
+                </label>
             </div>
 
             <div className="bg-white p-6 rounded-2xl w-full">
-                {chartData ? <Line data={chartData} options={options} /> : <p>No data</p>}
+                {chartData ? <Line data={chartData} options={options} /> : <p>За этот период нету данных</p>}
             </div>
         </div>
     );
