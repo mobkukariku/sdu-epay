@@ -21,7 +21,7 @@ const options = {
         },
         tooltip: {
             callbacks: {
-                label: (context: any) => `${context.parsed.y} times used`,
+                label: (context: any) => `${context.parsed.y} было использовано`,
             },
         },
     },
@@ -30,13 +30,13 @@ const options = {
             beginAtZero: true,
             title: {
                 display: true,
-                text: "Times Used",
+                text: "Кол-во использованных",
             },
         },
         x: {
             title: {
                 display: true,
-                text: "Events",
+                text: "События",
             },
         },
     },

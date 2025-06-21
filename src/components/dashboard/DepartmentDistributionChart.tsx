@@ -20,7 +20,7 @@ const options = {
         },
         tooltip: {
             callbacks: {
-                label: (context: any) => `${context.parsed.y} events`,
+                label: (context: any) => `${context.parsed.y} событии`,
             },
         },
     },
@@ -29,13 +29,13 @@ const options = {
             beginAtZero: true,
             title: {
                 display: true,
-                text: "Events",
+                text: "События",
             },
         },
         x: {
             title: {
                 display: true,
-                text: "Departments",
+                text: "Департаменты",
             },
         },
     },

@@ -21,7 +21,7 @@ const options = {
         },
         tooltip: {
             callbacks: {
-                label: (context: any) => `${context.parsed.y} promo codes`,
+                label: (context: any) => `${context.parsed.y} промо-кодов`,
             },
         },
     },
@@ -30,13 +30,13 @@ const options = {
             beginAtZero: true,
             title: {
                 display: true,
-                text: "Promo Codes",
+                text: "Промо-коды",
             },
         },
         x: {
             title: {
                 display: true,
-                text: "Events",
+                text: "События",
             },
         },
     },
