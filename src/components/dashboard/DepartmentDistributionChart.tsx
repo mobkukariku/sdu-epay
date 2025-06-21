@@ -8,7 +8,7 @@ import {
     Legend,
 } from "chart.js";
 import { FC, useEffect, useState } from "react";
-import {fetchEventsDistrubution} from "@/api/endpoints/statistics.ts"; // если у тебя axios instance тут
+import {fetchEventsDistrubution} from "@/api/endpoints/statistics.ts";
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -78,7 +78,7 @@ export const DepartmentDistributionChart: FC = () => {
 
     return (
         <div className="w-full max-w-full px-4">
-            <h2 className="text-xl font-semibold mb-4">Распределение по департаментам</h2>
+            <h2 className="text-xl font-semibold mb-4">Распределение активных событии по департаментам</h2>
             <div className="bg-white p-6 rounded-2xl w-full">
                 {chartData ? (
                     <Bar data={chartData} options={options} />

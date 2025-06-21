@@ -33,18 +33,28 @@ export const TransactionLineChart: FC = () => {
     ]);
 
     const fetchData = async () => {
-        const [start, end] = dateRange;
-        if (!start || !end) return;
+        let [start, end] = dateRange;
+        if (!start) return;
 
-        const formattedStart = format(start, "yyyy-MM-dd");
-        const formattedEnd = format(end, "yyyy-MM-dd");
+        // Если выбрана только одна дата — делаем end на 1 день позже
+        if (!end) {
+            start = new Date(start);
+            end = new Date(start);
+            end.setDate(end.getDate() + 1);
+        }
+
+        const formattedStart = format(start, "yyyy-MM-dd"); // Только дата
+        const formattedEnd = format(end, "yyyy-MM-dd");     // Только дата
 
         const response = await getDepartmentOrders({
             start_date: formattedStart,
             end_date: formattedEnd,
         });
+
         setData(response);
     };
+
+
 
 
     useEffect(() => {
