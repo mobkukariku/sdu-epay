@@ -1,0 +1,41 @@
+{
+  "paymentPage": {
+    "title": "Payment",
+    "personalInfo": "Personal Information",
+    "errors": {
+      "fullname": "Full name is required",
+      "email": "Invalid email",
+      "emailRequired": "Email is required",
+      "cellphone": "Phone number is required",
+      "department_id": "Department selection is required",
+      "event_id": "Event selection is required",
+      "paymentMethod": "Payment method selection is required"
+    },
+    "toasts": {
+      "error": "Something went wrong, please try again"
+    },
+    "inputs": {
+      "namePH": "Enter full name",
+      "emailPH": "Enter email",
+      "phonePH": "Enter phone number",
+      "selectDepPH": "Select department",
+      "selectEvPH": "Select event"
+    },
+    "paymentMethod": "Payment Method",
+    "promocode": {
+      "promoPH": "Promo code",
+      "check": "Check",
+      "toasts": {
+        "empty": "Please enter a promo code",
+        "invalid": "Promo code is invalid",
+        "success": "Promo code applied successfully!"
+      }
+    },
+    "check": {
+      "summ": "Amount",
+      "promo": "Promo code",
+      "total": "Total"
+    },
+    "payBtn": "Pay"
+  }
+}

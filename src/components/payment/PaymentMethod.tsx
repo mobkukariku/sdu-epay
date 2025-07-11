@@ -1,5 +1,6 @@
 import { FC, useState } from "react";
 import { PaymentMethodItem } from "./PaymentMethodItem.tsx";
+import {useTranslation} from "react-i18next";
 
 export interface PaymentMethodProps {
     error?: string;
@@ -7,8 +8,8 @@ export interface PaymentMethodProps {
 }
 
 export const PaymentMethod: FC<PaymentMethodProps> = ({ error, onChange }) => {
+    const {t} = useTranslation();
     const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
-
     const handleSelectMethod = (method: string) => {
         setSelectedMethod(method);
         onChange(method);
@@ -16,7 +17,7 @@ export const PaymentMethod: FC<PaymentMethodProps> = ({ error, onChange }) => {
 
     return (
         <div>
-            <p className="text-[24px] font-medium mt-[26px] mb-[12px]">Способ оплаты</p>
+            <p className="text-[24px] font-medium mt-[26px] mb-[12px]">{t('paymentPage.paymentMethod')}</p>
             <div className="flex justify-between gap-[16px]">
                 <PaymentMethodItem
                     icon="/icons/HalykBank.svg"

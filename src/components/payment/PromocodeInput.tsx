@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import { usePaymentStore } from "@/store/usePaymentStore.ts";
 
 import { ChangeEvent } from "react";
+import {useTranslation} from "react-i18next";
 
 interface Props {
     promoCodeField: {
@@ -16,10 +17,11 @@ interface Props {
 
 export const PromocodeInput: FC<Props> = ({ promoCodeField }) => {
     const { verifyPromo, order } = usePaymentStore();
+    const {t} = useTranslation();
 
     const onClick = async () => {
         if (!promoCodeField.value) {
-            return toast.error("Пожалуйста, введите промокод");
+            return toast.error(t("paymentPage.promocode.toasts.empty"));
         }
 
         const errorMessage = await verifyPromo({
@@ -28,9 +30,9 @@ export const PromocodeInput: FC<Props> = ({ promoCodeField }) => {
         });
 
         if (errorMessage) {
-            toast.error("Промокод недействителен");
+            toast.error(t("paymentPage.promocode.toasts.invalid"));
         } else {
-            toast.success("Промокод успешно применён!");
+            toast.success(t("paymentPage.promocode.toasts.success"));
         }
     };
 
@@ -39,12 +41,12 @@ export const PromocodeInput: FC<Props> = ({ promoCodeField }) => {
             <CustomInput
                 icon={<ReceiptPercentIcon className="text-[#6B9AB0]" />}
                 type="text"
-                placeholder="Промокод"
+                placeholder={t('paymentPage.promocode.promoPH')}
                 value={promoCodeField.value || ""}
                 onChange={(e) => promoCodeField.onChange(e)}
             />
             <CustomButton onClick={onClick} variant="default" className="text-[16px]">
-                Проверить
+                {t('paymentPage.promocode.check')}
             </CustomButton>
         </div>
     );

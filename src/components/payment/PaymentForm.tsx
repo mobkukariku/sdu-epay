@@ -18,6 +18,7 @@ import {orderHalyk, orderKaspi} from "@/api/endpoints/order.ts";
 import {PaymentHalyk} from "@/components/payment/PaymentHalyk.tsx";
 import {toast} from "react-hot-toast";
 import {Calendar} from "primereact/calendar";
+import {useTranslation} from "react-i18next";
 
 
 interface FormValues {
@@ -31,21 +32,28 @@ interface FormValues {
     paymentMethod: string;
 }
 
-const schema = yup.object().shape({
-    fullname: yup.string().required("Полное имя обязательно"),
-    email: yup.string().email("Некорректный email").required("Email обязателен"),
-    cellphone: yup.string().required("Номер телефона обязателен"),
-    promo_code: yup.string().nullable(),
-    department_id: yup.string().required("Выбор направления обязателен"),
-    event_id: yup.string().required("Выбор мероприятия обязателен"),
-    additional: yup.string().optional(),
-    paymentMethod: yup.string().required("Выбор способа оплаты обязателен"),
-});
+export const usePaymentSchema = () => {
+    const { t } = useTranslation();
 
+    return yup.object().shape({
+        fullname: yup.string().required(t("paymentPage.errors.fullname")),
+        email: yup
+            .string()
+            .email(t("paymentPage.errors.email"))
+            .required(t("paymentPage.errors.emailRequired")),
+        cellphone: yup.string().required(t("paymentPage.errors.cellphone")),
+        promo_code: yup.string().nullable(),
+        department_id: yup.string().required(t("paymentPage.errors.department_id")),
+        event_id: yup.string().required(t("paymentPage.errors.event_id")),
+        additional: yup.string().optional(),
+        paymentMethod: yup.string().required(t("paymentPage.errors.paymentMethod")),
+    });
+};
 
 
 export const PaymentForm: FC = () => {
     const {setPrice, setOrderField} = usePaymentStore();
+    const { t } = useTranslation();
 
     const [selectedDepartmentId, setSelectedDepartmentId] = useState("");
     const [loading, setLoading] = useState(false);
@@ -97,6 +105,7 @@ export const PaymentForm: FC = () => {
     }, [selectedDepartmentId]);
 
 
+    const schema = usePaymentSchema();
     const {
         control,
         handleSubmit,
@@ -153,7 +162,7 @@ export const PaymentForm: FC = () => {
             }
 
         } catch (err) {
-            toast.error("Что-то пошло не так, попробуйте снова");
+            toast.error(t('paymentPage.toasts.error'));
             console.error("Payment API error:", err);
         } finally {
             setLoading(false);
@@ -169,7 +178,7 @@ export const PaymentForm: FC = () => {
             onSubmit={handleSubmit(onSubmit)}
             className="bg-[#FFFFFF] font-medium text-[20px] w-[610px] px-[94px] py-[32px] rounded-[6px] border-2 border-[#006799]"
         >
-            <p className="mb-[31px] text-[24px]">Личная информация</p>
+            <p className="mb-[31px] text-[24px]">{t('paymentPage.personalInfo')}</p>
             <div className="flex flex-col gap-[20px]">
                 <Controller
                     name="fullname"
@@ -184,7 +193,7 @@ export const PaymentForm: FC = () => {
                                     field.onChange(e);
                                     setOrderField("fullname", e.target.value);
                                 }}
-                                placeholder="Введите полное имя"
+                                placeholder={t('paymentPage.inputs.namePH')}
                                 error={errors.fullname?.message}
                             />
                             {errors.fullname && (
@@ -206,7 +215,7 @@ export const PaymentForm: FC = () => {
                                     field.onChange(e);
                                     setOrderField("email", e.target.value);
                                 }}
-                                placeholder="Введите email"
+                                placeholder={t('paymentPage.inputs.emailPH')}
                                 error={errors.email?.message}
                             />
                             {errors.email && (
@@ -228,7 +237,7 @@ export const PaymentForm: FC = () => {
                                     field.onChange(e);
                                     setOrderField("cellphone", e.target.value);
                                 }}
-                                placeholder="Введите номер телефона"
+                                placeholder={t('paymentPage.inputs.phonePH')}
                                 error={errors.cellphone?.message}
                             />
                             {errors.cellphone && (
@@ -262,7 +271,7 @@ export const PaymentForm: FC = () => {
                                     setAdditionalFields(parsed);
                                 }}
                                 triggerClassName={"text-white"}
-                                placeholder="Выберите департамент"
+                                placeholder={t('paymentPage.inputs.selectDepPH')}
                                 error={errors.department_id?.message}
                             />
                             {errors.department_id && (
@@ -293,7 +302,7 @@ export const PaymentForm: FC = () => {
                                             }
                                         }}
                                         triggerClassName={"text-white"}
-                                        placeholder="Выберите событие"
+                                        placeholder={t('paymentPage.inputs.selectEvPH')}
                                         error={errors.event_id?.message}
                                     />
                                     {errors.event_id && (
@@ -373,7 +382,7 @@ export const PaymentForm: FC = () => {
 
                         <CheckOut />
                         {!loading ? (
-                            <CustomButton type="submit" variant="submit">Оплатить</CustomButton>
+                            <CustomButton type="submit" variant="submit">{t('paymentPage.payBtn')}</CustomButton>
                         ) : (
                             <CustomButton type="submit" disabled={true} variant="disabled">
                                 <PulseLoader size={6} color={"#ffff"} />
@@ -390,8 +399,8 @@ export const PaymentForm: FC = () => {
                         orderId={paymentData.order.id.toString()}
                         email={paymentData.order.email}
                         oauthData={paymentData.auth}
-                        successUrl="https://yourdomain.kz/payment-success"
-                        failUrl="https://yourdomain.kz/payment-fail"
+                        successUrl="https://ems.sdu.edu.kz/success"
+                        failUrl="https://ems.sdu.edu.kz/fail"
                         description={`Оплата за ${paymentData.order.event.title}`}
                         onClose={() => setShowWidget(false)}
                     />
