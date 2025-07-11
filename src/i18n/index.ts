@@ -15,12 +15,15 @@ i18n
             ru: { translation: ru },
             kz: { translation: kz },
         },
+        lng: 'en',
         fallbackLng: 'en',
         interpolation: {
             escapeValue: false,
         },
-    })
-
-
+        detection: {
+            order: ['localStorage', 'navigator'],
+            caches: ['localStorage'],
+        },
+    });
 
 export default i18n;

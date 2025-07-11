@@ -146,6 +146,8 @@ export const PaymentForm: FC = () => {
                 additional_fields: additionalFieldValues
             };
 
+            console.log("Sending payload:", payload);
+
             if (data.paymentMethod === "KaspiBank") {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const { paymentMethod, department_id, ...dataWithoutPaymentMethodAndDepartment } = payload;
