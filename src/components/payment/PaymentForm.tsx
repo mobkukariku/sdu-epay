@@ -152,7 +152,6 @@ export const PaymentForm: FC = () => {
 
     const onSubmit: SubmitHandler<FormValues> = async (data) => {
 
-        console.log("submit!", data)
 
 
         setLoading(true);
@@ -162,7 +161,6 @@ export const PaymentForm: FC = () => {
                 additional_fields: additionalFieldValues
             };
 
-            console.log("Sending payload:", payload);
 
             if(selectedDepartmentType==="EVENT_BASED"){
                 if (data.paymentMethod === "KaspiBank") {
