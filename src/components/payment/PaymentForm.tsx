@@ -1,6 +1,6 @@
 import {FC, useEffect, useState} from "react";
 import { CustomInput } from "../../ui/CustomInput.tsx";
-import { EnvelopeIcon, PhoneIcon, UserIcon } from "@heroicons/react/24/outline";
+import {CurrencyDollarIcon, EnvelopeIcon, PhoneIcon, UserIcon} from "@heroicons/react/24/outline";
 import {CustomSelect, Option} from "../../ui/CustomSelect.tsx";
 import { PaymentMethod } from "./PaymentMethod.tsx";
 import { PromocodeInput } from "./PromocodeInput.tsx";
@@ -14,11 +14,12 @@ import {getPublicDepartments} from "@/api/endpoints/departments.ts";
 import {getPublicEventsById} from "@/api/endpoints/events.ts";
 import {IEvent} from "@/types/events.ts";
 import {usePaymentStore} from "@/store/usePaymentStore.ts";
-import {orderHalyk, orderKaspi} from "@/api/endpoints/order.ts";
+import {orderHalyk, orderKaspi, orderSelfHalyk, orderSelfKaspi} from "@/api/endpoints/order.ts";
 import {PaymentHalyk} from "@/components/payment/PaymentHalyk.tsx";
 import {toast} from "react-hot-toast";
 import {Calendar} from "primereact/calendar";
 import {useTranslation} from "react-i18next";
+import {DepartmentType} from "@/types/payment.ts";
 
 
 interface FormValues {
@@ -27,12 +28,15 @@ interface FormValues {
     cellphone: string;
     promo_code: string | null;
     department_id: string;
-    event_id: string;
+    event_id: string | null;
     additional: string;
     paymentMethod: string;
+    amount: number | null;
 }
 
-export const usePaymentSchema = () => {
+
+
+export const usePaymentSchema = (isSelfPay: "EVENT_BASED" | "SELF_PAY" | null) => {
     const { t } = useTranslation();
 
     return yup.object().shape({
@@ -44,9 +48,14 @@ export const usePaymentSchema = () => {
         cellphone: yup.string().required(t("paymentPage.errors.cellphone")),
         promo_code: yup.string().nullable(),
         department_id: yup.string().required(t("paymentPage.errors.department_id")),
-        event_id: yup.string().required(t("paymentPage.errors.event_id")),
+        event_id: isSelfPay === "SELF_PAY"
+            ? yup.string().optional()
+            : yup.string().required(t("paymentPage.errors.event_id")),
         additional: yup.string().optional(),
         paymentMethod: yup.string().required(t("paymentPage.errors.paymentMethod")),
+        amount: isSelfPay === "EVENT_BASED"
+            ? yup.number().optional()
+            : yup.number().typeError(t("paymentPage.errors.amount")).required(t("paymentPage.errors.amount")),
     });
 };
 
@@ -64,6 +73,8 @@ export const PaymentForm: FC = () => {
     const [departments, setDepartments] = useState<any[]>([]); // store all data
     const [additionalFields, setAdditionalFields] = useState<any[]>([]);
     const [additionalFieldValues, setAdditionalFieldValues] = useState<Record<string, string | boolean>>({});
+    const [selectedDepartmentType, setSelectedDepartmentType] = useState<DepartmentType | null>(null);
+
 
 
 
@@ -72,6 +83,7 @@ export const PaymentForm: FC = () => {
             try {
                 const data = await getPublicDepartments();
                 setDepartments(data);
+
                 const mapped = data.map((dept: { name: string; id: string }) => ({
                     label: dept.name,
                     value: dept.id,
@@ -105,7 +117,7 @@ export const PaymentForm: FC = () => {
     }, [selectedDepartmentId]);
 
 
-    const schema = usePaymentSchema();
+    const schema = usePaymentSchema(selectedDepartmentType);
     const {
         control,
         handleSubmit,
@@ -122,6 +134,7 @@ export const PaymentForm: FC = () => {
             additional: '',
             promo_code: null,
             paymentMethod: '',
+            amount: null
         }
     });
 
@@ -139,6 +152,9 @@ export const PaymentForm: FC = () => {
 
     const onSubmit: SubmitHandler<FormValues> = async (data) => {
 
+        console.log("submit!", data)
+
+
         setLoading(true);
         try {
             const payload = {
@@ -148,23 +164,37 @@ export const PaymentForm: FC = () => {
 
             console.log("Sending payload:", payload);
 
-            if (data.paymentMethod === "KaspiBank") {
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const { paymentMethod, department_id, ...dataWithoutPaymentMethodAndDepartment } = payload;
+            if(selectedDepartmentType==="EVENT_BASED"){
+                if (data.paymentMethod === "KaspiBank") {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    const { paymentMethod, department_id, ...dataWithoutPaymentMethodAndDepartment } = payload;
 
-                await orderKaspi(dataWithoutPaymentMethodAndDepartment);
-            }else if (data.paymentMethod === "HalykBank") {
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const { paymentMethod, department_id, ...dataWithoutPaymentMethodAndDepartment } = payload;
-                setPaymentData(await orderHalyk(dataWithoutPaymentMethodAndDepartment));
-                setShowWidget(true);
-            }
-            else {
-                console.warn("Unknown payment method");
+                    await orderKaspi(dataWithoutPaymentMethodAndDepartment);
+                }else if (data.paymentMethod === "HalykBank") {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    const { paymentMethod, department_id, ...dataWithoutPaymentMethodAndDepartment } = payload;
+                    setPaymentData(await orderHalyk(dataWithoutPaymentMethodAndDepartment));
+                    setShowWidget(true);
+                }
+                else {
+                    console.warn("Unknown payment method");
+                }
+            }else if(selectedDepartmentType==="SELF_PAY"){
+                if (data.paymentMethod === "KaspiBank") {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    const { paymentMethod, event_id, promo_code, ...dataWithoutPaymentMethodAndDepartment } = payload;
+
+                    await orderSelfKaspi(dataWithoutPaymentMethodAndDepartment);
+                }else if (data.paymentMethod === "HalykBank") {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    const { paymentMethod, event_id, promo_code, ...dataWithoutPaymentMethodAndDepartment } = payload;
+                    setPaymentData(await orderSelfHalyk(dataWithoutPaymentMethodAndDepartment));
+                    setShowWidget(true);
+                }
             }
 
-        } catch (err) {
-            toast.error(t('paymentPage.toasts.error'));
+        } catch (err: any) {
+            toast.error(err.response.data.detail[0].msg)
             console.error("Payment API error:", err);
         } finally {
             setLoading(false);
@@ -260,9 +290,11 @@ export const PaymentForm: FC = () => {
                                 onChange={(val) => {
                                     field.onChange(val);
                                     setSelectedDepartmentId(val);
+
                                     type AdditionalFieldsMap = Record<string, { type: string }>;
 
                                     const selected = departments.find((d) => d.id === val);
+                                    setSelectedDepartmentType(selected?.type as DepartmentType || null);
                                     const additional = (selected?.additional_fields || {}) as AdditionalFieldsMap;
 
                                     const parsed = Object.entries(additional).map(([label, config]) => ({
@@ -285,7 +317,8 @@ export const PaymentForm: FC = () => {
 
                 {selectedDepartmentId && (
                     <>
-                        <Controller
+                        {selectedDepartmentType==="EVENT_BASED" ? (
+                            <Controller
                             name="event_id"
                             control={control}
                             render={({ field }) => (
@@ -293,7 +326,7 @@ export const PaymentForm: FC = () => {
                                     <CustomSelect
                                         {...field}
                                         options={eventOptions}
-                                        value={field.value}
+                                        value={field.value || ''}
                                         onChange={(val) => {
                                             field.onChange(val);
                                             setOrderField("event_id", val);
@@ -312,7 +345,7 @@ export const PaymentForm: FC = () => {
                                     )}
                                 </>
                             )}
-                        />
+                        />): null}
                         {additionalFields.map((field) => {
                             const key = field.name;
 
@@ -370,19 +403,47 @@ export const PaymentForm: FC = () => {
                                 </>
                             )}
                         />
-                        <Controller
-                            name="promo_code"
-                            control={control}
-                            render={({ field }) => (
-                                <PromocodeInput promoCodeField={{
-                                    ...field,
-                                    value: field.value ?? undefined
-                                }} />
+                        {
+                            selectedDepartmentType==="EVENT_BASED" ? (
+                                    <>
+                                        <Controller
+                                            name="promo_code"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <PromocodeInput promoCodeField={{
+                                                    ...field,
+                                                    value: field.value ?? undefined
+                                                }} />
 
-                            )}
-                        />
+                                            )}
+                                        />
 
-                        <CheckOut />
+                                        <CheckOut /></>
+                            ) : (
+                                <Controller
+                                    name="amount"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <>
+                                            <CustomInput
+                                                {...field}
+                                                icon={<CurrencyDollarIcon  className={`text-[#6B9AB0] ${errors.cellphone ? "text-red-500" : ""}`} />}
+                                                type="number"
+                                                onChange={(e) => {
+                                                    field.onChange(e);
+                                                    setOrderField("amount", Number(e.target.value));
+                                                }}
+                                                placeholder={t('paymentPage.inputs.amountPH')}
+                                                error={errors.cellphone?.message}
+                                            />
+                                            {errors.amount && (
+                                                <p className="text-red-500 text-sm -mt-4 ml-2">{errors.amount.message}</p>
+                                            )}
+                                        </>
+                                    )}
+                                />
+                            )
+                        }
                         {!loading ? (
                             <CustomButton type="submit" variant="submit">{t('paymentPage.payBtn')}</CustomButton>
                         ) : (

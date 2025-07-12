@@ -6,6 +6,7 @@ export interface IOrder {
     promo_code: string | null;
     event_id: string;
     additional?: string;
+    amount?: number | null;
 }
 
 

@@ -9,7 +9,8 @@
       "cellphone": "Phone number is required",
       "department_id": "Department selection is required",
       "event_id": "Event selection is required",
-      "paymentMethod": "Payment method selection is required"
+      "paymentMethod": "Payment method selection is required",
+      "amount": "Amount is required"
     },
     "toasts": {
       "error": "Something went wrong, please try again"
@@ -19,7 +20,8 @@
       "emailPH": "Enter email",
       "phonePH": "Enter phone number",
       "selectDepPH": "Select department",
-      "selectEvPH": "Select event"
+      "selectEvPH": "Select event",
+      "amountPH": "Enter amount"
     },
     "paymentMethod": "Payment Method",
     "promocode": {
