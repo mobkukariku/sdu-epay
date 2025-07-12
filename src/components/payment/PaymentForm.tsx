@@ -194,7 +194,7 @@ export const PaymentForm: FC = () => {
             }
 
         } catch (err: any) {
-            toast.error(err.response.data.detail[0].msg)
+            toast.error(err.response.data.detail[0].msg || t('paymentPage.toasts.error'))
             console.error("Payment API error:", err);
         } finally {
             setLoading(false);
