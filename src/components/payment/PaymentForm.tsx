@@ -464,7 +464,7 @@ export const PaymentForm: FC = () => {
                         oauthData={paymentData.auth}
                         successUrl="https://ems.sdu.edu.kz/success"
                         failUrl="https://ems.sdu.edu.kz/fail"
-                        description={`Оплата за ${paymentData.order.event.title}`}
+                        description={`Оплата за ${paymentData.order.event?.title || ''}`}
                         onClose={() => setShowWidget(false)}
                     />
                 )}
