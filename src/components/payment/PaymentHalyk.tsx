@@ -48,7 +48,7 @@ export const PaymentHalyk: FC<PaymentHalykProps> = ({
                 language: "RUS",
             }}
             onWidgetClose={onClose}
-            devMode={true}
+            devMode={false}
         />
     );
 };
