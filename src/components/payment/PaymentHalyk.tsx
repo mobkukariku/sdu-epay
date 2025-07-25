@@ -41,8 +41,8 @@ export const PaymentHalyk: FC<PaymentHalykProps> = ({
             paymentData={{
                 backLink: successUrl,
                 failureBackLink: failUrl,
-                postLink: `${successUrl}/post`,
-                failurePostLink: `${failUrl}/post`,
+                postLink: `${successUrl}`,
+                failurePostLink: `${failUrl}`,
                 description: description,
                 accountId: email,
                 language: "RUS",

@@ -390,8 +390,8 @@ export const PaymentForm: FC = () => {
                         orderId={paymentData.order.id.toString()}
                         email={paymentData.order.email}
                         oauthData={paymentData.auth}
-                        successUrl="https://yourdomain.kz/payment-success"
-                        failUrl="https://yourdomain.kz/payment-fail"
+                        successUrl="https://ems.sdu.edu.kz/success"
+                        failUrl="https://ems.sdu.edu.kz/fail"
                         description={`Оплата за ${paymentData.order.event.title}`}
                         onClose={() => setShowWidget(false)}
                     />
