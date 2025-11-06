@@ -117,6 +117,7 @@ export const PaymentForm: FC = () => {
     }, [selectedDepartmentId]);
 
 
+
     const schema = usePaymentSchema(selectedDepartmentType);
     const {
         control,
@@ -166,8 +167,11 @@ export const PaymentForm: FC = () => {
                 if (data.paymentMethod === "KaspiBank") {
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     const { paymentMethod, department_id, ...dataWithoutPaymentMethodAndDepartment } = payload;
+                    const kaspiData = await orderKaspi(dataWithoutPaymentMethodAndDepartment);
+                    console.log("kaspiData", kaspiData);
+                    setPaymentData(kaspiData);
 
-                    await orderKaspi(dataWithoutPaymentMethodAndDepartment);
+
                 }else if (data.paymentMethod === "HalykBank") {
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     const { paymentMethod, department_id, ...dataWithoutPaymentMethodAndDepartment } = payload;
@@ -182,7 +186,10 @@ export const PaymentForm: FC = () => {
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     const { paymentMethod, event_id, promo_code, ...dataWithoutPaymentMethodAndDepartment } = payload;
 
-                    await orderSelfKaspi(dataWithoutPaymentMethodAndDepartment);
+                    const kaspiData = await orderSelfKaspi(dataWithoutPaymentMethodAndDepartment);
+                    console.log("kaspiData", kaspiData);
+                    setPaymentData(kaspiData);
+
                 }else if (data.paymentMethod === "HalykBank") {
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     const { paymentMethod, event_id, promo_code, ...dataWithoutPaymentMethodAndDepartment } = payload;
@@ -202,14 +209,26 @@ export const PaymentForm: FC = () => {
     const formatDate = (date: Date) => date.toISOString().split("T")[0];
 
 
+    useEffect(() => {
+        const url = paymentData?.redirect_url;
+        console.log("url", url);
+        if (url && typeof url === "string" && url.length > 0) {
+            console.log("Redirecting to:", url);
+            setTimeout(() => {
+                window.location.href = url;
+            }, 300);
+        }
+    }, [paymentData]);
+
+
 
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
-            className="bg-[#FFFFFF] font-medium text-[20px] w-[610px] px-[94px] py-[32px] rounded-[6px] border-2 border-[#006799]"
+            className="bg-[#FFFFFF] font-medium text-[20px] md:w-[610px] md:px-[94px] px-5  py-[32px] rounded-[6px] border-2 border-[#006799]"
         >
             <p className="mb-[31px] text-[24px]">{t('paymentPage.personalInfo')}</p>
-            <div className="flex flex-col gap-[20px]">
+            <div className="flex flex-col md:w-full w-[340px] gap-[20px]">
                 <Controller
                     name="fullname"
                     control={control}
