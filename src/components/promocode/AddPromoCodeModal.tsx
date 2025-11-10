@@ -15,6 +15,7 @@ import { getEvents } from "@/api/endpoints/events.ts";
 import { IEvent } from "@/types/events.ts";
 import { usePromoCodesStore } from "@/store/usePromoCodesStore.ts";
 import { toast } from "react-hot-toast";
+import {formatLocalDate} from "@/utils/formatLocalDate.ts";
 
 export const AddPromoCodeModal: FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -54,11 +55,9 @@ export const AddPromoCodeModal: FC = () => {
     }, []);
 
     const handleSubmit = async () => {
-        const periodFrom =
-            Array.isArray(dates) && dates[0] ? dates[0].toISOString().split("T")[0] : null;
 
-        const periodTo =
-            Array.isArray(dates) && dates[1] ? dates[1].toISOString().split("T")[0] : null;
+        const periodFrom = Array.isArray(dates) && dates[0] ? formatLocalDate(dates[0]) : null;
+        const periodTo = Array.isArray(dates) && dates[1] ? formatLocalDate(dates[1]) : null;
 
         const discountNum = Number(discount);
         const limitNum = Number(limit);
