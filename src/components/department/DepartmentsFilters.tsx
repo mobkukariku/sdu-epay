@@ -11,7 +11,7 @@ export const DepartmentsFilters:FC = () => {
     const [showSuggestions, setShowSuggestions] = useState(false);
 
 
-    const {fetchDepartments, } = useDepartmentsStore();
+    const {fetchDepartments } = useDepartmentsStore();
     const handleSearch = async () => {
         await fetchDepartments({
             name: name || undefined,

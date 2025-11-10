@@ -36,7 +36,7 @@ interface FormValues {
 
 
 
-export const usePaymentSchema = (isSelfPay: "EVENT_BASED" | "SELF_PAY" | null) => {
+export const usePaymentSchema = (departmentType: DepartmentType | null) => {
     const { t } = useTranslation();
 
     return yup.object().shape({
@@ -48,16 +48,17 @@ export const usePaymentSchema = (isSelfPay: "EVENT_BASED" | "SELF_PAY" | null) =
         cellphone: yup.string().required(t("paymentPage.errors.cellphone")),
         promo_code: yup.string().nullable(),
         department_id: yup.string().required(t("paymentPage.errors.department_id")),
-        event_id: isSelfPay === "SELF_PAY"
-            ? yup.string().optional()
-            : yup.string().required(t("paymentPage.errors.event_id")),
+        event_id: departmentType === "EVENT_BASED"
+            ? yup.string().required(t("paymentPage.errors.event_id"))
+            : yup.string().optional(),
         additional: yup.string().optional(),
         paymentMethod: yup.string().required(t("paymentPage.errors.paymentMethod")),
-        amount: isSelfPay === "EVENT_BASED"
-            ? yup.number().optional()
-            : yup.number().typeError(t("paymentPage.errors.amount")).required(t("paymentPage.errors.amount")),
+        amount: departmentType === "SELF_PAY"
+            ? yup.number().typeError(t("paymentPage.errors.amount")).required(t("paymentPage.errors.amount"))
+            : yup.number().nullable().optional(),
     });
 };
+
 
 
 export const PaymentForm: FC = () => {
@@ -150,11 +151,8 @@ export const PaymentForm: FC = () => {
     };
 
 
-
     const onSubmit: SubmitHandler<FormValues> = async (data) => {
-
-
-
+        console.log("data", data);
         setLoading(true);
         try {
             const payload = {
@@ -166,7 +164,7 @@ export const PaymentForm: FC = () => {
             if(selectedDepartmentType==="EVENT_BASED"){
                 if (data.paymentMethod === "KaspiBank") {
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    const { paymentMethod, department_id, ...dataWithoutPaymentMethodAndDepartment } = payload;
+                    const { paymentMethod, department_id, amount,  ...dataWithoutPaymentMethodAndDepartment } = payload;
                     const kaspiData = await orderKaspi(dataWithoutPaymentMethodAndDepartment);
                     console.log("kaspiData", kaspiData);
                     setPaymentData(kaspiData);
@@ -174,7 +172,7 @@ export const PaymentForm: FC = () => {
 
                 }else if (data.paymentMethod === "HalykBank") {
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    const { paymentMethod, department_id, ...dataWithoutPaymentMethodAndDepartment } = payload;
+                    const { paymentMethod, department_id, amount, ...dataWithoutPaymentMethodAndDepartment } = payload;
                     setPaymentData(await orderHalyk(dataWithoutPaymentMethodAndDepartment));
                     setShowWidget(true);
                 }
@@ -211,7 +209,6 @@ export const PaymentForm: FC = () => {
 
     useEffect(() => {
         const url = paymentData?.redirect_url;
-        console.log("url", url);
         if (url && typeof url === "string" && url.length > 0) {
             console.log("Redirecting to:", url);
             setTimeout(() => {

@@ -10,7 +10,7 @@ export const orderKaspi = async (order: Omit<{
     event_id: string | null;
     additional: string;
     paymentMethod: string;
-    amount: number | null;
+    amount?: number | null;
     additional_fields: Record<string, string | boolean>
 }, "paymentMethod" | "department_id">): Promise<PaymentResponseKaspi> => {
     const {data} = await api.post("/orders/public/kaspi", order);
@@ -27,7 +27,7 @@ export const orderHalyk = async (order: Omit<{
     event_id: string | null;
     additional: string;
     paymentMethod: string;
-    amount: number | null;
+    amount?: number | null;
     additional_fields: Record<string, string | boolean>
 }, "paymentMethod" | "department_id">): Promise<PaymentResponseKaspi> => {
     const {data} = await api.post("/orders/public/epay", order);

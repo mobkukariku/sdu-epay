@@ -116,9 +116,9 @@ export const AddPromoCodeModal: FC = () => {
                 dates: false,
                 event: false,
             });
-        } catch (err) {
-            console.error("Failed to add promo code:", err);
-            toast.error("Ошибка при добавлении промо-кода.");
+        } catch (err: any) {
+            console.error("Failed to add promo code:", err.response.data.detail[0].msg);
+            toast.error( err.response.data.detail[0].msg || "Ошибка при добавлении промо-кода.");
         }
     };
 
