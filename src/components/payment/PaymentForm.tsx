@@ -1,6 +1,6 @@
 import {FC, useEffect, useState} from "react";
 import { CustomInput } from "../../ui/CustomInput.tsx";
-import {CurrencyDollarIcon, EnvelopeIcon, PhoneIcon, UserIcon} from "@heroicons/react/24/outline";
+import {EnvelopeIcon, PhoneIcon, UserIcon} from "@heroicons/react/24/outline";
 import {CustomSelect, Option} from "../../ui/CustomSelect.tsx";
 import { PaymentMethod } from "./PaymentMethod.tsx";
 import { PromocodeInput } from "./PromocodeInput.tsx";
@@ -20,7 +20,7 @@ import {toast} from "react-hot-toast";
 import {Calendar} from "primereact/calendar";
 import {useTranslation} from "react-i18next";
 import {DepartmentType} from "@/types/payment.ts";
-
+import {TengeIcon} from "@/assets/TengeIcon.tsx";
 
 interface FormValues {
     fullname: string;
@@ -441,7 +441,7 @@ export const PaymentForm: FC = () => {
                                         <>
                                             <CustomInput
                                                 {...field}
-                                                icon={<CurrencyDollarIcon  className={`text-[#6B9AB0] ${errors.cellphone ? "text-red-500" : ""}`} />}
+                                                icon={<TengeIcon  className={`text-[#6B9AB0] ${errors.cellphone ? "text-red-500" : ""}`} />}
                                                 type="number"
                                                 onChange={(e) => {
                                                     field.onChange(e);

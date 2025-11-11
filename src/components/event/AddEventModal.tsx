@@ -1,7 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { CustomButton } from "@/ui/CustomButton.tsx";
 import {
-    CurrencyDollarIcon,
     EnvelopeIcon,
     PlusIcon,
     UserCircleIcon
@@ -15,6 +14,7 @@ import { Department } from "@/types/departments.ts";
 import { useEventsStore } from "@/store/useEventsStore.ts";
 import { toast } from "react-hot-toast";
 import {formatLocalDate} from "@/utils/formatLocalDate.ts";
+import {TengeIcon} from "@/assets/TengeIcon.tsx";
 
 export const AddEventModal: FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -161,7 +161,7 @@ export const AddEventModal: FC = () => {
                     <CustomInput
                         value={String(price)}
                         onChange={(e) => setPrice(Number(e.target.value))}
-                        icon={<CurrencyDollarIcon className={errors.price ? "text-red-500" : "text-[#6B9AB0]"} />}
+                        icon={<TengeIcon className={errors.price ? "text-red-500" : "text-[#6B9AB0]"} />}
                         placeholder="Введите цену"
                         type="number"
                         className={errors.price ? "border border-red-500" : ""}
