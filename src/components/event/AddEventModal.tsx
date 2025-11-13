@@ -161,7 +161,7 @@ export const AddEventModal: FC = () => {
                     <CustomInput
                         value={String(price)}
                         onChange={(e) => setPrice(Number(e.target.value))}
-                        icon={<TengeIcon className={errors.price ? "text-red-500" : "text-[#6B9AB0]"} />}
+                        icon={<TengeIcon  color={errors.price ? "#fb2c36" : "#6B9AB0"} />}
                         placeholder="Введите цену"
                         type="number"
                         className={errors.price ? "border border-red-500" : ""}

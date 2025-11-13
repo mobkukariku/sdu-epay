@@ -441,7 +441,7 @@ export const PaymentForm: FC = () => {
                                         <>
                                             <CustomInput
                                                 {...field}
-                                                icon={<TengeIcon  className={`text-[#6B9AB0] ${errors.cellphone ? "text-red-500" : ""}`} />}
+                                                icon={<TengeIcon  color={errors.amount ? "#fb2c36" : "#6B9AB0"} />}
                                                 type="number"
                                                 onChange={(e) => {
                                                     field.onChange(e);
